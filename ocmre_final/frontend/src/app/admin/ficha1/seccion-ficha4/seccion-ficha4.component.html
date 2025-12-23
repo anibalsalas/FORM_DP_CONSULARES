@@ -1,0 +1,316 @@
+<form class="container-fluid s1-wrapper" [formGroup]="ficha4Form" (ngSubmit)="guardarSeccion4()">
+
+    <section class="acciones">
+      <button mat-stroked-button class="gridSaveItem"  type="button" (click)="guardarSeccion4Incompleta()">
+        Guardado Parcial
+      </button>
+    
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+    
+      <button *ngIf="tieneRolEspecialista()" class="gridSaveItemC" mat-flat-button color="accent" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+    
+    </section>
+
+    <section class="card">
+  <!-- 4.1 -->
+  <div class="q">
+    <label class="q-label">4.1 ¿Se ha convocado a elecciones de Consejos de Consulta 2025?</label>
+    <mat-radio-group formControlName="p41Convocado" class="inline">
+      <mat-radio-button value="S">Sí <b style="color:#0094ea;"> → Pase a 4.2</b></mat-radio-button>
+      <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a 4.3</b></mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p41Convocado')">Requerido</div>
+  </div>
+
+<div class="q">
+  <mat-form-field
+    appearance="outline"
+    class="click-open mat-mdc-text-field-wrapper mt-3"
+    (click)="openDatepicker(dp41, 'p41Fecha', $event)">
+    <mat-label>Fecha (si respondió Sí)</mat-label>
+
+    <input
+      matInput
+      [matDatepicker]="dp41"
+      formControlName="p41Fecha"
+      readonly [max]="today"
+      (keydown.enter)="$event.preventDefault(); openDatepicker(dp41, 'p41Fecha', $event)" />
+
+    <mat-datepicker-toggle matSuffix [for]="dp41"></mat-datepicker-toggle>
+    <mat-datepicker #dp41></mat-datepicker>
+
+    <mat-error class="err" *ngIf="isInvalid('p41Fecha')">Requerido</mat-error>
+  </mat-form-field>
+</div>
+
+  <!-- 4.2 -->
+  <div class="q">
+    <label class="q-label">4.2 Cantidad de peruanos habilitados para votar</label>
+    <div class="row2">
+      <mat-form-field appearance="outline">
+        <mat-label>N° Hombres</mat-label>
+        <input matInput type="number" formControlName="p42NumHombre" maxlength="5" (keydown)="permitirSoloNumeros($event)"/>
+        <mat-error class="err" class="err" *ngIf="isInvalid('p42NumHombre')">Requerido</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>N° Mujeres</mat-label>
+        <input matInput type="number" formControlName="p42NumMujer"  maxlength="5" (keydown)="permitirSoloNumeros($event)" />
+        <mat-error class="err" *ngIf="isInvalid('p42NumMujer')">Requerido</mat-error>
+      </mat-form-field>
+
+
+    </div>
+  </div>
+
+  <!-- 4.3 -->
+  <div class="q mt-4">
+     
+        <mat-form-field appearance="outline" class="w-500">
+          <label class="q-label">4.3 ¿Cuántos ciudadanos integran el Consejo de Consulta?</label>
+          <input matInput type="number" formControlName="p43Ciudadanos" appMax3Digits />
+          <mat-error class="err" *ngIf="isInvalid('p43Ciudadanos')">Requerido</mat-error>
+          </mat-form-field>
+
+  </div>
+
+  <!-- 4.4 -->
+  <div class="q">
+    <label class="q-label">4.4 Indicar el último año que hubo Consejo de Consulta</label>
+    <mat-radio-group formControlName="p44UltimoAnio" class="grid-years">
+      <mat-radio-button value="A">a) Antes de 2019</mat-radio-button>
+      <mat-radio-button value="B">b) 2020</mat-radio-button>
+      <mat-radio-button value="C">c) 2021</mat-radio-button>
+      <mat-radio-button value="D">d) 2022</mat-radio-button>
+      <mat-radio-button value="E">e) 2023</mat-radio-button>
+      <mat-radio-button value="F">f) 2024</mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p44UltimoAnio')">Requerido</div>
+  </div>
+
+  <!-- 4.5 -->
+  <div class="q" style="margin-top:2rem;">
+  <label class="q-label">4.5 Motivos por los que no han existido Consejos de Consulta</label>
+  <div class="checks">
+    <mat-checkbox [checked]="isCheckboxChecked('p45Votantes')" (change)="onCheckboxChange('p45Votantes',$event)">Falta de votantes</mat-checkbox>
+    <mat-checkbox [checked]="isCheckboxChecked('p45Candidatos')" (change)="onCheckboxChange('p45Candidatos',$event)">No hay candidatos</mat-checkbox>
+    <mat-checkbox [checked]="isCheckboxChecked('p45Apoyo')" (change)="onCheckboxChange('p45Apoyo',$event)">Falta de apoyo logístico del consulado</mat-checkbox>
+    <mat-checkbox [checked]="isCheckboxChecked('p45Actualizar')" (change)="onCheckboxChange('p45Actualizar',$event)">Falta actualizar el reglamento</mat-checkbox>
+    <div class="row-other">
+      <mat-checkbox [checked]="isCheckboxChecked('p45Otros')" (change)="onCheckboxChange('p45Otros',$event)">Otros</mat-checkbox>
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Especificar</mat-label>
+        <textarea matInput rows="2" formControlName="p45OtrosDetalle" (input)="limitarDigitosTextarea($event, 500)"></textarea>
+        <mat-error class="err" *ngIf="isInvalid('p45OtrosDetalle')">Requerido</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  
+  <div class="err" *ngIf="invalidP45">
+    Selecciona al menos un motivo.
+  </div>
+</div>
+
+  <!-- 4.6 -->
+  <div class="q">
+    <label class="q-label">4.6 ¿Considera que se debería crear otra Institución de representación de los peruanos residentes ante el Consulado?</label>
+    <mat-radio-group formControlName="p46Consulado" class="inline">
+      <mat-radio-button value="S">Sí</mat-radio-button>
+      <mat-radio-button value="N">No</mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p46Consulado')">Requerido</div>
+    <mat-form-field appearance="outline">
+      <mat-label>Detalle su propuesta (si respondió Sí)</mat-label>
+      <textarea matInput rows="3" formControlName="p46Detalle" (input)="limitarDigitosTextarea($event, 500)"></textarea>
+      <mat-error class="err" *ngIf="isInvalid('p46Detalle')">Requerido</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- 4.7 -->
+  <div class="q">
+    <label class="q-label">4.7 ¿El Consejo ha formulado Proyectos de Ley ante el Congreso?</label>
+    <mat-radio-group formControlName="p47IndicarConsejo" class="inline">
+      <mat-radio-button value="S">Sí</mat-radio-button>
+      <mat-radio-button value="N">No</mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p47IndicarConsejo')">Requerido</div>
+  </div>
+
+
+ 
+
+  <!-- 4.8 Matriz -->
+   <div class="table-responsive tabla-">
+      <label class="cell-label fw-bold mt-4">
+      4.8 Necesidades de la oficina consular para prestar el servicio de manera idónea
+      </label>
+        <div class="text-danger small mt-2" *ngIf="showP48GroupError">
+          Selecciona al menos una necesidad o marca "Ninguno".
+        </div>
+      <table class="table table-bordered align-middle ">
+        <thead class="table-secondary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Tipo</th>
+          <th class="center">¿Necesidad?</th>
+          <th class="center">¿Gestiones?</th>
+          <th class="center">Suficiente</th>
+          <th>Especifique / Observaciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of mxP48.filas">
+          <td class="cell-label">{{ r.label }}</td>
+
+          <!-- ¿Necesidad? (checkbox que guarda 'S' | '') -->
+          <td class="center">
+            <mat-checkbox
+              [checked]="isCheckboxChecked(r.check)"
+              (change)="onCheckboxChange(r.check, $event)">
+            </mat-checkbox>
+          </td>
+
+          <!-- ¿Gestiones? (S/N) -->
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.gestion">
+              <mat-radio-button value="S">Sí</mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+                  <mat-error class="err" *ngIf="hasError(r.gestion,'required')">
+                    {{ getErrorMessage(r.gestion) }}
+                  </mat-error>
+          </td>
+
+          <!-- Suficiente (S/N) -->
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.suficiente">
+              <mat-radio-button value="S">Sí</mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+              <mat-error class="err" *ngIf="hasError(r.suficiente,'required')">
+                    {{ getErrorMessage(r.suficiente) }}
+              </mat-error>
+          </td>
+
+          <!-- Especifique / Observaciones -->
+          <td>
+            <ng-container *ngIf="!r.especifique; else otroTpl">
+              <mat-form-field appearance="outline" class="col-md-12">
+                <mat-label>Especifique / Comentarios</mat-label>
+                <textarea
+                  matInput rows="2" maxlength="500" (input)="limitarDigitosTextarea($event, 500)"
+                  [formControlName]="r.observaciones">
+                </textarea>
+              </mat-form-field>
+            </ng-container>
+
+            <!-- Para 'Otro' muestra (detalle + observaciones) -->
+          <ng-template #otroTpl>
+          <ng-container *ngIf="r.especifique as especKey">
+            <div class="grid" style="display:grid;gap:.5rem;">
+              <mat-form-field appearance="outline" class="col-md-12">
+                <mat-label>Detalle (otro)</mat-label>
+                <input matInput maxlength="300" [formControlName]="especKey" />
+                <mat-error class="err" *ngIf="isInvalid(especKey)">Requerido</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="col-md-12">
+                <mat-label>Especifique / Comentarios</mat-label>
+                <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones" (input)="limitarDigitosTextarea($event, 500)" ></textarea>
+               <mat-hint align="end">{{ f('r.observaciones')?.value?.length || 0 }}/500</mat-hint>
+
+              </mat-form-field>
+            </div>
+          </ng-container>
+        </ng-template>
+          </td>
+        </tr>
+      </tbody>
+
+      <tfoot>
+        <tr class="fila-total">
+          <td colspan="5">
+            <div class="ninguno" style="display:flex;align-items:center;gap:.5rem;">
+              <mat-checkbox
+                [checked]="isCheckboxChecked(mxP48.ninguno)"
+                (change)="onCheckboxChange(mxP48.ninguno, $event)">
+              </mat-checkbox>
+              <span>Marcar <b>Ninguno</b> si no existe ninguna necesidad</span>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+
+
+
+  <!-- 4.9 -->
+<div class="q">
+  <label class="q-label">4.9 ¿El personal recibe capacitaciones/cursos?</label>
+  <mat-radio-group formControlName="p49Recibe" class="inline">
+    <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 4.10</b></mat-radio-button>
+    <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a la siguiente sección</b></mat-radio-button>
+  </mat-radio-group>
+  <div class="err" *ngIf="isInvalid('p49Recibe')">Requerido</div>
+</div>
+
+<!-- 4.10 -->
+<div class="q">
+  <label class="q-label">4.10 Indicar la(s) institución(es) del Estado que brinda(n) las capacitaciones</label>
+
+  <div class="checks wrap">
+    <mat-checkbox *ngFor="let k of p410Instituciones"
+      [checked]="isCheckboxChecked(k)"
+      [disabled]="isDisabled(k)"
+      (change)="onCheckboxChange(k, $event)">
+      {{ (k === 'p410PoderJudicial' ? 'Poder Judicial' : k.replace('p410','')).toUpperCase() }}
+    </mat-checkbox>
+
+    <mat-form-field appearance="outline" class="w-300" *ngIf="!isDisabled('p410OtroDetalle')">
+      <mat-label>Detalle (si marcó Otro)</mat-label>
+      <input matInput formControlName="p410OtroDetalle" (input)="limitarDigitosTextarea($event, 500)" />
+      <mat-error class="err" *ngIf="isInvalid('p410OtroDetalle')">Requerido</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="err" *ngIf="invalidP410">
+    Selecciona al menos una institución.
+  </div>
+</div>
+
+
+    
+</section>
+
+
+
+
+
+
+  <!-- Acciones -->
+<div class="d-flex justify-content-between mt-3">
+     
+  <button mat-stroked-button class="gridSaveItem"  (click)="guardarSeccion4Incompleta()">
+        Guardado Parcial
+      </button>
+    <div>
+      <button mat-stroked-button class="gridSaveItem"  type="button" *ngIf="tieneRolEspecialista()"  (click)="validarSeccion()" [disabled]="ficha4Form.invalid">
+        Validar Sección 4
+      </button>
+    </div>
+  <div>
+      <button mat-flat-button class="gridSaveItemC"  type="submit">
+        Guardar como Completa
+      </button>
+  </div>
+
+</div>
+</form>
+  <!-- …todo tu formulario… -->
+
+

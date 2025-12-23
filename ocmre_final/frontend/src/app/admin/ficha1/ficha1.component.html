@@ -1,0 +1,155 @@
+<mat-card class="fichas-card">
+  <!-- Header -->
+  <div class="header">
+    <h2 class="title">
+      <mat-icon aria-hidden="true">fact_check</mat-icon>
+      Gestión de Fichas
+    </h2>
+
+    <div class="header-actions" >
+      <button mat-stroked-button color="primary" (click)="resetFiltros()" [disabled]="!tieneFiltrosActivos">
+        <mat-icon>filter_alt_off</mat-icon>
+        Limpiar filtros
+      </button>
+
+  
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters mt-4">
+    <!-- Buscar -->
+    <mat-form-field appearance="outline" class="filter search" floatLabel="always">
+      <mat-label>Buscar</mat-label>
+      <input matInput [formControl]="searchCtrl" placeholder="Entidad, código, región, etc." />
+      <button mat-icon-button matSuffix *ngIf="searchCtrl.value" (click)="searchCtrl.setValue('')" aria-label="Limpiar búsqueda">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- Estado (CORREGIDO) -->
+    <mat-form-field appearance="outline" class="filter">
+      <mat-label>Estado</mat-label>
+      <mat-select [formControl]="estadoCtrl">
+        <mat-option [value]="">Todos</mat-option>
+        <mat-option value="C">Completos</mat-option>
+        <mat-option value="I">Incompletos</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Región -->
+    <mat-form-field appearance="outline" class="filter">
+      <mat-label>Región</mat-label>
+      <mat-select [formControl]="regionCtrl" multiple>
+        <mat-option *ngFor="let region of regionesUnicas" [value]="region">{{ region }}</mat-option>
+      </mat-select>
+      <mat-hint *ngIf="regionCtrl.value?.length">{{ regionCtrl.value.length }} seleccionadas</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <!-- Barra de carga -->
+  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+  <!-- Tabla -->
+  <div class="table-wrap">
+    <table mat-table [dataSource]="dataSource" matSort matSortDisableClear [trackBy]="trackById">
+
+      <!-- ID -->
+      <ng-container matColumnDef="idFicha" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="column-1">ID</th>
+        <td mat-cell *matCellDef="let f" class="column-1">{{ f.idFicha }}</td>
+      </ng-container>
+
+      <!-- Código -->
+      <ng-container matColumnDef="codUnico">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="column-2">Código</th>
+        <td mat-cell *matCellDef="let f" class="mono column-2" >{{ f.codUnico || '—' }}</td>
+      </ng-container>
+
+      <!-- Validación -->
+      <ng-container matColumnDef="validacion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="column-3">Validación</th>
+        <td mat-cell *matCellDef="let f" class="column-3">
+          <span class="pill" [ngClass]="mapValidacion[f.flagValidar || '0'].class">
+            {{ mapValidacion[f.flagValidar || '0'].label }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Estado -->
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="column-4">Estado</th>
+        <td mat-cell *matCellDef="let f" class="column-4">
+          <span class="pill" [ngClass]="mapEstado[f.estado || 'I'].class">
+            {{ mapEstado[f.estado || 'I'].label }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Región / Provincia / Distrito -->
+      <ng-container matColumnDef="entidadPais">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>País</th>
+        <td mat-cell *matCellDef="let f">{{ f.entidadPais }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="entidadLugares" class="cdk-column-entidadLugares">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Circunscripción de la Oficina Consular</th>
+        <td mat-cell *matCellDef="let f">{{ f.entidadLugares }}</td>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="entidadDistrito">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Distrito</th>
+        <td mat-cell *matCellDef="let f">{{ f.entidadDistrito }}</td>
+      </ng-container> -->
+
+      <!-- Entidad -->
+      <ng-container matColumnDef="entidadNombre">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Entidad</th>
+        <td mat-cell *matCellDef="let f">
+          <span class="ellipsis" [matTooltip]="f.entidadNombre">{{ f.entidadNombre }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef class="sticky-actions">Acciones</th>
+        <td mat-cell *matCellDef="let f" class="sticky-actions">
+          <div class="alignIcon">
+          <button class="iconEditar" mat-icon-button matTooltip="Editar" (click)="$event.stopPropagation(); editarFicha(f)">
+            <mat-icon>edit</mat-icon>
+          </button>
+   
+           <button class="iconDelete" mat-menu-item *ngIf="hasRole(rolEspecialista) || hasRole(rolAdministrador)" (click)="onEliminarFicha(f)">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+            </div>
+          <!-- <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="verFicha(f)">
+              <mat-icon>visibility</mat-icon>
+              <span>Ver</span>
+            </button>
+            <button mat-menu-item *ngIf="hasRole('ADMINISTRADOR')" (click)="onEliminarFicha(f)">
+              <mat-icon color="warn">delete</mat-icon>
+              <span class="text-warn">Eliminar</span>
+            </button>
+          </mat-menu> -->
+        </td>
+      </ng-container>
+
+      <!-- Header / Rows -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="thead sticky"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"  (click)="editarFicha(row)"></tr>
+
+      <!-- Sin datos -->
+      <tr class="no-data" matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <mat-icon>search_off</mat-icon> No se encontraron fichas con los filtros aplicados.
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons aria-label="Selector de página">
+  </mat-paginator>
+</mat-card>

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/unauthorized/unauthorized.component.ts"],
+  "sourcesContent": ["import { Component } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\nimport { MatCardModule } from '@angular/material/card';\r\n\r\n@Component({\r\n  standalone: true,\r\n  selector: 'app-unauthorized',\r\n  imports: [CommonModule, MatCardModule],\r\n  template: `\r\n    <mat-card color=\"warn\">\r\n      <h2>🚫 Acceso no autorizado</h2>\r\n      <p>No tienes permisos para acceder a esta sección.</p>\r\n    </mat-card>\r\n  `\r\n})\r\nexport class UnauthorizedComponent {}\r\n"],
+  "mappings": ";;;;;;;;;;;;;;AAeM,IAAO,wBAAP,MAAO,uBAAqB;;qCAArB,wBAAqB;EAAA;yEAArB,wBAAqB,WAAA,CAAA,CAAA,kBAAA,CAAA,GAAA,OAAA,GAAA,MAAA,GAAA,QAAA,CAAA,CAAA,SAAA,MAAA,CAAA,GAAA,UAAA,SAAA,+BAAA,IAAA,KAAA;AAAA,QAAA,KAAA,GAAA;AAN9B,MAAA,yBAAA,GAAA,YAAA,CAAA,EAAuB,GAAA,IAAA;AACjB,MAAA,iBAAA,GAAA,gCAAA;AAAuB,MAAA,uBAAA;AAC3B,MAAA,yBAAA,GAAA,GAAA;AAAG,MAAA,iBAAA,GAAA,oDAAA;AAA+C,MAAA,uBAAA,EAAI;;oBAJhD,cAAc,eAAa,OAAA,GAAA,eAAA,EAAA,CAAA;;;sEAQ1B,uBAAqB,CAAA;UAXjC;WAAU;MACT,YAAY;MACZ,UAAU;MACV,SAAS,CAAC,cAAc,aAAa;MACrC,UAAU;;;;;;KAMX;;;;6EACY,uBAAqB,EAAA,WAAA,yBAAA,UAAA,kDAAA,YAAA,GAAA,CAAA;AAAA,GAAA;",
+  "names": []
+}

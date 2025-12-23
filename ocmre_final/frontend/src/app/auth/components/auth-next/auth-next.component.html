@@ -1,0 +1,16 @@
+<div class="row" *ngIf="!cargado">
+	<div class="col-12">
+		 <div class="skeleton-container">
+			 <div class="skeleton"></div>
+		 </div>
+	 </div>
+</div> 
+<div class="row" *ngIf="cargado && con_error">
+	<div class="col-12 text-center p-4 pb-2">
+		<div class="text-danger">{{mensaje_error}}</div>
+	</div>
+	<div class="col-12 text-center p-4 pt-2">
+		<button type="button" (click)="loginApp()" class="btn btn-outline-primary" [disabled]="logeando" tabindex="-1">
+			<i class="bx bx-user"></i> INICIAR SESIÓN</button>
+	</div>
+</div>

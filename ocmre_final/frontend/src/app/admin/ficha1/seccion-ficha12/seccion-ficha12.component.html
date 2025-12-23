@@ -1,0 +1,269 @@
+<form [formGroup]="ficha12Form" (ngSubmit)="guardarSeccion12()" class="container-fluid form-seccion12">
+
+  <section class="acciones">
+      <button class="gridSaveItem" mat-stroked-button type="button" (click)="guardarSeccion12Incompleta()">
+        Guardado Parcial
+      </button>
+
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+
+      <button *ngIf="tieneRolEspecialista()" mat-flat-button class="gridSaveItemC" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+
+    </section>
+
+  <!-- 12.1 -->
+<div class="card">
+  <label fw-bold class="q-label fw-bold mt-4">
+    12.1. ¿Cuáles son los problemas más usuales en la Oficina Consular?
+    <span class="text-danger fw-bold">*</span>
+  </label>
+  <div class="mt-2 d-flex flex-wrap gap-3">
+    <mat-checkbox [checked]="isChecked('p121Administrativo')" (change)="onCheck('p121Administrativo', $event)">
+      Administrativo
+    </mat-checkbox>
+    <mat-checkbox [checked]="isChecked('p121Estructura')" (change)="onCheck('p121Estructura', $event)">
+      Estructura y logística
+    </mat-checkbox>
+    <mat-checkbox [checked]="isChecked('p121Presupuesto')" (change)="onCheck('p121Presupuesto', $event)">
+      Presupuesto
+    </mat-checkbox>
+  </div>
+  <input type="hidden" formControlName="p121Group">
+
+  <div class="err mt-1" *ngIf="isInvalid('p121Group')">
+    <i class="fas fa-exclamation-circle"></i>
+    Selecciona al menos una opción.
+  </div>
+</div>
+
+  <!-- 12.2 -->
+  <div class="card">
+    <label fw-bold class="cell-label q-label fw-bold mt-4">12.2. ¿Cuánta remesa consular se envió?</label>
+    <div class="nota">* En el caso del 2025, se apreciará consignar información respecto al primer semestre.</div>
+
+    <div class="table-responsive tabla-">
+    <table class="table table-bordered align-middle">
+      <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="sticky-col">Año</th>
+            <th class="center">Cifra en soles</th>
+            <th class="center">Cifra en dólares</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sticky-col cell-label q-label">2023</td>
+            <td data-col="S/.">
+              <input type="number" step="0.01" min="0" class="form-control w-md" formControlName="p1222023Sol" appNumericInput>
+              <div class="err" *ngIf="isInvalid('p1222023Sol')">Monto inválido (0 o más, 2 decimales).</div>
+            </td>
+            <td data-col="$">
+              <input type="number" step="0.01" min="0" class="form-control w-md" formControlName="p1222023Dolar" appNumericInput readonly>
+              <div class="err" *ngIf="isInvalid('p1222023Dolar')">Monto inválido (0 o más, 2 decimales).</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="sticky-col cell-label q-label">2024</td>
+            <td>
+              <input type="number" step="0.01" min="0" class="form-control w-md" formControlName="p1222024Sol" appNumericInput>
+              <div class="err" *ngIf="isInvalid('p1222024Sol')">Monto inválido.</div>
+            </td>
+            <td>
+              <input type="number" step="0.01" min="0" class="form-control w-md" formControlName="p1222024Dolar" appNumericInput>
+              <div class="err" *ngIf="isInvalid('p1222024Dolar')">Monto inválido.</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="sticky-col cell-label q-label">2025 (primer semestre)</td>
+            <td>
+              <input type="number" step="0.01" min="0" class="form-control w-md" formControlName="p1222025Sol" appNumericInput>
+              <div class="err" *ngIf="isInvalid('p1222025Sol')">Monto inválido.</div>
+            </td>
+            <td>
+              <input type="number" step="0.01" min="0" class="form-control w-md" formControlName="p1222025Dolar" appNumericInput>
+              <div class="err" *ngIf="isInvalid('p1222025Dolar')">Monto inválido.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3 d-flex align-items-center gap-2">
+      <mat-label>Tipo de cambio (USD)</mat-label>
+      <input type="number" step="0.01" min="0" class="form-control w-sm" placeholder="Ej. 3.50" formControlName="p122TipoCambio" appNumericInput>
+    </div>
+    <div class="err" *ngIf="isInvalid('p122TipoCambio')">Formato: 0 o más, hasta 2 decimales.</div>
+  </div>
+
+  <!-- 12.3 -->
+  <div class="card">
+    <label fw-bold class="cell-label q-label fw-bold mt-4">12.3. ¿Cuántos Consulados Honorarios existen en su circunscripción territorial?
+      <span class="text-danger fw-bold">*</span>
+    </label>
+    <div class="mt-2">
+      <input type="number" min="0" appMax4Digits  class="form-control w-sm" formControlName="p123CantiConsula" placeholder="N°">
+      <div class="err" *ngIf="isInvalid('p123CantiConsula')">
+      Campo requerido. 
+    </div>
+    </div>
+  </div>
+
+  <!-- 12.4 -->
+  <div class="card">
+    <label fw-bold class="cell-label q-label fw-bold mt-4">12.4. Invitaciones mensuales a eventos locales del Estado Receptor</label>
+    <div class="nota">* Para 2025 se apreciará consignar información del primer semestre.</div>
+
+   <div class="table-responsive tabla-">
+    <table class="table table-bordered align-middle">
+      <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="sticky-col">Año</th>
+            <th class="center">Invitaciones recibidas</th>
+            <th class="center">Eventos asistidos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sticky-col cell-label q-label">2023</td>
+            <td>
+              <input type="number" min="0" appMax4Digits class="form-control w-sm" formControlName="p1242023Invitaciom">
+              <div class="err" *ngIf="isInvalid('p1242023Invitaciom')">≥ 0</div>
+            </td>
+            <td>
+              <input type="number" min="0" appMax4Digits class="form-control w-sm" formControlName="p1242023Eventos">
+              <div class="err" *ngIf="isInvalid('p1242023Eventos')">≥ 0</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="sticky-col cell-label q-label">2024</td>
+            <td>
+              <input type="number" min="0" appMax4Digits class="form-control w-sm" formControlName="p1242024Invitaciom">
+              <div class="err" *ngIf="isInvalid('p1242024Invitaciom')">≥ 0</div>
+            </td>
+            <td>
+              <input type="number" min="0" appMax4Digits class="form-control w-sm" formControlName="p1242024Eventos">
+              <div class="err" *ngIf="isInvalid('p1242024Eventos')">≥ 0</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="sticky-col cell-label q-label">2025 (primer semestre)</td>
+            <td>
+              <input type="number" min="0" appMax4Digits class="form-control w-sm" formControlName="p1242025Invitaciom">
+              <div class="err" *ngIf="isInvalid('p1242025Invitaciom')">≥ 0</div>
+            </td>
+            <td>
+              <input type="number" min="0" appMax4Digits class="form-control w-sm" formControlName="p1242025Eventos">
+              <div class="err" *ngIf="isInvalid('p1242025Eventos')">≥ 0</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 12.5 -->
+  <div class="card">
+    <label class="cell-label q-label d-block mb-2">12.5. ¿Cuentan con un Protocolo para la asistencia a altos funcionarios del Estado?</label>
+    <div class="inline-radios">
+      <mat-radio-group formControlName="p125Protocolo" class="inline-radios">
+        <mat-radio-button value="S">Sí</mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="err" *ngIf="isInvalid('p125Protocolo')">Seleccione una opción.</div>
+  </div>
+
+  <!-- 12.6 -->
+  <div class="card">
+    <label fw-bold class="cell-label q-label fw-bold mt-4">
+      12.6. “¿Cuántos pedidos de asistencia en visitas oficiales de altos funcionarios del Estado son requeridas en promedio al mes?
+        <span class="text-danger fw-bold">*</span>
+    </label>
+    <div class="mt-2">
+      <input type="number" min="0" appMax4Digits class="form-control w-sm" formControlName="p126Pedidos" placeholder="N°">
+        <div class="err" *ngIf="isInvalid('p126Pedidos')">
+      Campo requerido. 
+    </div>
+    </div>
+  </div>
+
+  <!-- 12.7 -->
+  <div class="card">
+    <label fw-bold class="cell-label q-label fw-bold mt-4">
+      12.7. En promedio de todas las actividades de la Oficina Consular, ¿qué porcentaje del tiempo se destina a la asistencia a altos funcionarios?
+    </label>
+     <div class="table-responsive tabla-">
+    <table class="table table-bordered align-middle">
+      <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="sticky-col">Año</th>
+            <th class="center">Porcentaje (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sticky-col cell-label q-label">2023</td>
+            <td>
+              <input type="number" appMax3Digits min="0" max="100" appMax3Digits  class="form-control w-sm" formControlName="p127Porcentaje2023">
+              <div class="err" *ngIf="isInvalid('p127Porcentaje2023')">0–100</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="sticky-col cell-label q-label">2024</td>
+            <td>
+              <input type="number" appMax3Digits min="0" max="100" appMax3Digits class="form-control w-sm" formControlName="p127Porcentaje2024">
+              <div class="err" *ngIf="isInvalid('p127Porcentaje2024')">0–100</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="sticky-col cell-label q-label">2025 (primer semestre)</td>
+            <td>
+              <input type="number" appMax3Digits min="0" max="100" appMax3Digits class="form-control w-sm" formControlName="p127Porcentaje2025">
+              <div class="err" *ngIf="isInvalid('p127Porcentaje2025')">0–100</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <label class="cell-label q-label d-block mb-2">12.8. Anexar la lista del tarifario consular vigentes en la Oficina Consular
+      <span class="text-danger fw-bold">*</span>
+    </label>
+       <app-subir-archivo2
+        [idFicha]="ficha12Form.get('idFicha')?.value"
+        [codUnico]="ficha12Form.get('codUnico')?.value"
+        idInputFile="s12_arch"
+        (archivoSubido)="onArchivoSubido($event)"
+        (archivoEliminado)="onArchivoEliminado()">
+      </app-subir-archivo2>
+  
+      <div class="err mt-2" *ngIf="isInvalid('p127Archivo')">
+        <i class="fas fa-exclamation-circle"></i> 
+        Debe anexar el archivo del tarifario consular
+      </div>
+  </div>
+
+
+ 
+
+  <!-- Acciones -->
+ <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
+    <button mat-stroked-button type="button" class="gridSaveItem" (click)="guardarSeccion12Incompleta()">
+      Guardado Parcial
+    </button>
+
+    <button mat-stroked-button class="gridSaveItemC" type="button" *ngIf="tieneRolEspecialista()"
+            (click)="validarSeccion()" [disabled]="ficha12Form.invalid">
+      Validar Sección 12
+    </button>
+
+    <button mat-flat-button class="gridSaveItemC" type="submit" >
+      Guardar sección Completa
+    </button>
+  </div>
+</form>

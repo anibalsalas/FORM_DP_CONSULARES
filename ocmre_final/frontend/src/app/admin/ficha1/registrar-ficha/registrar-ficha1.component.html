@@ -1,0 +1,1672 @@
+
+
+<ng-container *ngIf="showStatusBar">
+  <div #statusBarRef
+       class="sticky-status-bar"
+       role="navigation"
+       aria-label="Progreso de secciones">
+    <div class="status-content">
+      <div class="status-summary">
+        <mat-icon aria-hidden="true">assignment_turned_in</mat-icon>
+        <span class="sum-text">
+          SECCIONES : Completadas: {{ totalCompletas() }}/13 &nbsp;|&nbsp; Validadas: {{ totalValidadas() }}/13
+        </span>
+      </div>
+
+      <div class="status-chips" tabindex="0" aria-label="Navegación por secciones">
+        <button
+          *ngFor="let k of seccionesKeys"
+          class="sec-chip"
+          [class.chip-completa]="completadas[k]"
+          [class.chip-incompleta]="!completadas[k]"
+          [class.chip-validada]="validadas[k]"
+          (click)="openAndScroll(k)"
+          [attr.aria-label]="getAriaLabel(k)"
+          type="button">
+          <span class="chip-circle">{{ k.toUpperCase() }}</span>
+          <span class="chip-text">
+            {{ completadas[k] ? 'C' : 'I' }} - {{ validadas[k] ? 'V' : '—' }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<mat-accordion multi="false" class="my-3 container-fluid text-left">
+
+  <h1 class="titulo-ui mt-3">
+    <b style="color:#013a4c;font-size: 1rem;">
+      FICHA DE SUPERVISIÓN A OFICINAS CONSULARES DEL MINISTERIO DE RELACIONES EXTERIORES</b>
+
+  </h1>
+
+  <div *ngIf="estadoFichaMensaje" class="alert" [ngClass]="estadoFichaMensaje.clase" role="alert">
+    <h4 class="alert-heading fw-bold">{{ estadoFichaMensaje.texto }}</h4>
+  </div>
+
+  <div *ngIf="fichaCompletamenteValidada" class="alert alert-success text-left">
+    <h4 class="alert-heading fw-bold">Ficha Validada Correctamente</h4>
+  </div>
+
+  <div class="notice notice-warn" role="status" aria-live="polite">
+    <mat-icon aria-hidden="true">info</mat-icon>
+    <span><strong>Aviso:</strong> guarda cada sección como <strong>Completa</strong> con el botón
+      <strong>Guardar sección completa</strong>.</span>
+  </div>
+
+  <mat-expansion-panel [expanded]="true"  [attr.id]="'top'" >
+    <mat-expansion-panel-header style="background-color:#E5E5E5;margin-bottom:10px;">
+      <mat-panel-title style="color: #013a4c;">DATOS GENERALES</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <form [formGroup]="fichaForm" (ngSubmit)="guardarFicha()">
+      <!-- auditoría oculta -->
+      <input type="hidden" formControlName="usuRegistro" />
+      <input type="hidden" formControlName="idFicha" />
+      <input type="hidden" formControlName="idSestablecmnt" />
+      <input type="hidden" formControlName="estadoRegistro" />
+      <input type="hidden" formControlName="observacionBaja" />
+      <input type="hidden" formControlName="fchBaja" />
+      <input type="hidden" formControlName="usuBaja" />
+
+
+
+    
+      <div class="row g-3">
+        <div class="col-md-8">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>ID Ficha</mat-label>
+            <input matInput [value]="idFichaGuardado" readonly disabled />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- ================== DATOS DEL ENTREVISTADOR ================== -->
+      <div class="bg-secondary text-white border border-secondary px-3 py-2 rounded-top" *ngIf="!esExterno">
+        DATOS DEL ENTREVISTADOR
+      </div>
+       
+      <div class="row g-3 p-3" *ngIf="!esExterno">
+        <div class="flex-fill"> <!-- Espaciado entre columnas -->
+          <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>OD o MOD</mat-label>
+            <input matInput id="txt_desc_depe_tde"
+              formControlName="txtDescDepeTde"
+              class="form-control-plaintext"
+              type="text"
+              [readonly]="esExterno"
+              (input)="convertirAMayusculas('txtDescDepeTde')" >
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nro. de documento</mat-label>
+            <input matInput formControlName="entrevNumDoc" maxlength="8"  />
+            <mat-error *ngIf="fichaForm.get('entrevNumDoc')?.hasError('pattern')">
+              Debe contener 8 dígitos
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nombre del comisionado/entrevistador</mat-label>
+            <input matInput formControlName="entrevNombre" id="txt_comisionado" maxlength="200" (input)="convertirAMayusculas('entrevNombre')" (keydown)="permitirSoloLetrasEspacios($event)"/>
+            <mat-error *ngIf="fichaForm.get('entrevNombre')?.hasError('required')">Campo obligatorio</mat-error>
+          </mat-form-field>
+        </div>
+
+         <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Teléfono – Anexo o Celular</mat-label>
+            <input matInput formControlName="entrevTelefono" maxlength="9"  />
+          </mat-form-field>
+        </div>
+
+        
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Correo institucional</mat-label>
+            <input matInput formControlName="entrevCorreo" type="email" maxlength="200" />
+            <mat-error *ngIf="fichaForm.get('entrevCorreo')?.hasError('email')">Correo no válido</mat-error>
+          </mat-form-field>
+        </div>
+
+   <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Fecha Inicio Supervisión</mat-label>
+            <input matInput [matDatepicker]="picker1" formControlName="supFechaInicio" readonly [max]="today">
+
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+           <mat-error *ngIf="fichaForm.get('supFechaInicio')?.hasError('anioInvalido')">
+            El año debe ser 2025.
+          </mat-error>
+
+        </div>
+     
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Fecha Fin Supervisión</mat-label>
+            <input matInput [matDatepicker]="picker2" formControlName="supFechaFin" readonly [max]="today">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+          <mat-error *ngIf="fichaForm.hasError('fechaInvalida')">
+              La fecha de fin debe ser mayor o igual a la fecha de inicio
+            </mat-error> 
+         
+           <mat-error *ngIf="fichaForm.get('supFechaFin')?.hasError('anioInvalido')">
+            El año debe ser 2025.
+          </mat-error>
+        </div>
+      </div>
+
+
+   <div class="row g-3"> 
+        
+      </div>
+      
+      <!-- ================== DATOS DE LA ENTIDAD ================== -->
+      <div class="bg-secondary text-white border border-secondary px-3 py-2 rounded-top">
+         DATOS GENERALES SOBRE LA OFICINA CONSULAR
+      </div>
+
+       <h2 class="section-title mt-3">
+          <mat-icon>badge</mat-icon>
+          INFORMACIÓN GENERAL DE LA OFICINA CONSULAR
+        </h2>
+      <div class="row g-3 p-3">
+          <label class="form-label fw-bold q-label">
+            1. Nombre de la Oficina Consular
+          </label>
+        <mat-form-field appearance="outline" class="w-100 mt-4" color="primary">
+
+          <!-- Declarar el autocomplete ARRIBA y sin *ngIf -->
+          <mat-autocomplete #autoEntidadRef="matAutocomplete" (optionSelected)="onEntidadSelected($event)">
+            <ng-container *ngIf="!esExterno">
+              <mat-option *ngFor="let item of entidadesFiltradas | async" [value]="item.nom_entidad">
+                {{ item.nom_entidad }}
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+
+          <!-- INPUT externo (solo lectura) -->
+          <input *ngIf="esExterno" type="text" matInput id="entidadNombre" formControlName="entidadNombre"
+            [readonly]="true" />
+
+          <!-- INPUT interno con autocomplete -->
+          <input *ngIf="!esExterno" type="text" matInput id="entidadNombre" formControlName="entidadNombre"
+            [matAutocomplete]="autoEntidadRef" [readonly]="entidadReadonly" (blur)="onEntidadBlur()"
+            (input)="onEntidadInput()" />
+
+          <mat-icon matSuffix *ngIf="entidadReadonly && entidadValida" color="primary">check_circle</mat-icon>
+          <mat-icon matSuffix *ngIf="tieneErrorEntidadNoValida" color="warn">error</mat-icon>
+
+          <mat-error *ngIf="fichaForm.get('entidadNombre')?.hasError('required')">
+            Campo obligatorio
+          </mat-error>
+          <mat-error *ngIf="fichaForm.get('entidadNombre')?.hasError('entidadDuplicada')">
+            Esta entidad ya tiene una ficha registrada
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="boton-habilitar mt-2" *ngIf="mostrarBotonHabilitar && !esExterno">
+        <button type="button" mat-outlined-button color="warn" class="ms-2" (click)="limpiarEntidad()">
+          <mat-icon>clear</mat-icon> Cambiar de Entidad
+        </button>
+      </div>
+
+    <div class="row g-3 p-3">
+         <div class="col-md-6">
+           <label class="form-label fw-bold q-label">
+                2. País
+              </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="entidadPais" readonly />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+             <label class="form-label fw-bold q-label">
+               3. Continente
+              </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="entidadContinente"  maxlength="100"  (input)="permitirSoloTextoYEspacios100($event, 100)"/>
+          </mat-form-field>
+        </div>
+
+ </div>
+
+
+    <div class="row g-3 p-3">
+     <div class="col-md-12">
+          <label class="form-label fw-bold">4. Categoría:</label><br />
+          <mat-radio-group formControlName="entidadCategoria" class="d-flex flex-row flex-wrap gap-3">
+            <mat-radio-button value="A">a) Consulado General</mat-radio-button>
+            <mat-radio-button value="B">b) Consulado</mat-radio-button>
+            <mat-radio-button value="C">c) Sección Consular</mat-radio-button>
+            <mat-radio-button value="D">d) Agencia Consular </mat-radio-button>
+   
+          </mat-radio-group>
+        </div>
+
+         <div class="col-md-12">
+          <div class="mb-3">
+            <label for="entidadLugaresInput" class="form-label fw-bold">
+              5. Precise los lugares que conforman la circunscripción territorial de la Oficina Consular:
+            </label>
+            
+            <textarea class="form-control" 
+                      id="entidadLugaresInput" 
+                      rows="4"
+                      maxlength="500"
+                      formControlName="entidadLugares" readonly
+                     >
+            </textarea>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label fw-bold">
+              6. Número estimado de ciudadanos/as que conforman la comunidad peruana en la circunscripción territorial
+            </label>
+          <mat-form-field appearance="outline" class="w-100">
+           
+            
+            <input matInput formControlName="entidadCantidad" maxlength="10" (keydown)="permitirSoloNumeros($event)" />
+            <mat-error *ngIf="fichaForm.get('entidadCantidad')?.hasError('pattern')">Debe tener 8 dígitos</mat-error>
+          </mat-form-field>
+        </div>
+</div>
+ 
+
+      <!-- ================== DATOS DEL FUNCIONARIO ENTREVISTADO ================== -->
+      <div class="bg-secondary text-white border border-secondary px-3 py-2 rounded-top">
+        DATOS DE CONTACTO
+      </div>
+
+  
+      <div class="row g-3 p-3">
+        <div class="col-md-2">
+            <label class="form-label fw-bold">
+             7. Nº de Teléfono
+            </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="funcTel"  />
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">
+           8. Nro. de celular
+            </label>
+          <mat-form-field appearance="outline" class="w-100">
+           
+            <input matInput formControlName="funcCelular" maxlength="9"  />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+                <label class="form-label fw-bold">
+                  9. Correo electrónico
+                </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="funcCorreo" />
+            <mat-error *ngIf="fichaForm.get('funcCorreo')?.hasError('email')">Correo no válido</mat-error>
+          </mat-form-field>
+        </div>
+         <div class="col-md-3">
+              <label class="form-label fw-bold">
+                10. Nº de Teléfono emergencia
+              </label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="funcTelEmergencia"  readonly />
+          </mat-form-field>
+        </div>
+      </div>
+      
+
+       <div class="row g-3 p-3">
+          <div class="col-md-4">
+              <label class="form-label fw-bold">
+                  11. Otros canales de atención e información:              </label><br>
+              <ng-container>
+                 <mat-checkbox formControlName="funcCanalAtencionA">a. Redes sociales</mat-checkbox><br>
+                  <mat-checkbox formControlName="funcCanalAtencionB">b. Página web institucional</mat-checkbox><br>
+                  <mat-checkbox formControlName="funcCanalAtencionC">c. Grupos de mensajería instantánea</mat-checkbox><br>
+                  <mat-checkbox 
+                    formControlName="funcCanalAtencionD" 
+                    (change)="onOtroCheckboxChange('funcCanalAtencionD', 'funcAtencionOtro', $event)">
+                    d. Otro Especificar
+                  </mat-checkbox>
+              </ng-container>
+           
+            <mat-form-field class="w-100 mt-2" *ngIf="fichaForm.get('funcCanalAtencionD')?.value">
+                    <input 
+                      matInput 
+                      formControlName="funcAtencionOtro" 
+                      placeholder="Especificar" 
+                      maxlength="200"
+                      (input)="validarLongitudMaxima('funcAtencionOtro', 200)">
+                  </mat-form-field>
+
+                <div class="text-danger small mt-1" *ngIf="invalidCA">
+                  Selecciona al menos una opción.
+                </div>
+        </div>    
+    </div>
+
+
+
+
+<div class="form-card">
+  <mat-card-content>
+    <!-- ===================== -->
+    <!-- HORARIO DE ATENCIÓN -->
+    <!-- ===================== -->
+    <div class="section-container">
+      <h2 class="section-title">
+        <mat-icon>schedule</mat-icon>
+        Sobre el horario de atención ordinario y extraordinario:      </h2>
+      
+      <!-- Horario regular -->
+      <div class="row">
+        <div class="col-md-6">
+              <label class="form-label fw-bold q-label">
+               12. Horario de atención regular :
+              </label>
+
+            <div class="time-range-container">
+              <!-- <input matInput type="time" formControlName="horaAtencionInicio" placeholder="Inicio"> -->
+                 <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Hora Inicio </mat-label>
+                  <input matInput type="time" formControlName="horaAtencionInicio" placeholder="Inicio">
+                </mat-form-field>
+              <!-- <input matInput type="time" formControlName="horaAtencionFin" placeholder="Fin"> -->
+                  <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Hora Fin </mat-label>
+                  <input matInput type="time" formControlName="horaAtencionFin" placeholder="Fin">
+                </mat-form-field>
+
+            </div>
+       <div *ngIf="fichaForm.hasError('horaFinMenorQueInicioAtencion') && fichaForm.get('horaAtencionFin')?.touched" style="color: rgb(153, 4, 4);">
+              La hora de fin no puede ser anterior a la hora de inicio.
+            </div> 
+        </div>
+
+        <div class="col-md-6">
+           <label class="form-label fw-bold">
+               13. De contarlo, precisar horario de refrigerio :
+              </label>
+
+            <div class="time-range-container">
+              <!-- <input matInput type="time" formControlName="horaAtencionInicio" placeholder="Inicio"> -->
+                 <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Hora Inicio </mat-label>
+                  <input matInput type="time" formControlName="horaRefrigerioInicio" placeholder="Inicio">
+                </mat-form-field>
+              <!-- <input matInput type="time" formControlName="horaAtencionFin" placeholder="Fin"> -->
+                  <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Hora Fin </mat-label>
+                  <input matInput type="time" formControlName="horaRefrigerioFin" placeholder="Fin">
+                </mat-form-field>
+            </div>
+            <div *ngIf="fichaForm.hasError('horaFinMenorQueInicio') && fichaForm.get('horaRefrigerioFin')?.touched" style="color: rgb(153, 4, 4);">
+              La hora de fin no puede ser anterior a la hora de inicio.
+            </div>
+        </div>
+      </div>
+
+      <mat-divider class="my-4"></mat-divider>
+
+      <!-- Servicio de emergencia -->
+      <div class="subsection">
+              <label class="form-label fw-bold">
+               14. ¿Cuenta con el servicio de atención de emergencia? 
+              </label>
+        <mat-radio-group formControlName="atencionEmergencia" class="radio-group-horizontal">
+          <mat-radio-button value="S">
+            <mat-icon class="option-icon">check_circle</mat-icon>
+            Sí cuenta con servicio
+          </mat-radio-button>
+          <mat-radio-button value="N">
+            <mat-icon class="option-icon">cancel</mat-icon>
+            No brinda el servicio
+          </mat-radio-button>
+        </mat-radio-group>
+
+ 
+
+
+
+
+          <div class="col-md-6 conditional-field" *ngIf="f['atencionEmergencia'].value === 'S'" >
+    
+           <div style="font-weight: 400;" class="mb-3 ">  <mat-label>Horario de emergencia :</mat-label></div> 
+
+            <div class="time-range-container" >
+              <!-- <input matInput type="time" formControlName="horaAtencionInicio" placeholder="Inicio"> -->
+                 <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Hora Inicio </mat-label>
+                  <input matInput type="time" formControlName="horaEmergenciaInicio" placeholder="Inicio">
+                </mat-form-field>
+              <!-- <input matInput type="time" formControlName="horaAtencionFin" placeholder="Fin"> -->
+                  <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Hora Fin </mat-label>
+                  <input matInput type="time" formControlName="horaEmergenciaFin" placeholder="Fin">
+                </mat-form-field>
+     <div *ngIf="fichaForm.hasError('horaFinMenorEmerQueInicio') && fichaForm.get('horaEmergenciaFin')?.touched" style="color: rgb(153, 4, 4);">
+              La hora de fin no puede ser anterior a la hora de inicio.
+            </div> 
+
+
+
+            </div>
+      
+       
+        </div>
+
+
+      </div>
+
+      <mat-divider class="my-4"></mat-divider>
+
+      <!-- Atención extraordinaria -->
+      <div class="subsection">
+             <label class="form-label fw-bold">
+               15. Atención mensual extraordinaria fuera del/los días habituales de atención en oficina:
+
+              </label>
+        
+        <mat-label class="field-label">¿Brinda atención fuera del horario habitual?</mat-label>
+        <mat-radio-group formControlName="brindaAtencionExtra" class="radio-group-horizontal">
+          <mat-radio-button value="S">
+            <mat-icon class="option-icon">check</mat-icon>
+            Sí <b style="color: #0094ea ;">→ Pase a 16</b>
+          </mat-radio-button>
+          <mat-radio-button value="N">
+            <mat-icon class="option-icon">close</mat-icon>
+            No <b style="color: #0094ea ;">→ Pase a 17</b>
+          </mat-radio-button>
+        </mat-radio-group>
+
+        <!-- Días de atención extraordinaria -->
+   <div class="conditional-field" *ngIf="f['brindaAtencionExtra'].value === 'S'">
+    <label class="form-label fw-bold">
+      16. Precisar el día:
+    </label>
+          <mat-form-field appearance="outline" class="w-100">
+            
+            <mat-select formControlName="atencionExtraDia">
+              <mat-option value="">
+                <mat-icon>touch_app</mat-icon>
+                Elegir una opción
+              </mat-option>
+              <mat-option value="A">
+                <mat-icon>weekend</mat-icon>
+                Sábado
+              </mat-option>
+              <mat-option value="B">
+                <mat-icon>weekend</mat-icon>
+                Domingo
+              </mat-option>
+          
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Motivos de no atención -->
+        <div class="conditional-field" *ngIf="f['brindaAtencionExtra'].value === 'N'">
+            <label class="form-label fw-bold">
+                 17. En caso no brinde atención extraordinaria, especifique el motivo: 
+              </label>
+          
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="motivoNoExtraA" class="checkbox-item">
+              <mat-icon class="checkbox-icon">person_off</mat-icon>
+              No cuenta con personal
+            </mat-checkbox>
+            
+            <mat-checkbox formControlName="motivoNoExtraB" class="checkbox-item">
+              <mat-icon class="checkbox-icon">not_interested</mat-icon>
+              No existe la necesidad
+            </mat-checkbox>
+            
+            <mat-checkbox formControlName="motivoNoExtraC" class="checkbox-item">
+              <mat-icon class="checkbox-icon">money_off</mat-icon>
+              No hay presupuesto
+            </mat-checkbox>
+          </div>
+            <div class="text-danger small mt-1" *ngIf="invalidHE">
+                  Selecciona al menos una opción.
+                </div>
+
+        </div>
+      </div>
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+ 
+    <div class="section-container">
+      <h2 class="section-title">
+        <mat-icon>business</mat-icon>
+        Sobre la infraestructura de la Oficina Consular:
+      </h2>
+
+      <!-- Tipo de local -->
+      <div class="subsection">
+        <label class="form-label fw-bold">
+          18. El local donde funciona la oficina consular es:
+        </label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select formControlName="localconsuTipo" required>
+             <mat-option value="">
+                <mat-icon>touch_app</mat-icon>
+                Elegir una opción
+              </mat-option>
+            <mat-option *ngFor="let tipo of tiposLocal" [value]="tipo.valor">
+              <mat-icon>{{getIconForTipoLocal(tipo.valor)}}</mat-icon>
+              {{ tipo.texto }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>home_work</mat-icon>
+            <!-- 🧩 Mensaje de error -->
+        <mat-error *ngIf="f['localconsuTipo']?.hasError('required') && f['localconsuTipo']?.touched">
+          Selecciona el tipo de local.
+        </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100" *ngIf="f['localconsuTipo'].value === 'D'">
+          <mat-label>Especifique otro tipo</mat-label>
+          <input matInput formControlName="localconsuTipoOtro" maxlength="200">
+          <mat-icon matPrefix>edit</mat-icon>
+          <mat-hint align="end">{{f['localconsuTipoOtro'].value?.length || 0}}/200</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Accesibilidad -->
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <mat-icon>accessible</mat-icon>
+          Accesibilidad
+        </h3>
+
+        <mat-card class="accessibility-card">
+          <mat-card-content>
+            <div class="accessibility-item">
+              <label class="form-label fw-bold">
+                19. La Oficina Consular cuenta con rampa/as de acceso para personas con discapacidad:
+              </label>
+              <mat-radio-group formControlName="localConsuRampa" class="accessibility-radio-group">
+             
+                <mat-radio-button value="S" class="radio-yes">
+                  <mat-icon class="option-icon">check</mat-icon> Sí
+                </mat-radio-button>
+                <mat-radio-button value="N" class="radio-no">
+                  <mat-icon class="option-icon">close</mat-icon> No
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="accessibility-item">
+               <label class="form-label fw-bold">
+                20. La Oficina Consular cuenta con servicios higiénicos adaptados para personas con discapacidad:
+              </label>
+              <mat-radio-group formControlName="localConsuHigienico" class="accessibility-radio-group">
+                <mat-radio-button value="S" class="radio-yes">
+                  <mat-icon class="option-icon">check</mat-icon> Sí
+                </mat-radio-button>
+                <mat-radio-button value="N" class="radio-no">
+                  <mat-icon class="option-icon">close</mat-icon> No
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </mat-card-content>
+
+ 
+</div>
+
+<mat-divider class="my-4"></mat-divider>
+
+<!-- ===================== -->
+<!-- JEFE DE OFICINA CONSULAR -->
+<!-- ===================== -->
+<div class="section-container">
+  <h2 class="section-title">
+    <mat-icon>badge</mat-icon>
+    INFORMACIÓN DEL PERSONAL QUE FORMA PARTE DE LA OFICINA CONSULAR
+  </h2>
+
+
+  <div class="row g-3 p-3">
+    <!-- Nombre -->
+    <div class="col-md-6">
+         <label class="form-label fw-bold">
+                21. Nombre del jefe de la Oficina Consular (responsable del llenado de la ficha): 
+              </label>
+      <mat-form-field appearance="outline" class="w-100">
+        <input
+          matInput
+          formControlName="nombreJefeConsular"
+          maxlength="100"
+          (keydown)="permitirSoloLetrasEspacios($event)"
+          (input)="convertirAMayusculas('nombreJefeConsular')" readonly
+        />
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-error *ngIf="f['nombreJefeConsular']?.hasError('required') && f['nombreJefeConsular']?.touched">
+          Campo obligatorio.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Correo -->
+    <div class="col-md-6">
+       <label class="form-label fw-bold q-label">
+            22. Correo electrónico del jefe
+          </label>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput formControlName="correoJefeConsular" type="email" maxlength="100"/>
+        <mat-icon matPrefix>mail</mat-icon>
+        <mat-error *ngIf="f['correoJefeConsular']?.hasError('required') && f['correoJefeConsular']?.touched">
+          Campo obligatorio.
+        </mat-error>
+        <mat-error *ngIf="f['correoJefeConsular']?.hasError('email') && f['correoJefeConsular']?.touched">
+          Correo no válido.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Celular -->
+    <div class="col-md-6">
+       <label class="form-label fw-bold q-label">
+            23. Celular del jefe
+          </label>
+      <mat-form-field appearance="outline" class="w-100">
+        <input
+          matInput
+          formControlName="celJefeConsular"
+          maxlength="15"
+          (keydown)="permitirSoloNumerosCel($event)"
+        />
+        <mat-icon matPrefix>phone_iphone</mat-icon>
+        <mat-error *ngIf="f['celJefeConsular']?.hasError('required') && f['celJefeConsular']?.touched">
+          Campo obligatorio.
+        </mat-error>
+     
+      </mat-form-field>
+    </div>
+
+    <!-- Cargo -->
+    <div class="col-md-6">
+       <label class="form-label fw-bold">
+            24. Cargo del jefe de Oficina Consular
+          </label>
+      <mat-radio-group formControlName="cargoJefeConsular" class="d-flex flex-column gap-1">
+        <mat-radio-button *ngFor="let c of cargosJefe" [value]="c.valor">
+          {{ c.texto }}
+        </mat-radio-button>
+      </mat-radio-group>
+      <div class="text-danger small mt-1" *ngIf="f['cargoJefeConsular']?.hasError('required') && f['cargoJefeConsular']?.touched">
+        Selecciona un cargo.
+      </div>
+    </div>
+
+    <!-- Resolución -->
+    <div class="col-md-8">
+         <label class="form-label fw-bold">
+            25. Tipo y número de resolución de nombramiento/designación
+          </label>
+      <mat-form-field  class="w-100">
+        <input matInput formControlName="resoluJefeConsular" maxlength="100" />
+        
+        <mat-error *ngIf="f['resoluJefeConsular']?.hasError('required') && f['resoluJefeConsular']?.touched">
+          Campo obligatorio.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Fecha -->
+    <div class="col-md-4">
+      <label class="form-label fw-bold">
+            26. Fecha
+          </label>
+      <mat-form-field appearance="outline" class="w-100">
+        <input
+          matInput
+          [matDatepicker]="pickerJefe"
+          formControlName="fechaJefeConsular"
+          [max]="today"
+          readonly
+        />
+        <mat-datepicker-toggle matSuffix [for]="pickerJefe"></mat-datepicker-toggle>
+        <mat-datepicker #pickerJefe></mat-datepicker>
+        <mat-icon matPrefix>event</mat-icon>
+
+        <mat-error *ngIf="f['fechaJefeConsular']?.hasError('required') && f['fechaJefeConsular']?.touched">
+          Campo obligatorio.
+        </mat-error>
+        <mat-error *ngIf="f['fechaJefeConsular']?.hasError('fechaInvalida') && f['fechaJefeConsular']?.touched">
+          Fecha inválida.
+        </mat-error>
+        <mat-error *ngIf="f['fechaJefeConsular']?.hasError('fechaFutura') && f['fechaJefeConsular']?.touched">
+          La fecha no puede ser futura.
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+
+<!-----------------------------------------------------TABLAS--------------------------------------------------------------------->
+
+<div class="section-container">
+  <h3 class="section-title"><mat-icon>group</mat-icon> Funcionarios/as 
+Consulares (Funcionarios/as del Servicio Diplomático de la República del Perú – SDRP)
+</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light text-center">
+        <tr>
+          <th style="min-width:180px">—</th>
+          <th>Cónsul General (A)</th>
+          <th>Cónsul General Adjunto (B)</th>
+          <th>Cónsul (C)</th>
+          <th>Vicecónsul (D)</th>
+          <th>Jefe de Sección Consular (E)</th>
+          <th>Otro cargo (F)</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        <tr>
+          <th class="text-start">   
+            <label class="form-label fw-bold">
+            27.
+          </label>N° Hombres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroAHombres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroBHombres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroCHombres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroDHombres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroEHombres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroFHombres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroTotalHombres" readonly></td>
+        </tr>
+
+        <tr>
+          <th class="text-start"> <label class="form-label fw-bold">
+            28.
+          </label>N° Mujeres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroAMujeres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroBMujeres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroCMujeres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroDMujeres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroEMujeres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroFMujeres" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroTotalMujeres" readonly></td>
+        </tr>
+
+        <tr class="table-secondary fw-semibold">
+          <th class="text-start">TOTAL</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroATotalHombres" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroBTotalHombres" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroCTotalHombres" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroDTotalHombres" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroETotalHombres" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroFTotalHombres" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="nroGTotalHombres" readonly></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<div class="section-container mt-4">
+  <h3 class="section-title"><mat-icon>badge</mat-icon> Personal administrativo</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light text-center">
+        <tr>
+          <th style="min-width:180px">—</th>
+          <th>Peruanos</th>
+          <th>Extranjeros</th>
+          <th>Nacionalidad</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        <tr>
+          <th class="text-start"><label class="form-label fw-bold">
+            29.
+          </label>N° Hombres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="hPeruanosPa" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="hExtranjerosPa" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input type="text"  class="form-control form-control-sm" formControlName="hNacionalidadPa" maxlength="55" (input)="permitirSoloTextoYEspacios55($event, 55)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="hTotalPa" readonly></td>
+        </tr>
+        <tr>
+          <th class="text-start"><label class="form-label fw-bold">
+            30.
+          </label>N° Mujeres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="mPeruanasPa" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="mExtranjerasPa" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input type="text" class="form-control form-control-sm" formControlName="mNacionalidadPa" maxlength="55" (input)="permitirSoloTextoYEspacios55($event, 55)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="mTotalPa" readonly></td>
+        </tr>
+        <tr class="table-secondary fw-semibold">
+          <th class="text-start">TOTAL</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="tPeruanasPa" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="tExtranjerasPa" readonly></td>
+          <td><input type="text"  class="form-control form-control-sm" formControlName="tNacionalidadPa" maxlength="55" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="tTotalPa" readonly></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="section-container mt-4">
+  <h3 class="section-title"><mat-icon>build</mat-icon> Personal de servicio</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light text-center">
+        <tr>
+          <th style="min-width:180px">—</th>
+          <th>Peruanos</th>
+          <th>Extranjeros</th>
+          <th>Nacionalidad</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        <tr>
+          <th class="text-start"><label class="form-label fw-bold">
+            31.
+          </label>N° Hombres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="hPeruanosPs" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="hExtranjerosPs" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input type="text" class="form-control form-control-sm" formControlName="hNacionalidadPs" (input)="permitirSoloTextoYEspacios55($event, 55)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="hTotalPs" readonly></td>
+        </tr>
+        <tr>
+          <th class="text-start"><label class="form-label fw-bold">
+            32.
+          </label>N° Mujeres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="mPeruanasPs" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="mExtranjerasPs" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input type="text" class="form-control form-control-sm" formControlName="mNacionalidadPs" (input)="permitirSoloTextoYEspacios55($event, 55)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="mTotalPs" readonly></td>
+        </tr>
+        <tr class="table-secondary fw-semibold">
+          <th class="text-start">TOTAL</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="tPeruanasPs" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="tExtranjerasPs" readonly></td>
+          <td><input matInput class="form-control form-control-sm"   formControlName="tNacionalidadPs" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="tTotalPs" readonly></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="section-container mt-4">
+  <h3 class="section-title"><mat-icon>diversity_3</mat-icon> Voluntarios</h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light text-center">
+        <tr>
+          <th style="min-width:180px">—</th>
+          <th>Peruanos</th>
+          <th>Extranjeros</th>
+          <th>Nacionalidad</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        <tr>
+          <th class="text-start"><label class="form-label fw-bold">
+            33.
+          </label>N° Hombres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="hPeruanosV" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="hExtranjerosV" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input type="text" class="form-control form-control-sm" formControlName="hNacionalidadV"  (input)="permitirSoloTextoYEspacios55($event, 55)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="hTotalV" readonly></td>
+        </tr>
+        <tr>
+          <th class="text-start"><label class="form-label fw-bold">
+            34.
+          </label>N° Mujeres</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="mPeruanasV" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="mExtranjerasV" (keydown)="permitirSoloNumeros($event)"></td>
+          <td><input type="text" class="form-control form-control-sm" formControlName="mNacionalidadV"  (input)="permitirSoloTextoYEspacios55($event, 55)"></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="mTotalV" readonly></td>
+        </tr>
+        <tr class="table-secondary fw-semibold">
+          <th class="text-start">TOTAL</th>
+          <td><input matInput class="form-control form-control-sm" formControlName="tPeruanasV" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="tExtranjerasV" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="tNacionalidadV" readonly></td>
+          <td><input matInput class="form-control form-control-sm" formControlName="tTotalV" readonly></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+<div class="section-container">
+  <h2 class="section-title">
+    <mat-icon>account_balance_wallet</mat-icon>
+    Información sobre el presupuesto de la Oficina Consular
+  </h2>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light text-center">
+        <tr>
+          <th style="min-width:120px">Año de ejecución</th>
+          <th style="min-width:160px">
+            A) Monto igual al presupuesto requerido<br><small>(Sí/No)</small>
+          </th>
+          <th>B) Monto menor del presupuesto requerido</th>
+          <th>C) Precise el porcentaje de la reducción %</th>
+          <th>D) Monto mayor del presupuesto requerido</th>
+          <th>E) Precise el porcentaje del incremento %</th>
+          <th>F) Por porcentaje ¿Cuál fue el nivel de ejecución del presupuesto asignado? %</th>
+        </tr>
+      </thead>
+
+      <tbody class="text-center">
+  <!-- ===== 2023 ===== -->
+  <tr>
+    <th class="text-start align-middle"><label class="form-label fw-bold">
+            35.
+          </label> 2023</th>
+
+    <!-- A -->
+    <td>
+         <div class="w-100">
+            <mat-radio-group formControlName="p2223a" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí</mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+    </td>
+
+    <!-- B: SI/NO (habilita C) -->
+    <td>
+
+          <div class="w-100">
+            <mat-radio-group formControlName="p2223b" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí <b style="color: #0094ea ;"> → Pase a C</b></mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+    </td>
+
+    <!-- C: % reducción -->
+    <td>
+          <div class="w-100">
+            <mat-radio-group formControlName="p2223c" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí</mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+    </td>
+
+    <!-- D: SI/NO (habilita E) -->
+    <td>
+          <div class="w-100">
+            <mat-radio-group formControlName="p2223d" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí <b style="color: #0094ea ;"> → Pase a E</b> </mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+    </td>
+
+    <!-- E: % incremento -->
+    <td>
+      <mat-form-field appearance="outline" class="w-100" >
+        <input matInput formControlName="p2223e" (keydown)="permitirNumerosHasta100($event)">
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2223e']?.hasError('required')">Requerido</mat-error>
+        <mat-error *ngIf="f['p2223e']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+
+    <!-- F: % ejecución (siempre con 0–100) -->
+    <td>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput formControlName="p2223f"  appMax3Digits>
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2223f']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr *ngIf="rowErr['p2223']">
+    <td colspan="7" class="text-start text-danger small">
+      Cuando A = “No”, debes marcar <b>una sola</b> opción entre B (menor) o D (mayor) y completar el % correspondiente.
+    </td>
+  </tr>
+
+  <!-- ===== 2024 ===== -->
+  <tr>
+    <th class="text-start align-middle"><label class="form-label fw-bold">
+            36.
+          </label> 2024</th>
+
+    <td>
+
+      <div class="w-100">
+        <mat-radio-group formControlName="p2224a" class="d-flex gap-4 flex-wrap">
+          <mat-radio-button value="S">Sí</mat-radio-button>
+          <mat-radio-button value="N">No</mat-radio-button>
+        </mat-radio-group>
+
+      </div>
+
+    </td>
+
+    <td>
+
+          <div class="w-100">
+            <mat-radio-group formControlName="p2224b" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí<b style="color: #0094ea ;"> → Pase a C</b></mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+    </td>
+
+    <td>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput formControlName="p2224c" (keydown)="permitirNumerosHasta100($event)">
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2224c']?.hasError('required')">Requerido</mat-error>
+        <mat-error *ngIf="f['p2224c']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+
+    <td>
+
+       <div class="w-100">
+            <mat-radio-group formControlName="p2224d" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí <b style="color: #0094ea ;"> → Pase a E</b></mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+    </td>
+
+    <td>
+      <mat-form-field appearance="outline" class="w-100" >
+        <input matInput formControlName="p2224e" (keydown)="permitirNumerosHasta100($event)">
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2224e']?.hasError('required')">Requerido</mat-error>
+        <mat-error *ngIf="f['p2224e']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+
+    <td>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput formControlName="p2224f" appMax3Digits>
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2224f']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr *ngIf="rowErr['p2224']">
+    <td colspan="7" class="text-start text-danger small">
+      Cuando A = “No”, debes marcar <b>una sola</b> opción entre B (menor) o D (mayor) y completar el % correspondiente.
+    </td>
+  </tr>
+
+  <!-- ===== 2025* ===== -->
+  <tr>
+    <th class="text-start align-middle"><label class="form-label fw-bold">
+            37.
+          </label> 2025 <small>*Primer semestre</small></th>
+
+    <td>
+
+
+        <div class="w-100">
+            <mat-radio-group formControlName="p2225a" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí</mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+    </td>
+
+    <td>
+
+
+         <div class="w-100">
+            <mat-radio-group formControlName="p2225b" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí<b style="color: #0094ea ;"> → Pase a C</b></mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+    </td>
+
+    <td>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput formControlName="p2225c" (keydown)="permitirNumerosHasta100($event)">
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2225c']?.hasError('required')">Requerido</mat-error>
+        <mat-error *ngIf="f['p2225c']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+
+    <td>
+ 
+
+      
+         <div class="w-100">
+            <mat-radio-group formControlName="p2225d" class="d-flex gap-4 flex-wrap">
+              <mat-radio-button value="S">Sí<b style="color: #0094ea ;"> → Pase a E</b></mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+    </td>
+
+    <td>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput formControlName="p2225e" (keydown)="permitirNumerosHasta100($event)">
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2225e']?.hasError('required')">Requerido</mat-error>
+        <mat-error *ngIf="f['p2225e']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+
+    <td>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput formControlName="p2225f" appMax3Digits>
+        <span matSuffix>%</span>
+        <mat-error *ngIf="f['p2225f']?.hasError('percentRange')">0 a 100%</mat-error>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr *ngIf="rowErr['p2225']">
+    <td colspan="7" class="text-start text-danger small">
+      Cuando A = “No”, debes marcar <b>una sola</b> opción entre B (menor) o D (mayor) y completar el % correspondiente.
+    </td>
+  </tr>
+</tbody>
+
+    </table>
+  <p class="text-muted small mt-2">*Consignar información respecto al primer semestre (2025).</p>
+
+  </div>
+</div>
+
+
+
+
+
+<div class="section-container mt-4">
+  <h3 class="section-title">
+    <mat-icon>percent</mat-icon>
+    ¿Cuánto es el porcentaje que se utiliza para el pago del personal?
+  </h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr>
+          <th style="min-width:260px">Del presupuesto destinado al funcionamiento</th>
+          <th class="text-center" style="min-width:180px">Porcentaje %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A) Funcionarios/as Consulares / Personal Diplomático</td>
+          <td class="text-center">
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="porcenPersoA" (keydown)="permitirNumerosHasta100($event)">
+              <span matSuffix>%</span>
+              <mat-error *ngIf="f['porcenPersoA']?.hasError('percentRange')">0 a 100%</mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>B) Personal administrativo</td>
+          <td class="text-center">
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="porcenPersoB" (keydown)="permitirNumerosHasta100($event)">
+              <span matSuffix>%</span>
+              <mat-error *ngIf="f['porcenPersoB']?.hasError('percentRange')">0 a 100%</mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>C) Personal de servicio</td>
+          <td class="text-center">
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="porcenPersoC" (keydown)="permitirNumerosHasta100($event)">
+              <span matSuffix>%</span>
+              <mat-error *ngIf="f['porcenPersoC']?.hasError('percentRange')">0 a 100%</mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+
+
+      <!-- Metadatos de validación (si se editan manualmente, si no pueden ir ocultos) -->
+      <input type="hidden" formControlName="aceptar" />
+      <input type="hidden" formControlName="flagValidar" />
+      <input type="hidden" formControlName="usuValida" />
+      <input type="hidden" formControlName="fchValida" />
+      <input type="hidden" formControlName="codiDepeTde" />
+      <input type="hidden" formControlName="txtDescDepeTde" />
+
+      <div class="col-12 text-end">
+        <button mat-flat-button color="primary" type="submit">Guardar</button>
+        <button mat-button type="button" (click)="cancelar()">Cancelar</button>
+      </div>
+    </form>
+  </mat-expansion-panel>
+
+  <!-- Sección 1 -->
+    <mat-expansion-panel *ngIf="mostrar.s1" [attr.id]="'s1'" (opened)="avisarSeccion1Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px; color:#013a4c">
+      <mat-panel-title class="title-sec">1. SERVICIOS QUE BRINDA LA OFICINA CONSULAR</mat-panel-title>
+      <strong class="alert alert-success" *ngIf="completadas.s1">✔ Sección 1 Completada</strong>
+      <strong class="alert alert-success" *ngIf="validadas.s1">✔ Validada</strong>
+    </mat-expansion-panel-header>
+  
+    <app-seccion-ficha1 [datosFicha1]="datosFicha1" (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+      (onEstadoActualizado)="actualizarEstadoSeccion('s1', $event)" (seccionValidada)="marcarSeccionValidada(1)"
+      [activarAutosave]="activarAutosaveS1">
+  
+    </app-seccion-ficha1>
+  
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s1">
+      <strong>✔ Sección 1 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s1">
+      <strong>✔ Sección 1 Validada</strong>
+    </div>
+  
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s1 && completadas.s1 === false">
+      <strong>⚠ Sección 1 incompleta</strong>
+    </div>
+  
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="mostrar.s2" [attr.id]="'s2'" (opened)="avisarSeccion2Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">2. PROTECCIÓN Y ASISTENCIA AL NACIONAL </mat-panel-title>
+      <strong class="alert alert-success" *ngIf="completadas.s2">✔ Sección 2 Completada</strong>
+      <strong class="alert alert-success" *ngIf="validadas.s2">✔ Validada</strong>
+    </mat-expansion-panel-header>
+    <app-seccion-ficha2 [datosFicha2]="datosFicha2" (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+      (onEstadoActualizado)="actualizarEstadoSeccion('s2', $event)" (seccionValidada)="marcarSeccionValidada(2)"
+      [activarAutosave]="activarAutosaveS2">
+    </app-seccion-ficha2>
+  
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s2">
+      <strong>✔ Sección 2 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s2">
+      <strong>✔ Sección 2 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s2 && completadas.s2 === false">
+      <strong>⚠ Sección 2 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="mostrar.s3"  [attr.id]="'s3'"  (opened)="avisarSeccion3Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px; color:#013a4c">
+      <mat-panel-title class="title-sec">3. Vinculación con las comunidades nacionales </mat-panel-title>
+        <strong  class="alert alert-success" *ngIf="completadas.s3">✔ Sección 3 Completada</strong>
+               <strong class="alert alert-success" *ngIf="validadas.s3">✔ Validada</strong>
+
+    </mat-expansion-panel-header>
+
+ 
+    <app-seccion-ficha3 [datosFicha3]="datosFicha3" (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+      (onEstadoActualizado)="actualizarEstadoSeccion('s3', $event)" (seccionValidada)="marcarSeccionValidada(3)"
+      [activarAutosave]="activarAutosaveS3">
+    </app-seccion-ficha3>
+
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s3">
+      <strong>✔ Sección 3 guardada completa</strong>
+    </div>
+     
+      <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s3">
+      <strong>✔ Sección 3 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s3 && completadas.s3 === false">
+      <strong>⚠ Sección 3 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="mostrar.s4"  [attr.id]="'s4'"  (opened)="avisarSeccion4Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px; color:#013a4c">
+      <mat-panel-title class="title-sec">4. CONSEJO DE CONSULTA</mat-panel-title>
+        <strong  class="alert alert-success" *ngIf="completadas.s4">✔ Sección 4 Completada</strong>
+           <strong class="alert alert-success" *ngIf="validadas.s4">✔ Validada</strong>
+
+    </mat-expansion-panel-header>
+
+
+    <app-seccion-ficha4
+      [datosFicha4]="datosFicha4"
+        (onGuardar)="cargarFichaCompleta(idFichaGuardado)" 
+      (onEstadoActualizado)="actualizarEstadoSeccion('s4', $event)" (seccionValidada)="marcarSeccionValidada(4)" 
+      [activarAutosave]="activarAutosaveS4"> 
+    </app-seccion-ficha4>
+
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s4">
+      <strong>✔ Sección 4 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s4">
+      <strong>✔ Sección 4 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s4 && completadas.s4 === false">
+      <strong>⚠ Sección 4 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="mostrar.s5" [attr.id]="'s5'"  (opened)="avisarSeccion5Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">5. REGISTROS CIVILES Y DE IDENTIFICACIÓN</mat-panel-title>
+   <strong  class="alert alert-success" *ngIf="completadas.s5">✔ Sección 5 Completada</strong>
+   <strong class="alert alert-success" *ngIf="validadas.s5">✔ Validada</strong>
+
+
+    </mat-expansion-panel-header>
+                <!-- <app-seccion-ficha5   [datosFicha5]="datosFicha5" (onGuardar)="cargarFichaCompleta(idFichaGuardado)"  
+                (onEstadoActualizado)="actualizarEstadoSeccion('s5', $event)"
+                (seccionValidada)="marcarSeccionValidada(5)" [activarAutosave]="activarAutosaveS5"></app-seccion-ficha5> -->
+<app-seccion-ficha5
+  [datosFicha5]="datosFicha5"
+  (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+  (onEstadoActualizado)="actualizarEstadoSeccion('s5', $event)"
+  (seccionValidada)="marcarSeccionValidada(5)"
+  [activarAutosave]="activarAutosaveS5">
+</app-seccion-ficha5>
+        
+<!-- <app-seccion-ficha5
+  [idFicha]="idFichaGuardado"
+  [datosFicha5]="datosFicha5"
+  (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+  (onEstadoActualizado)="actualizarEstadoSeccion('s5', $event)"
+  (seccionValidada)="marcarSeccionValidada(5)"
+  [activarAutosave]="activarAutosaveS5">
+</app-seccion-ficha5> -->
+
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s5">
+      <strong>✔ Sección 5 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s5">
+      <strong>✔ Sección 5 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s5 && completadas.s5 === false">
+      <strong>⚠ Sección 5 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="mostrar.s6"  [attr.id]="'s6'"  (opened)="avisarSeccion6Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">6. PASAPORTE Y DOCUMENTOS DE VIAJE </mat-panel-title>
+         <strong  class="alert alert-success" *ngIf="completadas.s6">✔ Sección 6 Completada</strong>
+        <strong class="alert alert-success" *ngIf="validadas.s6">✔ Validada</strong>
+
+
+    </mat-expansion-panel-header>
+                    <app-seccion-ficha6 [datosFicha6]="datosFicha6"     (onGuardar)="cargarFichaCompleta(idFichaGuardado)" 
+                     (onEstadoActualizado)="actualizarEstadoSeccion('s6', $event)"
+                     (seccionValidada)="marcarSeccionValidada(6)" [activarAutosave]="activarAutosaveS6"></app-seccion-ficha6>
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s6">
+      <strong>✔ Sección 6 guardada completa</strong>
+    </div>
+     <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s6">
+      <strong>✔ Sección 6 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s6 && completadas.s6 === false">
+      <strong>⚠ Sección 6 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="mostrar.s7"  [attr.id]="'s7'"  (opened)="avisarSeccion7Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">7. CALIDADES MIGRATORIAS Y VISAS</mat-panel-title>
+               <strong  class="alert alert-success" *ngIf="completadas.s7">✔ Sección 7 Completada</strong>
+                                    <strong class="alert alert-success" *ngIf="validadas.s7">✔ Validada</strong>
+
+
+    </mat-expansion-panel-header>
+        <app-seccion-ficha7
+          [datosFicha7]="datosFicha7"
+            (onGuardar)="cargarFichaCompleta(idFichaGuardado)" 
+          (onEstadoActualizado)="actualizarEstadoSeccion('s7', $event)"
+          (seccionValidada)="marcarSeccionValidada(7)"  [activarAutosave]="activarAutosaveS7">
+        </app-seccion-ficha7>
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s7">
+      <strong>✔ Sección 7 guardada completa</strong>
+    </div>
+      <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s7">
+      <strong>✔ Sección 7 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s7 && completadas.s7 === false">
+      <strong>⚠ Sección 7 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+
+
+
+
+  
+  <mat-expansion-panel *ngIf="mostrar.s8"  [attr.id]="'s8'"  (opened)="avisarSeccion8Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">8. FUNCIONES NOTARIALES</mat-panel-title>
+    <strong  class="alert alert-success" *ngIf="completadas.s8">✔ Sección 8 Completada</strong>
+                     <strong class="alert alert-success" *ngIf="validadas.s8">✔ Validada</strong>
+
+
+    </mat-expansion-panel-header>
+                <app-seccion-ficha8
+                  [datosFicha8]="datosFicha8" 
+                    (onGuardar)="cargarFichaCompleta(idFichaGuardado)"  
+                  (onEstadoActualizado)="actualizarEstadoSeccion('s8', $event)"
+                  (seccionValidada)="marcarSeccionValidada(8)" 
+                  [activarAutosave]="activarAutosaveS8">
+              </app-seccion-ficha8>
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s8">
+      <strong>✔ Sección 8 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s8">
+      <strong>✔ Sección 8 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s8 && completadas.s8 === false">
+      <strong>⚠ Sección 8 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+
+  <mat-expansion-panel *ngIf="mostrar.s9"  [attr.id]="'s9'"  (opened)="avisarSeccion9Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">9. DILIGENCIAMIENTO CONSULAR DE EXHORTOS</mat-panel-title>
+          <strong  class="alert alert-success" *ngIf="completadas.s9">✔ Sección 9 Completada</strong>
+                 <strong class="alert alert-success" *ngIf="validadas.s9">✔ Validada</strong>
+
+
+    </mat-expansion-panel-header>
+                <app-seccion-ficha9
+                  [datosFicha9]="datosFicha9" 
+                    (onGuardar)="cargarFichaCompleta(idFichaGuardado)"  
+                  (onEstadoActualizado)="actualizarEstadoSeccion('s9', $event)"
+                  (seccionValidada)="marcarSeccionValidada(9)" 
+                  [activarAutosave]="activarAutosaveS9">
+              </app-seccion-ficha9>
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s9">
+      <strong>✔ Sección 9 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s9">
+      <strong>✔ Sección 9 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s9 && completadas.s9 === false">
+      <strong>⚠ Sección 9 incompleta</strong>
+    </div>
+  
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngIf="mostrar.s10" [attr.id]="'s10'" (opened)="avisarSeccion10Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">10. ACTIVIDAD DE ITINERANCIA </mat-panel-title>
+      <strong  class="alert alert-success" *ngIf="completadas.s10">✔ Sección 10 Completada</strong>
+       <strong class="alert alert-success" *ngIf="validadas.s10">✔ Validada</strong>
+
+    </mat-expansion-panel-header>
+             
+
+            <app-seccion-ficha10
+              [datosFicha10]="datosFicha10"
+              [activarAutosave]="activarAutosaveS10"
+              (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+              (onEstadoActualizado)="actualizarEstadoSeccion('s10', $event)"
+              (seccionValidada)="marcarSeccionValidada(10)">
+            </app-seccion-ficha10>
+            
+            
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s10">
+      <strong>✔ Sección 10 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s10">
+      <strong>✔ Sección 10 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s10 && completadas.s10 === false">
+      <strong>⚠ Sección 10 incompleta</strong>
+    </div>
+  </mat-expansion-panel>
+
+
+
+  <mat-expansion-panel *ngIf="mostrar.s11" [attr.id]="'s11'" (opened)="avisarSeccion11Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">11. ELECCIONES GENERALES Y LEGISLATIVA</mat-panel-title>
+      <strong class="alert alert-success" *ngIf="completadas.s11">✔ Sección 11 Completada</strong>
+      <strong class="alert alert-success" *ngIf="validadas.s11">✔ Validada</strong>
+    </mat-expansion-panel-header>
+
+    <app-seccion-ficha11
+      [datosFicha11]="datosFicha11"
+      [activarAutosave]="activarAutosaveS11"
+      (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+      (onEstadoActualizado)="actualizarEstadoSeccion('s11', $event)"
+      (seccionValidada)="marcarSeccionValidada(11)">
+    </app-seccion-ficha11>
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s11">
+      <strong>✔ Sección 11 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s11">
+      <strong>✔ Sección 11 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s11 && completadas.s11 === false">
+      <strong>⚠ Sección 11 incompleta</strong>
+    </div>
+</mat-expansion-panel>
+
+
+
+<mat-expansion-panel *ngIf="mostrar.s12" [attr.id]="'s12'" (opened)="avisarSeccion12Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">12. ASPECTOS COMPLEMENTARIOS GENERALES </mat-panel-title>
+      <strong class="alert alert-success" *ngIf="completadas.s12">✔ Sección 12 Completada</strong>
+      <strong class="alert alert-success" *ngIf="validadas.s12">✔ Validada</strong>
+    </mat-expansion-panel-header>
+
+    <app-seccion-ficha12
+      [datosFicha12]="datosFicha12"
+      [activarAutosave]="activarAutosaveS12"
+      (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+      (onEstadoActualizado)="actualizarEstadoSeccion('s12', $event)"
+      (seccionValidada)="marcarSeccionValidada(12)">
+    </app-seccion-ficha12>
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s12">
+      <strong>✔ Sección 12 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s12">
+      <strong>✔ Sección 12 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s12 && completadas.s12 === false">
+      <strong>⚠ Sección 12 incompleta</strong>
+    </div>
+</mat-expansion-panel>
+
+
+
+<mat-expansion-panel *ngIf="mostrar.s13" [attr.id]="'s13'" (opened)="avisarSeccion13Opened()">
+    <mat-expansion-panel-header style="background-color: #dee2e6; margin-bottom: 8px;">
+      <mat-panel-title class="title-sec">13. TRANSPARENCIA Y PARTICIPACIÓN CIUDADANA</mat-panel-title>
+      <strong class="alert alert-success" *ngIf="completadas.s13">✔ Sección 13 Completada</strong>
+      <strong class="alert alert-success" *ngIf="validadas.s13">✔ Validada</strong>
+    </mat-expansion-panel-header>
+
+    <app-seccion-ficha13
+      [datosFicha13]="datosFicha13"
+      [activarAutosave]="activarAutosaveS13"
+      (onGuardar)="cargarFichaCompleta(idFichaGuardado)"
+      (onEstadoActualizado)="actualizarEstadoSeccion('s13', $event)"
+      (seccionValidada)="marcarSeccionValidada(13)">
+    </app-seccion-ficha13>
+
+    <div class="alert alert-success mt-2 mx-3" *ngIf="completadas.s13">
+      <strong>✔ Sección 13 guardada completa</strong>
+    </div>
+    <div class="alert alert-success mt-2 mx-3" *ngIf="validadas.s13">
+      <strong>✔ Sección 13 Validada</strong>
+    </div>
+    <div class="alert alert-warning mt-2 mx-3" *ngIf="mostrar.s13 && completadas.s13 === false">
+      <strong>⚠ Sección 13 incompleta</strong>
+    </div>
+</mat-expansion-panel>
+
+
+  <app-subir-archivo
+    *ngIf="fichaForm.get('idFicha')?.value && fichaForm.get('codUnico')"
+    [idFicha]="fichaForm.get('idFicha')?.value"
+    [codUnico]="fichaForm.get('codUnico')?.value"
+    idInputFile="arch">
+  </app-subir-archivo>
+
+
+</mat-accordion>

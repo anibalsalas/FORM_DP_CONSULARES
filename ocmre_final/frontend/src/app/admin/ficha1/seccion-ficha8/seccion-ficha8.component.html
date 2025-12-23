@@ -1,0 +1,356 @@
+<form [formGroup]="ficha8Form" (ngSubmit)="guardarSeccion8()" class="container-fluid form-seccion8">
+
+    <section class="acciones">
+    <button class="gridSaveItem" mat-stroked-button  type="button" (click)="guardarSeccion8Incompleta()">
+            Guardado Parcial
+          </button>
+    
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+    
+      <button *ngIf="tieneRolEspecialista()" mat-flat-button class="gridSaveItemC" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+    
+    </section>
+<section class="card">
+
+  <!-- ================= 8.1 / 8.2 ================= -->
+  <div class="row mt-3">
+    <div class="col-12">
+      <label class="q-label">8.1. ¿Se requiere cita previa para acudir al consulado a realizar dicho trámite?</label>
+      <mat-radio-group class="d-block" formControlName="p81Requiere">
+        <mat-radio-button value="S" class="me-3">Sí <b style="color:#0094ea;"> → Pase a 8.2.</b></mat-radio-button>
+        <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a 8.3.</b></mat-radio-button>
+      </mat-radio-group>
+      <div class="text-danger small" *ngIf="isInvalid('p81Requiere')">Requerido.</div>
+    </div>
+
+    <div class="col-12 mt-2">
+      <label class="q-label">8.2. De ser afirmativa, indicar el tiempo promedio:</label>
+      <mat-radio-group class="d-block" formControlName="p82Afirmativa">
+        <mat-radio-button *ngFor="let op of p82Opciones" [value]="op.value" class="me-3">{{ op.label }}</mat-radio-button>
+      </mat-radio-group>
+      <div class="text-danger small" *ngIf="isInvalid('p82Afirmativa')">Requerido.</div>
+
+    </div>
+  </div>
+
+  <mat-divider class="my-3"></mat-divider>
+
+  <!-- ================= 8.3 ================= -->
+  <div class="row">
+    <div class="col-12">
+      <label class="q-label">8.3. ¿La Oficina Consular cuenta con autorización del órgano de línea consular para ejercer funciones notariales sobre asuntos no contenciosos?</label>
+      <mat-radio-group class="d-block" formControlName="p83Oficina">
+        <mat-radio-button value="S" class="me-3">Sí</mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p83Oficina')">Requerido</div>
+
+    </div>
+
+    <div class="col-12 col-md-4 mt-2">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Procedimientos no contenciosos 2023 </mat-label>
+        <input matInput maxlength="4" (keydown)="permitirSoloNumerosMax4($event)" type="number" formControlName="p83Procedimiento2023"  >
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-md-4 mt-2">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Procedimientos no contenciosos 2024</mat-label>
+        <input matInput maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"  type="number" formControlName="p83Procedimiento2024"  >
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-md-4 mt-2">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Procedimientos no contenciosos 2025</mat-label>
+        <input matInput maxlength="4" (keydown)="permitirSoloNumerosMax4($event)" type="number" formControlName="p83Procedimiento2025"  >
+      </mat-form-field>
+      <div class="text-muted small">Para 2025, solo consignar información del primer semestre.</div>
+    </div>
+
+    <div class="col-12 mt-2">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Asuntos no contenciosos más recurrentes, precise los 3 con mayor demanda</mat-label>
+        <textarea matInput rows="3" formControlName="p83Asuntos" (input)="limitarDigitosTextarea($event, 500)"
+                  placeholder="Precise los tres con mayor demanda"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-divider class="my-3"></mat-divider>
+
+  <!-- ================= 8.3 (tabla documentación p84...) ================= -->
+  <div class="row">
+    <div class="col-12">
+      <label class="q-label">8.4. Respecto a la cantidad de documentación emitida</label>
+    </div>
+
+    <div class="col-12 table-responsive tabla-">
+      <table class="table table-bordered align-middle mb-0">
+         <thead class="table-secondary">
+          <tr>
+            <th>Documentación</th>
+            <th class="text-center">2023</th>
+            <th class="text-center">2024</th>
+            <th class="text-center">2025</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>N° de Autorizaciones de viaje de menores</td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Autorizacion2023" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Autorizacion2024" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Autorizacion2025" appNumericInput max3digits></td>
+          </tr>
+          <tr>
+            <td>N° de Certificados de Supervivencia</td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Certificados2023" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Certificados2024" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Certificados2025" appNumericInput max3digits></td>
+          </tr>
+          <tr>
+            <td>N° de Legalizaciones</td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Legalizacion2023" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Legalizacion2024" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Legalizacion2025" appNumericInput max3digits></td>
+          </tr>
+          <tr>
+            <td>N° de Copias certificadas</td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Copias2023" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Copias2024" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Copias2025" appNumericInput max3digits></td>
+          </tr>
+          <tr>
+            <td>N° de Poderes emitidos</td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Poderes2023" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Poderes2024" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Poderes2025" appNumericInput max3digits></td>
+          </tr>
+          <tr>
+            <td>N° de Escrituras públicas emitidas</td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Escritura2023" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Escritura2024" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Escritura2025" appNumericInput max3digits></td>
+          </tr>
+          <tr>
+            <td>N° de Testamentos protocolizados</td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Testamentos2023" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Testamentos2024" appNumericInput max3digits></td>
+            <td><input class="form-control" appMax3Digits type="number" formControlName="p84Testamentos2025" appNumericInput max3digits></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-muted small mt-1">Para 2025, de preferencia primer semestre.</div>
+    </div>
+  </div>
+
+  <mat-divider class="my-3"></mat-divider>
+
+  <!-- ================= 8.4 / 8.5 / 8.6 / 8.7 ================= -->
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <label class="q-label">8.5. ¿Cuenta con un Registro de instrumentos públicos?</label>
+      <mat-radio-group class="d-block" formControlName="p85Cuenta">
+        <mat-radio-button value="S" class="me-3">Sí</mat-radio-button>
+        <mat-radio-button value="N">No </mat-radio-button>
+      </mat-radio-group>
+          <div class="err" *ngIf="isInvalid('p85Cuenta')">Requerido</div>
+
+    </div>
+
+    
+    <div class="col-12 col-md-6 mt-2">
+      <label class="q-label">8.6. Especifique mediante cuál documento:
+            <span class="text-danger fw-bold">*</span>
+      </label>
+
+      <div class="inline-radios d-block" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let o of p87DocOptions"
+                      [checked]="isCheckboxChecked(o.key)"
+                      (change)="onCheckboxChange(o.key, $event)">
+          {{ o.label }}
+        </mat-checkbox>
+      </div>
+
+       <!-- CONTROL OCULTO PARA VALIDACIÓN -->
+        <input type="hidden" formControlName="p87Group">
+
+        <!-- MENSAJE DE ERROR MEJORADO -->
+        <div class="err mt-2" *ngIf="showP87GroupError">
+          <i class="fas fa-exclamation-circle"></i>
+          Debe seleccionar al menos un tipo de documento
+        </div>
+    </div>
+
+
+
+    <div class="col-12 col-md-6">
+      <label class="q-label">8.7. ¿El funcionario consular tiene registrada y actualizada su firma y sello ante el órgano de línea consular?</label>
+      <mat-radio-group class="d-block" formControlName="p86Funcionario">
+        <mat-radio-button value="S" class="me-3">Sí<b style="color:#0094ea;"> → Pase a 8.8.</b></mat-radio-button>
+        <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a 8.9.</b></mat-radio-button>
+      </mat-radio-group>
+          <div class="err" *ngIf="isInvalid('p86Funcionario')">Requerido</div>
+
+    </div>
+
+
+
+
+
+      <div class="col-12 col-md-6 mt-2">
+              <label class="q-label">8.8. De ser afirmativa la respuesta, indicar la fecha de registro de su firma y sello :</label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput [matDatepicker]="picker1" formControlName="p88Afirmatica" readonly [max]="today">
+
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+           <mat-error *ngIf="ficha8Form.get('p88Afirmatica')?.hasError('anioInvalido')">
+            El año debe ser 2025.
+          </mat-error>
+
+        </div>
+
+  </div>
+
+  <mat-divider class="my-3"></mat-divider>
+
+  <!-- ================= 8.8 Matriz necesidades ================= -->
+  <div class="row">
+    <div class="col-12">
+      <label class="q-label">8.9. Necesidades de la oficina consular para prestar el servicio de manera idónea</label>
+    </div>
+
+    <div class="col-12">
+    <div class="text-danger small mt-2" *ngIf="showP89GroupError">
+      <mat-icon class="me-1" style="font-size: 16px; vertical-align: middle;">warning</mat-icon>
+      Selecciona al menos una opción.
+    </div>
+  </div>
+
+
+    <div class="col-12 table-responsive tabla-">
+      <table class="table table-bordered align-middle mb-0">
+        <thead class="table-secondary">
+          <tr>
+            <th style="min-width:180px">Tipo</th>
+            <th class="text-center" style="width:120px">¿Necesidad?</th>
+            <th class="text-center" style="width:220px">¿Se han realizado gestiones?</th>
+            <th class="text-center" style="width:220px">¿Suficiente o insuficiente?</th>
+            <th>Especifique / comentarios</th>
+            <th style="width:240px">Detalle (si “Otro”)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of p89Rows">
+            <td><strong>{{ pretty(r.check) }}</strong></td>
+            <td class="text-center">
+              <mat-checkbox color="primary"
+                            [checked]="isChecked(r.check)"
+                            (change)="onCheck(r.check, $event)"></mat-checkbox>
+            </td>
+            <td>
+              <mat-radio-group class="d-block" [formControlName]="r.gest">
+                <mat-radio-button value="S" class="me-3">Sí</mat-radio-button>
+                <mat-radio-button value="N">No</mat-radio-button>
+              </mat-radio-group>
+               <mat-error *ngIf="isInvalid(r.gest)">Seleccione una opción.</mat-error>
+
+            </td>
+            <td>
+              <mat-radio-group class="d-block" [formControlName]="r.suf">
+                <mat-radio-button value="S" class="me-3">Suficiente</mat-radio-button>
+                <mat-radio-button value="N">Insuficiente</mat-radio-button>
+              </mat-radio-group>
+              <mat-error *ngIf="isInvalid(r.suf)">Seleccione una opción.</mat-error>
+
+            </td>
+            <td>
+        
+
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Especifique</mat-label>
+              <textarea matInput rows="2" maxlength="500" [formControlName]="r.esp" placeholder="Máx. 500 caracteres"></textarea>
+
+              <mat-hint align="end">
+                {{ charLen(r.esp) }}/500
+              </mat-hint>
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Campo requerido
+              </mat-error>
+            </mat-form-field>
+
+            </td>
+            <td>
+              <ng-container *ngIf="r.otroDet">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Detalle “Otro”</mat-label>
+                  <input matInput [formControlName]="r.otroDet" (input)="limitarDigitosTextarea($event, 500)">
+                </mat-form-field>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <mat-divider class="my-3"></mat-divider>
+
+  <!-- ================= 8.9 / 8.10 ================= -->
+  <div class="row">
+    <div class="col-12">
+      <label class="q-label">8.10. ¿Recibe el personal consular capacitaciones/cursos para este servicio?</label>
+      <mat-radio-group class="d-block" formControlName="p810Recibe">
+        <mat-radio-button value="S" class="me-3">Sí <b style="color:#0094ea;"> → Pase a 8.11.</b></mat-radio-button>
+        <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a la siguiente sección</b></mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="col-12 mt-2">
+      <h6>8.11. Instituciones del Estado que brindan las capacitaciones</h6>
+                 <div class="text-danger small" *ngIf="isInvalid('p810Recibe')">Seleccione al menos una opción.</div>
+
+      <div class="d-flex flex-wrap gap-3">
+
+        <mat-checkbox *ngFor="let k of p811Instituciones"
+                      color="primary"
+                      [disabled]="isDisabled811(k)"
+                      [checked]="isChecked(k)"
+                      (change)="onCheck(k, $event)">
+          {{ pretty(k) }}
+        </mat-checkbox><br>
+     
+      </div>
+
+      <div class="mt-2" *ngIf="!f('p811OtroDetalle')?.disabled">
+        <mat-form-field appearance="outline" class="w-100 w-md-50">
+          <mat-label>Detalle “Otro(s)”</mat-label>
+          <input matInput formControlName="p811OtroDetalle" maxlength="500">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  </section>
+  <!-- ================= Acciones ================= -->
+  <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
+    <button mat-stroked-button type="button" class="gridSaveItem" (click)="guardarSeccion8Incompleta()">
+      Guardado Parcial
+    </button>
+
+    <button mat-stroked-button class="gridSaveItemC" type="button" *ngIf="tieneRolEspecialista()"
+            (click)="validarSeccion()" [disabled]="ficha8Form.invalid">
+      Validar Sección 8
+    </button>
+
+    <button mat-flat-button class="gridSaveItemC" type="submit" >
+      Guardar sección Completa
+    </button>
+  </div>
+</form>

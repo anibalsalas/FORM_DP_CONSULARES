@@ -1,0 +1,102 @@
+<mat-sidenav-container class="sidenav-container">
+
+
+ <mat-sidenav #sidenav [(opened)]="isSidebarOpened" mode="side" class="sidenav">
+    <div class="logo">
+      <span class="logo-text"></span>
+    </div>
+
+    <mat-nav-list class="nav-menu">
+  
+      <!-- FICHA 1 -->
+    <!-- Fichas por acordeón -->
+    <mat-accordion class="nav-menu" multi>
+      <a class="enlaceMenu" routerLink="/dashboard/usuarios"  routerLinkActive="active-link">
+        <mat-icon>home</mat-icon>
+     
+        <p class="listadoEnlace">Inicio</p>
+      </a>
+      <!-- Ficha 1 -->
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="mr-2">assignment</mat-icon>
+            Ficha de Supervisión
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="mat-expansion-panel-bodyx">
+        <nav>
+          <!-- <a class="enlaceMenu"  *ngIf="!esExterno" routerLink="/dashboard/ficha1/registrar" routerLinkActive="active-link" >
+            <mat-icon>add_circle</mat-icon>
+               <p class="listadoEnlace">Registrar</p>
+          </a> -->
+
+          <a class="enlaceMenu"
+              *ngIf="mostrarRegistrar"
+              routerLink="/dashboard/ficha1/registrar"
+              routerLinkActive="active-link">
+              <mat-icon>add_circle</mat-icon>
+              <p class="listadoEnlace">Registrar</p>
+            </a>
+
+ 
+
+          <a class="enlaceMenu" routerLink="/dashboard/ficha1" routerLinkActive="active-link">
+            <mat-icon>folder_open</mat-icon>
+             <p class="listadoEnlace">Listado</p>
+          </a>
+          <a class="enlaceMenu"  routerLink="/dashboard/ficha1/monitoreo" *ngIf="hasRole(rolEspecialista)" routerLinkActive="active-link">
+            <mat-icon>insights</mat-icon>
+             <p class="listadoEnlace">Monitoreo</p>
+          </a>
+          <!-- <a class="enlaceMenu"  routerLink="/dashboard/ficha1/reportes" *ngIf="hasRole(rolEspecialista) || hasRole(rolAdministrador)" routerLinkActive="active-link">
+            <mat-icon>assessment</mat-icon>
+            <p class="listadoEnlace">Reportes</p>
+          </a> -->
+        
+        </nav>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>   
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <!-- Contenido principal -->
+  <mat-sidenav-content>
+    <!-- Header fijo y responsive -->
+    <mat-toolbar color="primary" class="top-toolbar">
+     
+      <div class="toolbar-container">
+        <span class="toolbar-title">Panel de Administración</span>&nbsp;
+
+
+        <button mat-icon-button class="toggle-sidebar-btn" aria-label="Toggle Sidebar" (click)="toggleSidebar()">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+
+      </div>
+
+
+      
+      <span class="spacer"></span>
+     
+      <a mat-button [matMenuTriggerFor]="userMenu" class="user-info">
+        <img [src]="fotoRec" class="fotoRec"/> {{ userName }}
+      </a>
+
+
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon class="mat-icon-salir">logout</mat-icon> Cerrar sesión
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

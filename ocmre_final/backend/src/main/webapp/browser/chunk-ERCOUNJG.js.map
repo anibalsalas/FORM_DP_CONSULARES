@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/admin/usuarios/usuarios.component.ts", "src/app/admin/usuarios/usuarios.component.html"],
+  "sourcesContent": ["import { Component } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\nimport { MatCardModule } from '@angular/material/card';\r\n\r\n@Component({\r\n  selector: 'app-usuarios',\r\n  standalone: true,\r\n  imports: [CommonModule, MatCardModule],\r\n  templateUrl: './usuarios.component.html',\r\n  styleUrls: ['./usuarios.component.scss']\r\n})\r\nexport class UsuariosComponent {\r\n  constructor() {\r\n    console.log('✅ UsuariosComponent cargado correctamente');\r\n  }\r\n}\r\n", "<mat-card>\r\n    <h2>Bienvenido</h2>\r\n    <p></p>\r\n  </mat-card>\r\n  "],
+  "mappings": ";;;;;;;;;;;;;;;AAWM,IAAO,oBAAP,MAAO,mBAAiB;EAC5B,cAAA;AACE,YAAQ,IAAI,gDAA2C;EACzD;;qCAHW,oBAAiB;EAAA;yEAAjB,oBAAiB,WAAA,CAAA,CAAA,cAAA,CAAA,GAAA,OAAA,GAAA,MAAA,GAAA,UAAA,SAAA,2BAAA,IAAA,KAAA;AAAA,QAAA,KAAA,GAAA;ACX9B,MAAA,yBAAA,GAAA,UAAA,EAAU,GAAA,IAAA;AACF,MAAA,iBAAA,GAAA,YAAA;AAAU,MAAA,uBAAA;AACd,MAAA,oBAAA,GAAA,GAAA;AACF,MAAA,uBAAA;;oBDIU,cAAc,eAAa,OAAA,GAAA,eAAA,EAAA,CAAA;;;sEAI1B,mBAAiB,CAAA;UAP7B;uBACW,gBAAc,YACZ,MAAI,SACP,CAAC,cAAc,aAAa,GAAC,UAAA,8EAAA,CAAA;;;;6EAI3B,mBAAiB,EAAA,WAAA,qBAAA,UAAA,gDAAA,YAAA,GAAA,CAAA;AAAA,GAAA;",
+  "names": []
+}

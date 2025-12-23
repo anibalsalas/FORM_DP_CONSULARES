@@ -1,0 +1,490 @@
+<form [formGroup]="ficha11Form" (ngSubmit)="guardarSeccion11()" class="container-fluid form-seccion11 s1-wrapper">
+
+  <section class="acciones">
+      <button class="gridSaveItem" mat-stroked-button type="button" (click)="guardarSeccion11Incompleta()">
+        Guardado Parcial
+      </button>
+
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+
+      <button *ngIf="tieneRolEspecialista()" mat-flat-button class="gridSaveItemC" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+
+    </section>
+  <!-- 11.1 -->
+  <div class="card">
+    <label fw-bold class="cell-label fw-bold mt-4">11.1. ¿De cuántos peruanos registrados estuvo constituido el Padrón Electoral?</label>
+    <div class="row g-3 mt-2">
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>2016 (total)</mat-label>
+          <input matInput type="number" maxlength="5" (keydown)="permitirSoloNumerosMax5($event)" min="0" formControlName="p111Cantidad2016" placeholder="0">
+        </mat-form-field>
+        <div class="err" *ngIf="isInvalid('p111Cantidad2016')">Ingrese un entero ≥ 0.</div>
+      </div>
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>2021 (total)</mat-label>
+          <input matInput type="number" maxlength="5" (keydown)="permitirSoloNumerosMax5($event)" min="0" formControlName="p111Cantidad2021" placeholder="0">
+        </mat-form-field>
+        <div class="err" *ngIf="isInvalid('p111Cantidad2021')">Ingrese un entero ≥ 0.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11.2 -->
+  <div class="card">
+    <label fw-bold class="cell-label fw-bold mt-4">11.2.  Sobre el ausentismo electoral en las últimas 2 elecciones generales y legislativas:</label>
+
+    <div class="table-responsive mt-2 tabla-">
+      <table class="table tabla compact">
+        <thead class="table-primary">
+          <tr>
+            <th class="sticky-col">Año</th>
+            <th colspan="3" class="center sticky-col">En números</th>
+            <th colspan="3" class="center sticky-col">En porcentaje</th>
+          </tr>
+          <tr>
+            <th class="sticky-col"></th>
+             <th class="sticky-col center">Total</th> 
+            <th class="sticky-col center">Primera vuelta</th>
+            <th class="sticky-col center">Segunda vuelta</th>
+             <th class="sticky-col center">Total (%)</th> 
+            <th class="sticky-col center">Primera (%)</th>
+            <th class="sticky-col center">Segunda (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 2016 -->
+          <tr>
+            <td class="sticky-col cell-label">2016</td>
+            <td data-col="Total">
+              <input type="number" appMax4Digits min="0" class="form-control campo-tabla" formControlName="p1122016Numero" readonly>
+              <div class="err" *ngIf="isInvalid('p1122016Numero')">≥ 0</div>
+            </td>
+            <td data-col="Primera">
+              <input type="number" appMax4Digits min="0" class="form-control campo-tabla" formControlName="p1122016Primera">
+              <div class="err" *ngIf="isInvalid('p1122016Primera')">≥ 0</div>
+            </td>
+            <td data-col="Segunda">
+              <input type="number" appMax4Digits min="0" class="form-control campo-tabla" formControlName="p1122016Segunda">
+              <div class="err" *ngIf="isInvalid('p1122016Segunda')">≥ 0</div>
+            </td>
+            <td data-col="Total (%)">
+              <input type="number" appMax3Digits min="0" max="100" class="form-control campo-tabla"  readonly formControlName="p1122016Porcentaje">
+              <div class="err" *ngIf="isInvalid('p1122016Porcentaje')">0–100</div>
+            </td>
+            <td data-col="Primera (%)">
+              <input type="number" appMax3Digits min="0" max="100" class="form-control campo-tabla" formControlName="p1122016PrimeraPorc">
+              <div class="err" *ngIf="isInvalid('p1122016PrimeraPorc')">0–100</div>
+            </td>
+            <td data-col="Segunda (%)">
+              <input type="number" appMax3Digits min="0" max="100" class="form-control campo-tabla" formControlName="p1122016SegundaPorc">
+              <div class="err" *ngIf="isInvalid('p1122016SegundaPorc')">0–100</div>
+            </td>
+          </tr>
+
+          <!-- 2021 -->
+          <tr>
+            <td class="sticky-col cell-label">2021</td>
+            <td data-col="Total">
+              <input type="number" appMax8Digits min="0" class="form-control campo-tabla" formControlName="p1122021Numero" readonly>
+              <div class="err" *ngIf="isInvalid('p1122021Numero')">≥ 0</div>
+            </td>
+            <td data-col="Primera">
+              <input type="number" appMax4Digits min="0" class="form-control campo-tabla" formControlName="p1122021Primera">
+              <div class="err" *ngIf="isInvalid('p1122021Primera')">≥ 0</div>
+            </td>
+            <td data-col="Segunda">
+              <input type="number" appMax4Digits min="0" class="form-control campo-tabla" formControlName="p1122021Segunda">
+              <div class="err" *ngIf="isInvalid('p1122021Segunda')">≥ 0</div>
+            </td>
+            <td data-col="Total (%)">
+              <input type="number" appMax3Digits min="0" max="100" class="form-control campo-tabla" readonly formControlName="p1122021Porcentaje">
+              <div class="err" *ngIf="isInvalid('p1122021Porcentaje')">0–100</div>
+            </td>
+            <td data-col="Primera (%)">
+              <input type="number" appMax3Digits min="0" max="100" class="form-control campo-tabla" formControlName="p1122021PrimeraPorc">
+              <div class="err" *ngIf="isInvalid('p1122021PrimeraPorc')">0–100</div>
+            </td>
+            <td data-col="Segunda (%)">
+              <input type="number" appMax3Digits min="0" max="100" class="form-control campo-tabla" formControlName="p1122021SegundaPorc">
+              <div class="err" *ngIf="isInvalid('p1122021SegundaPorc')">0–100</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 11.3 -->
+ <div class="card">
+  <label fw-bold class="cell-label fw-bold mt-4">11.3. Medidas adoptadas si el ausentismo superó 50%</label>
+  <div class="row g-2">
+    <div class="col-12 d-flex align-items-center gap-3 flex-wrap">
+      <mat-checkbox [checked]="isChecked('p113Actividades')" (change)="onCheck('p113Actividades', $event)" [disabled]="f('p113Actividades')?.disabled">
+        Actividades de sensibilización con el Consejo de Consulta
+      </mat-checkbox>
+
+      <mat-checkbox [checked]="isChecked('p113Difusion')" (change)="onCheck('p113Difusion', $event)" [disabled]="f('p113Difusion')?.disabled">
+        Difusión por canales del Consulado
+      </mat-checkbox>
+
+      <mat-checkbox [checked]="isChecked('p113No')" (change)="onCheck('p113No', $event)">
+        No se han tomado medidas
+      </mat-checkbox>
+
+      <mat-checkbox [checked]="isChecked('p113Otro')" (change)="onCheck('p113Otro', $event)" [disabled]="f('p113Otro')?.disabled">
+        Otro
+      </mat-checkbox>
+
+      <mat-form-field appearance="outline" class="w-full" *ngIf="!f('p113OtroDetalle')?.disabled">
+        <mat-label>Especifique</mat-label>
+        <input matInput formControlName="p113OtroDetalle" (input)="limitarDigitosTextarea($event, 500)">
+      </mat-form-field>
+
+      
+    </div>
+    <div class="text-danger small mt-1" *ngIf="showP113GroupError">
+      Selecciona al menos una opción.
+    </div>
+  </div>
+</div>
+
+  <!-- 11.4 -->
+  <div class="card">
+    <label fw-bold class="cell-label fw-bold mt-4">11.4. Necesidades de la oficina consular para prestar el servicio de manera idónea</label>
+  <div class="text-danger small mt-2" *ngIf="showP114GroupError">
+    Selecciona al menos una necesidad o marca "Ninguno" como Sí.
+  </div>
+    <div class="table-responsive mt-2 tabla-">
+      <table class="table tabla compact">
+        <thead class="table-primary">
+          <tr>
+            <th class="sticky-col">Tipo</th>
+            <th class="center sticky-col">Necesidad</th>
+            <th class="center sticky-col">¿Gestiones? (S/N)</th>
+            <th class="center sticky-col">Suficiente / Insuficiente</th>
+            <th class="center sticky-col">Especifique</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Logística -->
+          <tr>
+            <td class="sticky-col cell-label">Logística</td>
+            <td class="center">
+              <mat-checkbox [checked]="isChecked('p114ALogistica')" (change)="onCheck('p114ALogistica', $event)"></mat-checkbox>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114AGestiones" class="inline-radios">
+                <mat-radio-button [value]="'S'">Sí</mat-radio-button>
+                <mat-radio-button [value]="'N'">No</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114AGestiones')">Requerido</div>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114ASuficiente" class="inline-radios">
+                <mat-radio-button [value]="'S'">Suficiente</mat-radio-button>
+                <mat-radio-button [value]="'N'">Insuficiente</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114ASuficiente')">Requerido</div>
+            </td>
+            <td>
+              <mat-form-field appearance="outline" class="w-100">
+                      <textarea
+                        matInput
+                        rows="2"
+                        maxlength="500"
+                        formControlName="p114AEspecifique"
+                        placeholder="Máx. 500 caracteres">
+                      </textarea>
+
+                      <mat-hint align="end">
+                        {{ charLen('p114AEspecifique') }}/500
+                      </mat-hint>
+
+                      <mat-error *ngIf="isInvalid('p114AEspecifique')">
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+            </td>
+          </tr>
+
+          <!-- Infraestructura -->
+          <tr>
+            <td class="sticky-col cell-label">Infraestructura</td>
+            <td class="center">
+              <mat-checkbox [checked]="isChecked('p114BInfra')" (change)="onCheck('p114BInfra', $event)"></mat-checkbox>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114BGestiones" class="inline-radios">
+                <mat-radio-button [value]="'S'">Sí</mat-radio-button>
+                <mat-radio-button [value]="'N'">No</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114BGestiones')">Requerido</div>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114BSuficiente" class="inline-radios">
+                <mat-radio-button [value]="'S'">Suficiente</mat-radio-button>
+                <mat-radio-button [value]="'N'">Insuficiente</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114BSuficiente')">Requerido</div>
+            </td>
+            <td>
+
+                <mat-form-field appearance="outline" class="w-100">
+                      <textarea
+                        matInput
+                        rows="2"
+                        maxlength="500"
+                        formControlName="p114BEspecifique"
+                        placeholder="Máx. 500 caracteres">
+                      </textarea>
+
+                      <mat-hint align="end">
+                        {{ charLen('p114BEspecifique') }}/500
+                      </mat-hint>
+
+                      <mat-error *ngIf="isInvalid('p114BEspecifique')">
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+            </td>
+          </tr>
+
+          <!-- Personal -->
+          <tr>
+            <td class="sticky-col cell-label">Personal</td>
+            <td class="center">
+              <mat-checkbox [checked]="isChecked('p114CPersonal')" (change)="onCheck('p114CPersonal', $event)"></mat-checkbox>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114CGestiones" class="inline-radios">
+                <mat-radio-button [value]="'S'">Sí</mat-radio-button>
+                <mat-radio-button [value]="'N'">No</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114CGestiones')">Requerido</div>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114CSuficiente" class="inline-radios">
+                <mat-radio-button [value]="'S'">Suficiente</mat-radio-button>
+                <mat-radio-button [value]="'N'">Insuficiente</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114CSuficiente')">Requerido</div>
+            </td>
+            <td>
+
+               <mat-form-field appearance="outline" class="w-100">
+                      <textarea
+                        matInput
+                        rows="2"
+                        maxlength="500"
+                        formControlName="p114CEspecifique"
+                        placeholder="Máx. 500 caracteres">
+                      </textarea>
+
+                      <mat-hint align="end">
+                        {{ charLen('p114CEspecifique') }}/500
+                      </mat-hint>
+
+                      <mat-error *ngIf="isInvalid('p114CEspecifique')">
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+            </td>
+          </tr>
+
+          <!-- Presupuesto -->
+          <tr>
+            <td class="sticky-col cell-label">Presupuesto</td>
+            <td class="center">
+              <mat-checkbox [checked]="isChecked('p114DPresupuesto')" (change)="onCheck('p114DPresupuesto', $event)"></mat-checkbox>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114DGestiones" class="inline-radios">
+                <mat-radio-button [value]="'S'">Sí</mat-radio-button>
+                <mat-radio-button [value]="'N'">No</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114DGestiones')">Requerido</div>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114DSuficiente" class="inline-radios">
+                <mat-radio-button [value]="'S'">Suficiente</mat-radio-button>
+                <mat-radio-button [value]="'N'">Insuficiente</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114DSuficiente')">Requerido</div>
+            </td>
+            <td>
+
+             <mat-form-field appearance="outline" class="w-100">
+                <textarea
+                  matInput
+                  rows="2"
+                  maxlength="500"
+                  formControlName="p114DEspecifique"
+                  placeholder="Máx. 500 caracteres">
+                </textarea>
+
+                <mat-hint align="end">
+                  {{ charLen('p114DEspecifique') }}/500
+                </mat-hint>
+
+                <mat-error *ngIf="isInvalid('p114DEspecifique')">
+                  <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                  Campo requerido
+                </mat-error>
+              </mat-form-field>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="sticky-col cell-label">Otro</td>
+            <td class="center">
+              <mat-checkbox [checked]="isChecked('p114EOtro')" (change)="onCheck('p114EOtro', $event)"></mat-checkbox>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114EGestiones" class="inline-radios">
+                <mat-radio-button [value]="'S'">Sí</mat-radio-button>
+                <mat-radio-button [value]="'N'">No</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114EGestiones')">Requerido</div>
+            </td>
+            <td class="center">
+              <mat-radio-group formControlName="p114ESuficiente" class="inline-radios">
+                <mat-radio-button [value]="'S'">Suficiente</mat-radio-button>
+                <mat-radio-button [value]="'N'">Insuficiente</mat-radio-button>
+              </mat-radio-group>
+              <div class="err" *ngIf="isInvalid('p114ESuficiente')">Requerido</div>
+            </td>
+            <td>
+              <div class="row g-2">
+                <div class="col-12">
+
+                     <mat-form-field appearance="outline" class="w-100">
+                      <textarea
+                        matInput
+                        rows="2"
+                        maxlength="500"
+                        formControlName="p114EEspecifique"
+                        placeholder="Máx. 500 caracteres">
+                      </textarea>
+
+                      <mat-hint align="end">
+                        {{ charLen('p114EEspecifique') }}/500
+                      </mat-hint>
+
+                      <mat-error *ngIf="isInvalid('p114EEspecifique')">
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+                </div>
+                <div class="col-12" *ngIf="!f('p114EOtroDetalle')?.disabled">
+                  <textarea class="form-control" formControlName="p114EOtroDetalle" placeholder="Detalle del 'Otro'" (input)="limitarDigitosTextarea($event, 500)" ></textarea>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Ninguno -->
+          <tr class="fila-total">
+            <td class="sticky-col cell-label">Ninguno</td>
+            <td colspan="4">
+              <div class="ninguno">
+                <mat-radio-group formControlName="p114Ninguno" class="inline-radios">
+                  <mat-radio-button [value]="'S'">Sí</mat-radio-button>
+                  <mat-radio-button [value]="'N'">No</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 11.5 / 11.6 -->
+  <div class="card">
+
+    <!-- 11.5 -->
+    <div class="mb-2">
+      <div class="cell-label mb-1">11.5 ¿Recibe capacitación para este servicio?</div>
+      <mat-radio-group formControlName="p115Recibe" class="inline-radios">
+        <mat-radio-button [value]="'S'">Sí <b style="color:#0094ea;"> → Pase a 11.6.</b></mat-radio-button>
+        <mat-radio-button [value]="'N'">No <b style="color:#0094ea;"> → Pase a la siguiente sección</b></mat-radio-button>
+      </mat-radio-group>
+      <div class="err" *ngIf="isInvalid('p115Recibe')">Seleccione una opción.</div>
+    </div>
+
+    <!-- 11.6 -->
+<div class="mt-3">
+  <div class="cell-label mb-1">
+    11.6 Indicar la(s) institución(es) del Estado que brinda(n) las capacitaciones
+  </div>
+
+  <div class="row g-2">
+    <div class="col-12 col-md-6" *ngFor="let k of ['p116MRE','p116RENIEC','p116MIGRACIONES','p116INTERPOL','p116INEI','p116JNE','p116ONPE','p116SUNARP','p116PoderJudicial']">
+      <mat-checkbox [checked]="isChecked(k)" (change)="onCheck(k, $event)" [disabled]="isDisabled116(k)">
+        {{ k.replace('p116','') }}
+      </mat-checkbox>
+    </div>
+
+    <div class="col-12 col-md-12 d-flex align-items-center gap-2">
+      <mat-checkbox [checked]="isChecked('p116Otro')" (change)="onCheck('p116Otro', $event)" [disabled]="isDisabled116('p116Otro')">
+        Otro(s)
+      </mat-checkbox>
+      <mat-form-field appearance="outline" class="w-full" *ngIf="!f('p116OtroDetalle')?.disabled">
+        <mat-label>Especifique</mat-label>
+        <input matInput formControlName="p116OtroDetalle" (input)="limitarDigitosTextarea($event, 500)">
+      </mat-form-field>
+    </div>
+
+    <!-- AGREGAR CHECKBOX "NINGUNA" -->
+    <div class="col-12">
+      <mat-checkbox 
+        [checked]="isChecked('p116Ninguna')" 
+        (change)="onNinguna116Change($event)"
+        [disabled]="f('p115Recibe')?.value !== 'S'">
+        Ninguna
+      </mat-checkbox>
+    </div>
+  </div>
+
+  <!--  MENSAJE DE ERROR SI NO SE SELECCIONA NINGUNA OPCIÓN -->
+  <div class="err mt-2" *ngIf="isInvalid('p115Recibe') && f('p115Recibe')?.hasError('p116Group')">
+    <i class="fas fa-exclamation-circle"></i>
+    Debe seleccionar al menos una institución o marcar "Ninguna"
+  </div>
+</div>
+  </div>
+<!-- <button 
+  type="button" 
+  class="btn btn-info mt-2" 
+  (click)="debugP116Validation()">
+  🔍 Debug 11.6 Validation
+</button> -->
+ <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
+    <button mat-stroked-button type="button" class="gridSaveItem" (click)="guardarSeccion11Incompleta()">
+      Guardado Parcial
+    </button>
+
+    <button mat-stroked-button class="gridSaveItemC" type="button" *ngIf="tieneRolEspecialista()"
+            (click)="validarSeccion()" [disabled]="ficha11Form.invalid">
+      Validar Sección 
+    </button>
+
+    <button mat-flat-button class="gridSaveItemC" type="submit" >
+      Guardar sección Completa
+    </button>
+  </div>
+</form>

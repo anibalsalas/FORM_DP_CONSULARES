@@ -1,0 +1,502 @@
+<form [formGroup]="ficha13Form" (ngSubmit)="guardarSeccion13()" class="container-fluid form-seccion13">
+    <section class="acciones">
+      <button class="gridSaveItem" mat-stroked-button type="button" (click)="guardarSeccion13Incompleta()">
+        Guardado Parcial
+      </button>
+
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+
+      <button *ngIf="tieneRolEspecialista()" mat-flat-button class="gridSaveItemC" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+
+    </section>
+
+  <section class="card3">
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label class="q-label fw-bold mt-4">
+        13.1. ¿La Oficina Consular cuenta con un Portal de Transparencia Estándar (PTE) en su página web?
+      </label>
+      <mat-radio-group formControlName="p131Oficina" class="d-flex flex-wrap gap-3">
+        <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 13.2.</b></mat-radio-button>
+        <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a 13.3.</b></mat-radio-button>
+      </mat-radio-group>
+            <div class="text-danger small" *ngIf="isInvalid('p131Oficina')">Requerido.</div>
+
+    </div>
+    
+<div>
+
+    <div class="cell-label fw-bold mt-4">
+    13.2. En caso la Oficina Consular cuente con un PTE, indique qué tipo de información se vienen difundiendo en la página web:
+  </div>
+
+    <mat-checkbox formControlName="p132Contratacion">Contratación de bienes y servicios </mat-checkbox>
+    <mat-checkbox formControlName="p132Personal">Personal</mat-checkbox>
+    <mat-checkbox formControlName="p132Planeamiento">Planeamiento y organización</mat-checkbox>
+    <mat-checkbox formControlName="p132Actividades"> Actividades oficiales </mat-checkbox>
+    <mat-checkbox formControlName="p132Presupuesto">Presupuesto</mat-checkbox>
+    <mat-checkbox formControlName="p132Otro">Otro</mat-checkbox><br>
+      <div class="text-danger small mt-1" *ngIf="invalidCAP132">
+      Selecciona al menos una opción.
+    </div>
+    <mat-form-field class="w-100 mt-2">
+      <input matInput formControlName="p132OtroDetalle" placeholder="Especificar" maxlength="200">
+    </mat-form-field>
+  
+
+</div>
+    <div class="section-container">
+      <h2 class="section-title">A. SOBRE EL ACCESO A LA INFORMACIÓN PÚBLICA (AIP)</h2>
+    </div>
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="q-label fw-bold mt-4">
+        13.3. Indique los recursos habilitados para la formulación de pedidos de acceso a la información pública:</label>
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let c of Iniciativas" [checked]="isCheckboxChecked13(c)" (change)="onCheckboxChange13(c,$event)">{{label(c)}}
+        </mat-checkbox>
+      </div>
+         <div class="text-danger small mt-1" *ngIf="invalidCA133">
+          Selecciona al menos una opción.
+    </div>
+    </div>
+
+    <div class="table-responsive tabla-">
+      <label class="q-label fw-bold mt-4">
+        13.4. Respecto a las solicitudes de acceso a la información pública de los últimos tres años:
+      </label>
+      <table class="table table-bordered align-middle ">
+        <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="center">Año</th>
+          <th class="center">N° de solicitudes recibidas</th>
+          <th class="center">N° de solicitudes atendidas</th>
+          <th class="center">N° de solicitudes denegadas</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of anio">
+          <td class="q-label">{{ item.Anio }}</td>
+          <td>
+            <mat-form-field appearance="outline" class="w-sm">
+              <input matInput type="number" appMax4Digits  [formControlName]="item.control"  />
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field appearance="outline" class="w-sm">
+              <input matInput type="number" appMax4Digits  [formControlName]="item.control2" />
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field appearance="outline" class="w-sm">
+              <input matInput type="number" appMax4Digits  [formControlName]="item.control3" />
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <label class="q-label fw-bold mt-6">
+          * En el caso del 2025, se apreciará consignar información respecto al primer semestre
+        </label>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="table-responsive tabla-">
+      <label class="q-label fw-bold mt-4">
+        13.5. ¿Cuál/es es/son la/s necesidad/es que tiene la Oficina Consular para prestar dicho servicio de manera idónea?
+      </label>
+        <div class="text-danger small mt-2" *ngIf="showP135GroupError">
+          Selecciona al menos una necesidad o marca "Ninguno".
+        </div>
+      <table class="table table-bordered align-middle ">
+        <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Tipo</th>
+          <th>Seleccionar</th>
+          <th>¿Se han realizado gestiones para resolverlo? (S/N)</th>
+          <th>Suficiente o insuficiente</th>
+          <th>Especifique</th>
+          <th>Comentarios u Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let element of necesidadesData">
+          <!-- Tipo + checkbox -->
+          <td class="q-label">{{ element.tipo }}</td>
+          <td class="center">
+            <mat-checkbox
+              [checked]="isCheckboxChecked13(element.checkControl)"
+              (change)="onCheckboxChange13(element.checkControl, $event)">
+            </mat-checkbox>
+          </td>
+          <!-- Gestión -->
+          <td>
+            <mat-radio-group class="inline-radios" [formControlName]="element.gestionControl">
+              <mat-radio-button value="S">Sí</mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+              <mat-error *ngIf="isInvalid(element.gestionControl)">Seleccione una opción.</mat-error>
+
+          </td>
+          <!-- Suficiente -->
+          <td>
+            <mat-radio-group class="inline-radios" [formControlName]="element.suficienteControl">
+              <mat-radio-button value="S">Suficiente</mat-radio-button>
+              <mat-radio-button value="N">Insuficiente</mat-radio-button>
+            </mat-radio-group>
+            <mat-error *ngIf="isInvalid(element.suficienteControl)">Seleccione una opción.</mat-error>
+
+          </td>
+          <!-- Especifique: solo para 'Otro' -->
+          <td>
+            <ng-container *ngIf="element.especifiqueControl; else guion">
+              <mat-form-field appearance="outline" class="w-md">
+                <input matInput [formControlName]="element.especifiqueControl" maxlength="299" placeholder="Especifique" />
+                <mat-hint align="end">
+                  {{ charLen(element.especifiqueControl) }}/299
+                </mat-hint>
+                <mat-error>
+                  <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                  Campo requerido
+                </mat-error>
+              </mat-form-field>
+            </ng-container>
+            <ng-template #guion><span class="muted">—</span></ng-template>
+          </td>
+          <!-- Observaciones -->
+          <td>
+            <mat-form-field appearance="outline" class="w-100">
+              <textarea matInput rows="2" maxlength="500" [formControlName]="element.observacionesControl" placeholder="Máx. 500 caracteres"></textarea>
+
+              <mat-hint align="end">
+                {{ charLen(element.observacionesControl) }}/500
+              </mat-hint>
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Campo requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <mat-checkbox *ngFor="let c of Ninguna" [checked]="isCheckboxChecked13(c)" (change)="onCheckboxChange13(c,$event)">{{label(c)}}
+        </mat-checkbox>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label class="q-label fw-bold mt-4">
+        13.6 ¿Recibe el personal consular a cargo de atender este servicio capacitaciones, cursos, entre otros,
+        para realizar dicho servicio, a fin de garantizar una adecuada atención?
+      </label>
+      <mat-radio-group formControlName="p136Recibe" class="d-flex flex-wrap gap-3" >
+        <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 13.7.</b></mat-radio-button>
+        <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a 13.8.</b></mat-radio-button>
+      </mat-radio-group>
+             <div class="err" *ngIf="isInvalid('p136Recibe')">Requerido</div>
+
+    </div>
+
+    <div  class="col-md-12" style="margin-top:.5rem;">
+      <div class="col-md-12">
+        <label class="form-label fw-bold">
+          13.7 Indicar la(s) institución(es) del estado que brinda(n) de las capacitaciones
+        </label>
+        <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+          <mat-checkbox formControlName="p137Mre">a. MRE</mat-checkbox>
+          <mat-checkbox formControlName="p137Reniec">b. RENIEC</mat-checkbox>
+          <mat-checkbox formControlName="p137Migraciones">c. Migraciones</mat-checkbox>
+          <mat-checkbox formControlName="p137Interpol">d. INTERPOL</mat-checkbox>
+          <mat-checkbox formControlName="p137Inei">e. INEI</mat-checkbox>
+          <mat-checkbox formControlName="p137Jne">f. JNE</mat-checkbox>
+          <mat-checkbox formControlName="p137Onpe">g. ONPE</mat-checkbox>
+          <mat-checkbox formControlName="p137Sunarp">h. SUNARP</mat-checkbox>
+          <mat-checkbox formControlName="p137PoderJudicial">i. PODER JUDICIAL</mat-checkbox>
+          <mat-checkbox formControlName="p137Otro">j. Otro (especificar)</mat-checkbox>
+          <div class="text-danger small mt-1" *ngIf="invalidCA137">
+            Selecciona al menos una opción.
+          </div>
+          <mat-form-field class="w-100 mt-2">
+            <input matInput formControlName="p137OtroDetalle" placeholder="Especificar" maxlength="200">
+          </mat-form-field>
+          <!-- <mat-checkbox formControlName="p137Ninguna">No ha recibido ninguna capacitación</mat-checkbox> -->
+        </div>
+   
+      </div>
+    
+    </div>
+    <div class="section-container">
+      <h2 class="section-title">B. SOBRE MECANISMOS DE PARTICIPACIÓN CIUDADANA </h2>
+    </div>
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label class="q-label fw-bold mt-4">
+        13.8. ¿Se cuenta con un libro de reclamaciones, quejas y sugerencias en físico o virtual?
+      </label>
+      <mat-radio-group formControlName="p138Cuenta" class="d-flex flex-wrap gap-3" >
+        <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 13.9.</b></mat-radio-button>
+        <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a 13.10.</b></mat-radio-button>
+      </mat-radio-group>
+          <div class="err" *ngIf="isInvalid('p138Cuenta')">Requerido</div>
+
+    </div>
+    <div class="table-responsive tabla-">
+      <label class="q-label fw-bold mt-4">
+        13.9. Indique cuántas reclamaciones, quejas y/o sugerencias se han recibido en los últimos tres años
+      </label>
+      <table class="table table-bordered align-middle ">
+        <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="center">Año</th>
+          <th class="center">Reclamos</th>
+          <th class="center">Quejas</th>
+          <th class="center">Sugerencias</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of anioP139">
+          <td class="q-label">{{ item.AnioP }}</td>
+          <td>
+            <mat-form-field appearance="outline" class="w-sm">
+              <input matInput type="number" appMax3Digits  [formControlName]="item.control"  />
+             
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field appearance="outline" class="w-sm">
+              <input matInput type="number" appMax3Digits  [formControlName]="item.control2" />
+             
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field appearance="outline" class="w-sm">
+              <input matInput type="number" appMax3Digits  [formControlName]="item.control3" />
+              
+            </mat-form-field>
+          </td>
+        </tr>
+        <label class="q-label fw-bold mt-6">
+          * En el caso del 2025, se apreciará consignar información respecto al primer semestre
+        </label>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label class="q-label fw-bold mt-4">
+        13.10. ¿La Oficina Consular ha implementado algún mecanismo de rendición de cuentas a la comunidad peruana sobre la gestión realizada?
+      </label>
+      <mat-radio-group formControlName="p1310Oficina" class="d-flex flex-wrap gap-3" >
+        <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 13.11.</b></mat-radio-button>
+        <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a 13.12.</b></mat-radio-button>
+      </mat-radio-group>
+                <div class="err" *ngIf="isInvalid('p1310Oficina')">Requerido</div>
+
+    </div>
+    <div class="col-md-12 mt-2">
+      <label class="form-label fw-bold">
+        13.11. En caso sea afirmativa su respuesta, detalle el mecanismo y la frecuencia de la rendición:
+      </label>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Detalle:</mat-label>
+            <textarea matInput rows="2" maxlength="500" formControlName="p1311Afirmativa"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="table-responsive tabla-">
+      <label class="q-label fw-bold mt-4">
+        13.12. ¿Cuál/es es/son la/s necesidad/es que tiene la Oficina Consular para prestar dicho servicio de manera idónea?
+      </label>
+        <div class="text-danger small mt-2" *ngIf="showP1312GroupError">
+          Selecciona al menos una necesidad o marca "Ninguno".
+        </div>
+      <table class="table table-bordered align-middle ">
+        <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Tipo</th>
+          <th>Seleccionar</th>
+          <th>¿Se han realizado gestiones para resolverlo? (S/N)</th>
+          <th>Suficiente o insuficiente</th>
+          <th>Especifique</th>
+          <th>Comentarios u Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let element of necesidadesData2">
+          <!-- Tipo + checkbox -->
+          <td class="q-label">{{ element.tipo }}</td>
+          <td class="center">
+            <mat-checkbox
+              [checked]="isCheckboxChecked13(element.checkControl)"
+              (change)="onCheckboxChange13(element.checkControl, $event)">
+            </mat-checkbox>
+          </td>
+          <!-- Gestión -->
+          <td>
+            <mat-radio-group class="inline-radios" [formControlName]="element.gestionControl">
+              <mat-radio-button value="S">Sí</mat-radio-button>
+              <mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+         <mat-error *ngIf="isInvalid(element.gestionControl)">Seleccione una opción.</mat-error>
+
+          </td>
+          <!-- Suficiente -->
+          <td>
+            <mat-radio-group class="inline-radios" [formControlName]="element.suficienteControl">
+              <mat-radio-button value="S">Suficiente</mat-radio-button>
+              <mat-radio-button value="N">Insuficiente</mat-radio-button>
+            </mat-radio-group>
+                     <mat-error *ngIf="isInvalid(element.suficienteControl)">Seleccione una opción.</mat-error>
+
+          </td>
+          <!-- Especifique: solo para 'Otro' -->
+          <td>
+            <ng-container *ngIf="element.especifiqueControl; else guion">
+              <mat-form-field appearance="outline" class="w-md">
+                <input matInput [formControlName]="element.especifiqueControl" maxlength="299" placeholder="Especifique" />
+                <mat-hint align="end">
+                  {{ charLen(element.especifiqueControl) }}/299
+                </mat-hint>
+                <mat-error>
+                  <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                  Campo requerido
+                </mat-error>
+              </mat-form-field>
+            </ng-container>
+            <ng-template #guion><span class="muted">—</span></ng-template>
+          </td>
+          <!-- Observaciones -->
+          <td>
+            <mat-form-field appearance="outline" class="w-100">
+              <textarea matInput rows="2" maxlength="500" [formControlName]="element.observacionesControl" placeholder="Máx. 500 caracteres"></textarea>
+
+              <mat-hint align="end">
+                {{ charLen(element.observacionesControl) }}/500
+              </mat-hint>
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Campo requerido
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+        <mat-checkbox *ngFor="let c of Ninguna2" [checked]="isCheckboxChecked13(c)" (change)="onCheckboxChange13(c,$event)">{{label(c)}}
+        </mat-checkbox>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label class="q-label fw-bold mt-4">
+        13.13 ¿Recibe el personal consular a cargo de atender este servicio capacitaciones, cursos, entre otros,
+        para realizar dicho servicio, a fin de garantizar una adecuada atención?
+      </label>
+      <mat-radio-group formControlName="p1313Recibe" class="d-flex flex-wrap gap-3" >
+        <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 13.14.</b></mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+       <div class="err" *ngIf="isInvalid('p1313Recibe')">Requerido</div>
+
+    </div>
+
+    <div  class="col-md-12" style="margin-top:.5rem;">
+      <div class="col-md-12">
+        <label class="form-label fw-bold">
+          13.14 Indicar la(s) institución(es) del estado que brinda(n) de las capacitaciones
+        </label>
+        <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+          <mat-checkbox formControlName="p1314Mre">a. MRE</mat-checkbox>
+          <mat-checkbox formControlName="p1314Reniec">b. RENIEC</mat-checkbox>
+          <mat-checkbox formControlName="p1314Migracion">c. Migraciones</mat-checkbox>
+          <mat-checkbox formControlName="p1314Interpol">d. INTERPOL</mat-checkbox>
+          <mat-checkbox formControlName="p1314Inei">e. INEI</mat-checkbox>
+          <mat-checkbox formControlName="p1314Jne">f. JNE</mat-checkbox>
+          <mat-checkbox formControlName="p1314Onpe">g. ONPE</mat-checkbox>
+          <mat-checkbox formControlName="p1314Sunarp">h. SUNARP</mat-checkbox>
+          <mat-checkbox formControlName="p1314PoderJudicial">i. PODER JUDICIAL</mat-checkbox>
+          <mat-checkbox formControlName="p1314Otro">j. Otro (especificar)</mat-checkbox><br>
+          <div class="text-danger small mt-1" *ngIf="invalidCA1314">
+            Selecciona al menos una opción.
+          </div>
+          <mat-form-field class="w-100 mt-2">
+            <input matInput formControlName="p1314OtroDetalle" placeholder="Especificar" maxlength="200">
+          </mat-form-field>
+        </div>
+    
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-2">
+      <label class="form-label fw-bold">
+        <b>COMENTARIOS, SUGERENCIAS Y OBSERVACIONES</b>
+      </label>
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Comentarios:</mat-label>
+            <textarea matInput rows="2" maxlength="1000" formControlName="comentario"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 p-3">
+      <div class="col-md-12">
+        <label class="form-label fw-bold">
+          DECLARACIÓN JURADA
+          <span class="text-danger">*</span>
+        </label><br>
+        <ng-container>
+          <mat-checkbox *ngFor="let c of Declaro" [checked]="isCheckboxChecked13(c)" (change)="onCheckboxChange13(c,$event)">{{label(c)}}
+            <b>DECLARO</b> que lo expresado procedentemente es verdad, otorgando la presente al
+            amparo de lo establecido la Ley Nº 27815, Ley del Código de Ética de la Función Pública; en particular,
+            respecto al deber regulado en el numeral 2 del artículo 7, sobre Deberes de la Función Pública:
+            2. Transparencia: “Debe ejecutar los actos del servicio de manera transparente, ello implica que dichos
+            actos tienen en principio carácter público y son accesibles al conocimiento de toda persona naturales o
+            jurídica. <b>El servidor público debe de brindar y facilitar información fidedigna, completa y oportuna”.</b> </mat-checkbox><br>
+        </ng-container>
+
+      </div>
+    </div>
+
+
+
+
+  </section>
+  <!-- Acciones -->
+ <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
+    <button mat-stroked-button type="button" class="gridSaveItem" (click)="guardarSeccion13Incompleta()">
+      Guardado Parcial
+    </button>
+
+    <button mat-stroked-button class="gridSaveItemC" type="button" *ngIf="tieneRolEspecialista()"
+            (click)="validarSeccion()" [disabled]="ficha13Form.invalid">
+      Validar Sección 13
+    </button>
+
+    <button mat-flat-button class="gridSaveItemC" type="submit" >
+      Guardar sección Completa
+    </button>
+  </div>
+</form>

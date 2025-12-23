@@ -1,0 +1,464 @@
+<form class="s1-wrapper" [formGroup]="ficha1Form" (ngSubmit)="guardarSeccion1()">
+<section class="acciones">
+      <button mat-stroked-button class="gridSaveItem"  type="button" (click)="guardarSeccion1Incompleta()">
+        Guardado Parcial
+      </button>
+    
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+    
+      <button *ngIf="tieneRolEspecialista()" class="gridSaveItemC" mat-flat-button color="accent" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+    
+    </section>
+  <!-- 1.1.1 Población peruana registrada -->
+  <section class="card"> 
+  <label class="cell-label">1.1.1 Población peruana registrada en el Registro de Nacionales</label>
+  <p style="font-weight: 0.8rem; color: saddlebrown;"> Fecha de corte es al 30/06/2025 </p>
+  <div class="table-responsive tabla-">
+    <table class="table table-bordered align-middle text-center">
+      <thead class="table-secondary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Población registrada</th>
+          <th>0–12</th>
+          <th>13–17</th>
+          <th>18–64</th>
+          <th>65 a +</th>
+          <th>Desconoce la información</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- Nº HOMBRES -->
+        <tr [class.row-disabled]="isCheckboxChecked('p111HombresDesconoce')">
+          <td class="cell-label">Nº Hombres</td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Hombres012"  />
+              <mat-error *ngIf="isInvalid('p111Hombres012')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Hombres1317"  />
+              <mat-error *ngIf="isInvalid('p111Hombres1317')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Hombres1864"/>
+              <mat-error *ngIf="isInvalid('p111Hombres1864')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Hombres65Mas"  />
+              <mat-error *ngIf="isInvalid('p111Hombres65Mas')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td class="center">
+            <mat-checkbox [checked]="isCheckboxChecked('p111HombresDesconoce')"
+              (change)="onCheckboxChange11('p111HombresDesconoce', $event)">
+            </mat-checkbox>
+          </td>
+
+        </tr>
+
+        <!-- HOMBRES CON DISCAPACIDAD -->
+        <tr [class.row-disabled]="isCheckboxChecked('p111HombDiscapDesconoce')">
+  <td class="cell-label">Cuántos de ellos con discapacidad</td>
+
+  <td>
+    <mat-form-field appearance="outline" class="campo-tabla">
+      <input matInput type="number" appMax4Digits formControlName="p111HombDiscap012" placeholder="0"
+       />
+      <mat-error *ngIf="isInvalid('p111HombDiscap012')">Debe ser menor o igual a la cantidad de hombres (0-12)</mat-error>
+    </mat-form-field>
+  </td>
+
+  <td>
+    <mat-form-field appearance="outline" class="campo-tabla">
+      <input matInput type="number" appMax4Digits formControlName="p111HombDiscap1317" placeholder="0"
+        />
+      <mat-error *ngIf="isInvalid('p111HombDiscap1317')">Debe ser menor o igual a la cantidad de hombres (13-17)</mat-error>
+    </mat-form-field>
+  </td>
+
+  <td>
+    <mat-form-field appearance="outline" class="campo-tabla">
+      <input matInput type="number" appMax4Digits formControlName="p111HombDiscap1864" placeholder="0"
+         />
+      <mat-error *ngIf="f('p111HombDiscap1864')?.hasError('maxDisabilityExceeded')">
+        Debe ser menor o igual a la cantidad de hombres (18-64)
+      </mat-error>
+    </mat-form-field>
+  </td>
+
+  <td>
+    <mat-form-field appearance="outline" class="campo-tabla">
+      <input matInput type="number" appMax4Digits formControlName="p111HombDiscap65Mas" placeholder="0"
+        />
+      <mat-error *ngIf="isInvalid('p111HombDiscap65Mas')">Debe ser menor o igual a la cantidad de hombres (65+)</mat-error>
+    </mat-form-field>
+  </td>
+
+  <td class="center">
+    <mat-checkbox [checked]="isCheckboxChecked('p111HombDiscapDesconoce')"
+      (change)="onCheckboxChange11('p111HombDiscapDesconoce', $event)">
+    </mat-checkbox>
+  </td>
+</tr>
+
+        <!-- Nº MUJERES -->
+        <tr [class.row-disabled]="isCheckboxChecked('p111MujeresDesconoce')">
+          <td class="cell-label">Nº Mujeres</td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Mujeres012"  />
+              <mat-error *ngIf="isInvalid('p111Mujeres012')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Mujeres1317"  />
+              <mat-error *ngIf="isInvalid('p111Mujeres1317')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Mujeres1864"  />
+              <mat-error *ngIf="isInvalid('p111Mujeres1864')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Mujeres65Mas" />
+              <mat-error *ngIf="isInvalid('p111Mujeres65Mas')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td class="center">
+            <mat-checkbox [checked]="isCheckboxChecked('p111MujeresDesconoce')"
+              (change)="onCheckboxChange11('p111MujeresDesconoce', $event)">
+            </mat-checkbox>
+          </td>
+
+        </tr>
+
+        <!-- MUJERES CON DISCAPACIDAD -->
+        <tr [class.row-disabled]="isCheckboxChecked('p111MujDiscapDesconoce')">
+          <td class="cell-label">Cuántas de ellas con discapacidad</td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111MujDiscap012" placeholder="0"
+                />
+              <mat-error *ngIf="isInvalid('p111MujDiscap012')">Debe ser menor o igual a la cantidad de mujeres (0-12)</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111MujDiscap1317" placeholder="0"
+                 />
+              <mat-error *ngIf="isInvalid('p111MujDiscap1317')">Debe ser menor o igual a la cantidad de mujeres (13-17)</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111MujDiscap1864" placeholder="0"
+                />
+              <mat-error *ngIf="isInvalid('p111MujDiscap1864')">Debe ser menor o igual a la cantidad de mujeres (18-64)</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111MujDiscap65Mas" placeholder="0"
+                  />
+              <mat-error *ngIf="isInvalid('p111MujDiscap65Mas')">Debe ser menor o igual a la cantidad de mujeres (65+)</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td class="center">
+            <mat-checkbox [checked]="isCheckboxChecked('p111MujDiscapDesconoce')"
+              (change)="onCheckboxChange11('p111MujDiscapDesconoce', $event)">
+            </mat-checkbox>
+          </td>
+
+        </tr>
+
+        <!-- TOTALES -->
+        <tr class="fila-total">
+          <td class="cell-label">TOTAL</td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Total012" placeholder="0" />
+              <mat-error *ngIf="isInvalid('p111Total012')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Total1317" placeholder="0" />
+              <mat-error *ngIf="isInvalid('p111Total1317')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Total1864" placeholder="0" />
+              <mat-error *ngIf="isInvalid('p111Total1864')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111Total65Mas" placeholder="0" />
+              <mat-error *ngIf="isInvalid('p111Total65Mas')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+
+          <td>
+            <mat-form-field appearance="outline" class="campo-tabla">
+              <input matInput type="number" appMax4Digits formControlName="p111TotalDesconoce" placeholder="0" />
+              <mat-error *ngIf="isInvalid('p111TotalDesconoce')">Requerido</mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+  <!-- 1.1.2 Fecha de última actualización -->
+  <section class="card">
+    <label class="cell-label">1.1.2 Fecha de la última actualización del registro de nacionales</label>
+    <mat-form-field appearance="outline" class="w-md">
+      <mat-label>dd/mm/aaaa</mat-label>
+      <input matInput [matDatepicker]="pickerAct" formControlName="p112FechaAct" readonly [max]="today"/>
+      <mat-datepicker-toggle matSuffix [for]="pickerAct"></mat-datepicker-toggle>
+      <mat-datepicker #pickerAct></mat-datepicker>
+      <mat-error *ngIf="isInvalid('p112FechaAct')">Requerido</mat-error>
+    </mat-form-field>
+  </section>
+
+
+  <!-- 1.1.3 Porcentaje no inscrito -->
+  <section class="card">
+    <label class="cell-label">1.1.3 ¿Qué porcentaje estimado no está inscrito?</label>
+    <mat-form-field appearance="outline" class="w-sm">
+      <mat-label>Porcentaje</mat-label>
+       <input matInput formControlName="p113PorcNoInsc" (keydown)="permitirNumerosHasta100($event)">
+      <span matSuffix>%</span>
+      <mat-error *ngIf="isInvalid('p113PorcNoInsc')">0 a 100</mat-error>
+    </mat-form-field>
+  </section>
+
+  <!-- 1.1.4 Certificados -->
+  <section class="card">
+    <label class="cell-label">1.1.4 Número de certificados de Matrícula Consular entregados</label>
+
+
+
+
+      <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle text-center">
+    <thead class="table-secondary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th>Periodo</th>
+            <th>Número de certificados</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of periodosCertificados">
+            <td class="cell-label">{{ item.periodo }}</td>
+            <td>
+              <mat-form-field appearance="outline" class="w-sm">
+                <input matInput type="number" maxlength="5" (keydown)="permitirSoloNumeros($event)"  [formControlName]="item.control" placeholder="0" />
+                <mat-error *ngIf="isInvalid(item.control)">Inválido</mat-error>
+              </mat-form-field>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="nota">* En 2025 se agradece consignar la información del primer semestre.</p>
+  </section>
+
+  <!-- 1.1.5 Necesidades -->
+  <section class="card">
+    <label class="cell-label">1.1.5. ¿Cuál/es es/son la/s necesidad/es que tiene la Oficina Consular para prestar dicho servicio de manera idónea?</label>
+
+ <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle text-center">
+    <thead class="table-secondary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">Tipo</th>
+            <th>Seleccionar</th>
+            <th>¿Se han realizado gestiones para resolverlo? (S/N)</th>
+            <th>Suficiente o insuficiente</th>
+            <th>Especifique</th>
+            <th>Comentarios u Observaciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let element of necesidadesData">
+            <!-- Tipo + checkbox -->
+            <td class="cell-label">{{ element.tipo }}</td>
+            <td class="center">
+              <mat-checkbox
+                [checked]="isCheckboxChecked(element.checkControl)"
+                (change)="onCheckboxChange(element.checkControl, $event)">
+              </mat-checkbox>
+            </td>
+
+            <!-- Gestión -->
+            <td>
+              <mat-radio-group class="inline-radios" [formControlName]="element.gestionControl">
+                <mat-radio-button value="S">Sí</mat-radio-button>
+                <mat-radio-button value="N">No</mat-radio-button>
+              </mat-radio-group>
+               <mat-error *ngIf="isInvalid(element.gestionControl)">Seleccione una opción.</mat-error>
+
+            </td>
+
+            <!-- Suficiente -->
+            <td>
+              <mat-radio-group class="inline-radios" [formControlName]="element.suficienteControl">
+                <mat-radio-button value="S">Suficiente</mat-radio-button>
+                <mat-radio-button value="N">Insuficiente</mat-radio-button>
+              </mat-radio-group>
+            <mat-error *ngIf="isInvalid(element.suficienteControl)">Seleccione una opción.</mat-error>
+
+            </td>
+              
+            <td>
+              <ng-container *ngIf="element.especifiqueControl; else guion">
+                <mat-form-field appearance="outline" class="w-md">
+                  <input matInput [formControlName]="element.especifiqueControl" placeholder="Especifique" />
+                </mat-form-field>
+              </ng-container>
+              <ng-template #guion><span class="muted">—</span></ng-template>
+            </td>
+
+          
+         
+          <td>
+              <mat-form-field appearance="outline" class="w-100">
+                <textarea matInput rows="2" maxlength="500"
+                          [formControlName]="element.observacionesControl"
+                          placeholder="Máx. 500 caracteres"></textarea>
+
+                <mat-hint align="end">
+                  {{ charLen(element.observacionesControl) }}/500
+                </mat-hint>
+              </mat-form-field>
+            </td>
+
+
+            
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Checkbox “Ninguno” -->
+    <div class="ninguno">
+      <mat-checkbox
+        [checked]="isCheckboxChecked('p115NecNinguno')"
+        (change)="onCheckboxChange('p115NecNinguno', $event)">
+        Ninguno
+      </mat-checkbox>
+      <div class="err" *ngIf="hasCheckboxError()">Marca al menos una necesidad o “Ninguno”.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <label class="cell-label">1.1.6 ¿El personal recibe capacitaciones para garantizar una adecuada atención?</label>
+    <mat-radio-group class="inline-radios" formControlName="p116RecibeCapac">
+      <mat-radio-button value="S">Sí <b style="color: #0094ea;"> → Pase a 1.1.7 </b></mat-radio-button>
+      <mat-radio-button value="N">No</mat-radio-button>
+    </mat-radio-group>
+    <!-- Error 1: radio obligatorio -->
+  <div class="text-danger small mt-1" *ngIf="isInvalid('p116RecibeCapac')">
+    Seleccione una opción.
+  </div>
+
+
+  <div class="err" *ngIf="invalidCA116">
+    → Si la respuesta es afirmativa, seleccione al menos una institución en 1.1.7.
+  </div>
+
+      <div class="row g-3 mt-4">
+        <div class="col-md-12">
+          <label class="cell-label form-label fw-bold">
+            1.1.7 Indicar la(s) institución(es) del Estado que brinda(n) las capacitaciones
+          </label>
+          <div class="d-flex flex-column">
+            <mat-checkbox formControlName="p117A">a. MRE</mat-checkbox>
+            <mat-checkbox formControlName="p117B">b. RENIEC</mat-checkbox>
+            <mat-checkbox formControlName="p117C">c. Migraciones</mat-checkbox>
+            <mat-checkbox formControlName="p117D">d. INTERPOL</mat-checkbox>
+            <mat-checkbox formControlName="p117E">e. INEI</mat-checkbox>
+            <mat-checkbox formControlName="p117F">f. JNE</mat-checkbox>
+            <mat-checkbox formControlName="p117G">g. ONPE</mat-checkbox>
+            <mat-checkbox formControlName="p117H">h. SUNARP</mat-checkbox>
+            <mat-checkbox formControlName="p117I">i. PODER JUDICIAL</mat-checkbox>
+            <mat-checkbox formControlName="p117J">j. Otro (especificar)</mat-checkbox>
+            <mat-form-field class="w-100 mt-2">
+              <input matInput formControlName="p117Jotro" placeholder="Especificar" maxlength="200">
+            </mat-form-field>
+            <!-- <mat-checkbox formControlName="p117K">No ha recibido ninguna capacitación</mat-checkbox> -->
+          </div>
+          <div class="text-danger small mt-1" *ngIf="invalidCA116">
+            Selecciona al menos una opción.
+          </div>
+
+         
+
+        </div>
+      </div>
+
+  </section>
+
+
+
+  
+
+
+ 
+
+  <!-- Acciones -->
+  <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
+    <button mat-stroked-button type="button" class="gridSaveItem" (click)="guardarSeccion1Incompleta()">
+      Guardado Parcial
+    </button>
+ 
+    <button mat-stroked-button class="gridSaveItemC" type="button"  *ngIf="hasRole(rolEspecialista) || hasRole(rolAdministrador)"
+            (click)="validarSeccion()" [disabled]="ficha1Form.invalid">
+      Validar Sección 1
+    </button>
+
+    <button mat-flat-button class="gridSaveItemC" type="submit" >
+      Guardar sección Completa
+    </button>
+  </div>
+
+</form>

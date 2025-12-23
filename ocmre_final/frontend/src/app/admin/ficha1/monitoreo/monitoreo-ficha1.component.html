@@ -1,0 +1,61 @@
+
+  <div class="" style="padding: 20px !important;">
+  <h4 class="mb-3">
+    <i class="bi bi-bar-chart-fill text-primary me-2"></i> Monitoreo por Región
+  </h4>
+
+  <!-- Filtro por región -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label for="regionFilter" class="form-label">Filtrar por Región</label>
+      <select id="regionFilter" class="form-select" [(ngModel)]="regionSeleccionada" (change)="filtrarPorRegion()">
+        <option value="">Todas</option>
+        <option *ngFor="let region of regionesUnicas" [value]="region">{{ region }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="table-responsive shadow-sm rounded border">
+    <table class="table table-striped align-middle text-center">
+      <thead class="table-primary">
+        <tr>
+          <th>Región</th>
+          <th>Completadas</th>
+          <!-- <th>En Proceso</th> -->
+          <th>Pendientes</th>
+          <th>Total</th>
+          <th>% Avance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of resumenFiltrado">
+          <td>{{ row.region }}</td>
+          <td>{{ row.completas }}</td>
+          <!-- <td>{{ row.incompletas }}</td> -->
+          <td>{{ row.faltanRegistrar }}</td>
+          <td>{{ row.total }}</td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <mat-progress-bar mode="determinate" [value]="row.porcentajeAvance" class="flex-grow-1"></mat-progress-bar>
+              <span>{{ row.porcentajeAvance | number: '1.0-0' }}%</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+
+      <!-- Totales -->
+      <tfoot class="table-secondary fw-bold">
+        <tr>
+          <td>Total</td>
+          <td>{{ getTotal('completas') }}</td>
+          <!-- <td>{{ getTotal('incompletas') }}</td> -->
+          <td>{{ getTotal('faltanRegistrar') }}</td>
+          <td>{{ getTotal('total') }}</td>
+          <td>-</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+ </div>
+

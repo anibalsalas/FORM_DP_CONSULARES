@@ -1,0 +1,104 @@
+.custom-card {
+    margin: 5px auto;
+    padding: 20px;
+    width: 100%;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .assign-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .assign-form mat-form-field {
+    flex: 1 1 200px;
+  }
+  
+  .section-title {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  .empty-message {
+    text-align: center;
+    font-style: italic;
+    color: gray;
+    margin-top: 10px;
+  }
+  
+
+
+  .form-card {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-row {
+    margin-bottom: 20px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: left;
+    margin-top: 0px;
+    text-align: right;
+
+  }
+  
+  button[mat-flat-button] {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 600px) {
+    .form-card {
+      padding: 20px;
+    }
+  
+    .form-title {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .icon-margin {
+    margin-right: 8px; 
+    vertical-align: middle; 
+  }
+
+
+  ::ng-deep .snackbar-success {
+    background-color: #4caf50 !important; /* Verde */
+    color: #fff !important;
+    font-weight: bold;
+  }
+  
+  ::ng-deep .snackbar-error {
+    background-color: #f44336 !important; /* Rojo */
+    color: #fff !important;
+    font-weight: bold;
+  }
+  

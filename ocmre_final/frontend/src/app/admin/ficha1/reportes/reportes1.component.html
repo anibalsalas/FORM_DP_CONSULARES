@@ -1,0 +1,40 @@
+<!-- reporte-seccion1.component.html -->
+<mat-card class="export-card">
+  <div class="export-grid">
+    <div class="title">
+      <h3>Exportar reporte</h3>
+      <small>Elige la sección y descarga el Excel</small>
+    </div>
+
+    <div class="controls">
+      <mat-form-field appearance="outline" class="w-220">
+        <mat-label>Sección</mat-label>
+        <mat-select [(value)]="selectedSection" aria-label="Seleccionar sección a exportar">
+          <mat-option *ngFor="let s of secciones" [value]="s">
+            Sección {{ s }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        class="download-btn"
+        [disabled]="loading"
+        (click)="exportar()"
+        [matTooltip]="'Exportar Sección ' + selectedSection + ' (XLSX)'"
+        aria-label="Exportar Sección seleccionada a XLSX"
+      >
+        <mat-icon *ngIf="!loading">download</mat-icon>
+        <mat-progress-spinner
+          *ngIf="loading"
+          mode="indeterminate"
+          [diameter]="20"
+          class="btn-spinner"
+        ></mat-progress-spinner>
+        <span>{{ loading ? 'Exportando...' : 'Exportar (XLSX)' }}</span>
+      </button>
+    </div>
+  </div>
+
+
+</mat-card>

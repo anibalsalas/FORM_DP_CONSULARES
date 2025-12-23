@@ -1,0 +1,59 @@
+.login-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('./img/fondo_login.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.logo-placeholder {
+  width: 150px;
+  height: 60px;
+  margin: 0 auto 1rem;
+  background-image: url('./img/logo_defensoria.png'); // <-- Cambia aquí según nombre
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.logo-placeholder .logo {
+  max-width: 150px;
+  margin-bottom: 1rem;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.submit-button {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.footer-text {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+
+
+.mat-mdc-unelevated-button:not(:disabled){
+  background-color: #035192 !important;
+}
+
+.mat-mdc-unelevated-button .mdc-button__label{
+  color: #fff !important;
+}

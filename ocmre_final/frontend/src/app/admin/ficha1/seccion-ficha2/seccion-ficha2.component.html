@@ -1,0 +1,1759 @@
+<form [formGroup]="ficha2Form" (ngSubmit)="guardarSeccion2()" class="container-fluid s1-wrapper">
+
+<section class="acciones">
+      <button mat-stroked-button class="gridSaveItem"  type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+    
+      <button *ngIf="tieneRolEspecialista()" class="gridSaveItemC" mat-flat-button color="accent" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+    
+    </section>
+
+  <section class="card">
+
+      <h1 class="section-title1 mt-4">
+        <mat-icon>account_balance_wallet</mat-icon>
+       2.1 Protección legal
+      </h1>
+
+ 
+    <div class="col-md-12">
+      <label fw-bold class="cell-label">2.1.1 La oficina consular cuenta con asesor/a legal</label><br>
+      <mat-radio-group class="inline-radios" formControlName="p211OfiConsular">
+        <mat-radio-button value="S">Sí <b style="color: #0094ea;"> → Pase a 2.1.2 </b></mat-radio-button>
+        <mat-radio-button value="N">No <b style="color: #0094ea;"> → Pase a 2.1.5</b> </mat-radio-button><br>
+       
+      </mat-radio-group>
+        <div class="err"
+            *ngIf="hasError('p211OfiConsular','required')">
+          {{ getErrorMessage('p211OfiConsular') }}
+        </div>
+       
+    </div>
+    
+
+    <!-- 2.1.2 -->
+    <div class="col-md-6 mt-3">
+     <label fw-bold class="cell-label">2.1.2 N° de asesor(a/es)</label>
+      <br>
+      <mat-form-field appearance="outline" class="col-md-6">
+        <input  matInput appMax3Digits type="number" min="0" formControlName="p212NumAsesor">
+      </mat-form-field>
+        <mat-error *ngIf="f('p212NumAsesor')?.hasError('required')">
+          Este campo es obligatorio cuando la respuesta anterior es "Sí".
+        </mat-error>
+    </div>
+
+    <!-- 2.1.3 Nacionalidad -->
+    <div class="card" style="padding:.75rem; margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.1.3 Nacionalidad del/los asesores/as</label>
+      <div class="table-responsive tabla-">
+        <table class="table table-bordered align-middle">
+          <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">Nacionalidad</th>
+            <th class="center">Cantidad</th>
+            <th class="center">Detalle</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="cell-label">
+             
+              Peruana</td>
+        
+            <td class="center">
+              <mat-form-field appearance="outline" class="col-md-6">
+                <mat-label>N°</mat-label>
+                <input matInput appMax3Digits type="number" min="0" formControlName="p213PeruanaCantidad">
+              </mat-form-field>
+            </td>
+            <td class="center muted">—</td>
+          </tr>
+          <tr>
+            <td class="cell-label">
+        
+              Extranjera</td>
+         
+            <td class="center">
+              <mat-form-field appearance="outline" class="col-md-6">
+                <mat-label>N°</mat-label>
+                <input matInput appMax3Digits type="number" min="0" formControlName="p213ExtranjeraCantidad" >
+              </mat-form-field>
+            </td>
+            <td class="center">
+              <mat-form-field appearance="outline" class="col-md-12">
+                <mat-label>Especifique nacionalidad</mat-label>
+                <input matInput maxlength="50" formControlName="p213ExtranjeraDetalle">
+              </mat-form-field>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2.1.4 -->
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.1.4 Su labor es</label>
+      <mat-radio-group class="inline-radios" formControlName="p214Labor">
+        <mat-radio-button value="R">Remunerada</mat-radio-button>
+        <mat-radio-button value="A">Ad honorem</mat-radio-button>
+      </mat-radio-group>
+        <div class="err" *ngIf="hasError('p214Labor','required')">
+          {{ getErrorMessage('p214Labor') }}
+        </div>
+    </div>
+
+  
+
+    <!-- 2.1.5 Registro -->
+    <div class="col-md-12 " style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.1.5 ¿El órgano de línea consular lleva registro digitalizado, interoperable y actualizado?</label><br>
+      <mat-radio-group class="inline-radios" formControlName="p215OrganoLinea">
+        <mat-radio-button value="S">Sí <b style="color: #0094ea;"> → Pase a 2.1.5.2 </b> </mat-radio-button>
+        <mat-radio-button value="N">No <b style="color: #0094ea;"> → Pase a 2.1.5.1 </b> </mat-radio-button>
+     
+      </mat-radio-group>
+           <div class="err"
+            *ngIf="hasError('p215OrganoLinea','required')">
+          {{ getErrorMessage('p215OrganoLinea') }}
+        </div>
+     
+<br>
+       <label class="cell-label mt-3">2.1.5.1 En caso su respuesta sea negativa, especifique</label><br>
+      <mat-radio-group class="inline-radios" formControlName="p215Especifique">
+        <mat-radio-button value="A">a. Registro en Excel</mat-radio-button>
+        <mat-radio-button value="B">b. Registro / libro manual</mat-radio-button>
+        <mat-radio-button value="C">c. Estima no necesario</mat-radio-button>
+      </mat-radio-group>
+          <div class="err"
+              *ngIf="!isDisabled('p215Especifique') && hasError('p215Especifique','required')">
+            Debe seleccionar una opción.
+          </div>
+    </div>
+
+    <!-- Orientaciones H/M por año -->
+    <ng-container *ngFor="let y of tpHMByYear">
+      <b style="color: #013a4c;"> 2.1.5.2 </b> 
+    <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+      <tr>
+        <th class="col-desc">Orientaciones {{y.year}}</th>
+        <th class="center">N° Hombres</th>
+        <th class="center">Cuántos de ellos con discapacidad</th>
+        <th class="center">N° Mujeres</th>
+        <th class="center">Cuántos de ellas con discapacidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cell-label">
+          Nº de orientaciones brindadas a connacionales respecto del ejercicio de sus derechos:
+        </td>
+
+        <!-- 👨 HOMBRES -->
+        <td class="center">
+          <mat-form-field appearance="outline" class="col-md-6">
+            <mat-label>N°</mat-label>
+            <input 
+              matInput 
+              maxlength="5" (keydown)="permitirSoloNumeros($event)" 
+              type="number" 
+              min="0" 
+              [formControlName]="y.h"
+              [class.is-invalid]="isInvalid(y.h)">
+            <mat-error *ngIf="hasError(y.h, 'required')">
+              Requerido
+            </mat-error>
+          </mat-form-field>
+        </td>
+
+        <!-- 👨‍🦽 HOMBRES CON DISCAPACIDAD -->
+        <td class="center">
+          <mat-form-field 
+            appearance="outline" 
+            class="col-md-6"
+            [class.has-error]="hasError(y.hd, 'exceedsTotal')">
+            <mat-label>N°</mat-label>
+            <input 
+              matInput 
+              maxlength="5" (keydown)="permitirSoloNumeros($event)" 
+              type="number" 
+              min="0" 
+              [formControlName]="y.hd"
+              [class.is-invalid]="isInvalid(y.hd)">
+            
+            <!--  ERROR: Excede el total -->
+            <mat-error *ngIf="hasError(y.hd, 'exceedsTotal')">
+              No puede exceder {{ f(y.h)?.value || 0 }}
+            </mat-error>
+            
+            <!--  ERROR: Requerido -->
+            <mat-error *ngIf="hasError(y.hd, 'required') && !hasError(y.hd, 'exceedsTotal')">
+              Requerido
+            </mat-error>
+
+   
+          </mat-form-field>
+        </td>
+
+        <!-- 👩 MUJERES -->
+        <td class="center">
+          <mat-form-field appearance="outline" class="col-md-6">
+            <mat-label>N°</mat-label>
+            <input 
+              matInput 
+              maxlength="5" (keydown)="permitirSoloNumeros($event)" 
+              type="number" 
+              min="0" 
+              [formControlName]="y.m"
+              [class.is-invalid]="isInvalid(y.m)">
+            <mat-error *ngIf="hasError(y.m, 'required')">
+              Requerido
+            </mat-error>
+          </mat-form-field>
+        </td>
+
+        <!-- 👩‍🦽 MUJERES CON DISCAPACIDAD -->
+        <td class="center">
+          <mat-form-field 
+            appearance="outline" 
+            class="col-md-6"
+            [class.has-error]="hasError(y.md, 'exceedsTotal')">
+            <mat-label>N°</mat-label>
+            <input 
+              matInput 
+              maxlength="5" (keydown)="permitirSoloNumeros($event)" 
+              type="number" 
+              min="0" 
+              [formControlName]="y.md"
+              [class.is-invalid]="isInvalid(y.md)">
+            
+            <!--  ERROR: Excede el total -->
+            <mat-error *ngIf="hasError(y.md, 'exceedsTotal')">
+              No puede exceder {{ f(y.m)?.value || 0 }}
+            </mat-error>
+            
+            <!--  ERROR: Requerido -->
+            <mat-error *ngIf="hasError(y.md, 'required') && !hasError(y.md, 'exceedsTotal')">
+              Requerido
+            </mat-error>
+
+            <!-- ℹ️ HINT: Máximo permitido -->
+            <!-- <mat-hint *ngIf="!hasError(y.md, 'exceedsTotal') && f(y.m)?.value > 0">
+              Máx: {{ f(y.m)?.value }}
+            </mat-hint> -->
+          </mat-form-field>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+      <!-- Temáticas por año -->
+      <div class="table-responsive tabla-">
+      <table class="table table-bordered align-middle ">
+        <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">Temática {{y.year}}</th>
+            <th class="center">N° asesorías</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let t of y.temas">
+            <td class="cell-label">{{t.label}}</td>
+           
+            <td class="center">
+              <mat-form-field appearance="outline" class="col-md-6">
+                <mat-label>N°</mat-label>
+                <input matInput appMax3Digits type="number" min="0" [formControlName]="t.num">
+              </mat-form-field>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+  
+
+    <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap mt-3 mb-3">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+      <!-- Mayores / Menores por año -->
+        <div class="table-responsive tabla-">
+          <table class="table table-bordered align-middle ">
+            <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">{{y.year}} — Grupo</th>
+            <th class="center">Hombres</th>
+            <th class="center">Con discapacidad</th>
+            <th class="center">Mujeres</th>
+            <th class="center">Con discapacidad</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="cell-label">Nº de intervenciones ante connacionales mayores de edad detenidos:</td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="y.mayH" [class.is-invalid]="isInvalid(y.mayH)"/></mat-form-field></td>
+            
+            <td class="center">
+              <mat-form-field appearance="outline" class="col-md-6" [class.has-error]="hasError(y.hd, 'exceedsTotal')">
+                <mat-label>N°</mat-label>
+                <input matInput appMax3Digits type="number" min="0" [formControlName]="y.mayHd"
+                  [class.is-invalid]="isInvalid(y.mayHd)">
+            
+            
+                <!--  ERROR: Excede el total -->
+                <mat-error *ngIf="hasError(y.mayHd, 'exceedsTotal')">
+                  No puede exceder {{ f(y.mayH)?.value || 0 }}
+                </mat-error>
+            
+                <!--  ERROR: Requerido -->
+                <mat-error *ngIf="hasError(y.mayHd, 'required') && !hasError(y.mayHd, 'exceedsTotal')">
+                  Requerido
+                </mat-error>
+            
+       
+              </mat-form-field>
+            </td>
+
+
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="y.mayM"  [class.is-invalid]="isInvalid(y.mayM)"/></mat-form-field></td>
+
+              <td class="center">
+              <mat-form-field appearance="outline" class="col-md-6" [class.has-error]="hasError(y.mayMd, 'exceedsTotal')">
+                <mat-label>N°</mat-label>
+                <input matInput appMax3Digits type="number" min="0" [formControlName]="y.mayMd"
+                  [class.is-invalid]="isInvalid(y.mayMd)">
+            
+            
+                <!--  ERROR: Excede el total -->
+                <mat-error *ngIf="hasError(y.mayMd, 'exceedsTotal')">
+                  No puede exceder {{ f(y.mayM)?.value || 0 }}
+                </mat-error>
+            
+                <!--  ERROR: Requerido -->
+                <mat-error *ngIf="hasError(y.mayMd, 'required') && !hasError(y.mayMd, 'exceedsTotal')">
+                  Requerido
+                </mat-error>
+            
+              
+              </mat-form-field>
+            </td>
+
+          </tr>
+          <tr>
+            <td class="cell-label">Nº de intervenciones ante connacionales menores de edad retenidos/detenidos:</td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput type="number" appMax3Digits min="0" [formControlName]="y.menH" [class.is-invalid]="isInvalid(y.menH)"/></mat-form-field></td>
+                  <td class="center">
+                    <mat-form-field appearance="outline" class="col-md-6" [class.has-error]="hasError(y.menHd, 'exceedsTotal')">
+                      <mat-label>N°</mat-label>
+                      <input matInput appMax3Digits type="number" min="0" [formControlName]="y.menHd"
+                        [class.is-invalid]="isInvalid(y.menHd)">
+                  
+                      <!--  ERROR: Excede el total -->
+                      <mat-error *ngIf="hasError(y.menHd, 'exceedsTotal')">
+                        No puede exceder {{ f(y.menH)?.value || 0 }}
+                      </mat-error>
+                  
+                      <!--  ERROR: Requerido -->
+                      <mat-error *ngIf="hasError(y.menHd, 'required') && !hasError(y.menHd, 'exceedsTotal')">
+                        Requerido
+                      </mat-error>
+                    </mat-form-field>
+                  </td>
+
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput type="number" appMax3Digits min="0" [formControlName]="y.menM" [class.is-invalid]="isInvalid(y.menM)"/></mat-form-field></td>
+              <td class="center">
+                    <mat-form-field appearance="outline" class="col-md-6" [class.has-error]="hasError(y.menMd, 'exceedsTotal')">
+                      <mat-label>N°</mat-label>
+                      <input matInput appMax3Digits type="number" min="0" [formControlName]="y.menMd"
+                        [class.is-invalid]="isInvalid(y.menMd)">
+                  
+                      <!--  ERROR: Excede el total -->
+                      <mat-error *ngIf="hasError(y.menMd, 'exceedsTotal')">
+                        No puede exceder {{ f(y.menH)?.value || 0 }}
+                      </mat-error>
+                  
+                      <!--  ERROR: Requerido -->
+                      <mat-error *ngIf="hasError(y.menMd, 'required') && !hasError(y.menMd, 'exceedsTotal')">
+                        Requerido
+                      </mat-error>
+                    </mat-form-field>
+                  </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tipos de intervención por año -->
+          <div class="table-responsive tabla-">
+            <table class="table table-bordered align-middle ">
+            <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">Tipo de intervención ante connacionales detenidos: (Precisar número) ({{y.year}})</th>
+            <th class="center">N° casos</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let iv of y.intervenciones">
+            <td class="cell-label">{{iv.label}}</td>
+            <td class="center">
+              <mat-form-field appearance="outline" class="col-md-6">
+                <mat-label>N°</mat-label>
+                <input matInput appMax3Digits type="number" min="0" [formControlName]="iv.ctrl">
+              </mat-form-field>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+    <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap mt-3 mb-3">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+<p><small>* En el caso del 2025, se apreciará consignar información respecto al primer semestre</small></p>
+
+  <h2 class="section-title mt-4">
+        <mat-icon>business</mat-icon>
+       Sobre atención a casos de trata de personas
+      </h2>
+  
+
+    <!-- 2.1.6 (orientado/asistido) ya incluido en configs tpHMByYear (si lo deseas por separado, puedes mostrar bloque resumido) -->
+     <!-- 2.1.6 Orientado / Asistido (Trata de personas) -->
+<div class="table-responsive tabla-" style="margin-top: .75rem;">
+  <label class="fw-bold mb-3">2.1.6 ¿Cuál es el número de personas a la que la Oficina Consular ha orientado o asistido?
+</label>
+  <table class="table table-bordered align-middle text-center">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+      <tr>
+        <th class="col-desc">Año</th>
+        <th class="center">N° orientados</th>
+        <th class="center">N° asistidos</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let y of tpOrientado">
+        <td class="cell-label">{{ y.label }}</td>
+        <td class="center" data-col="N° orientados">
+          <mat-form-field appearance="outline" class="col-md-6">
+            <mat-label>N°</mat-label>
+            <input matInput type="number" appMax3Digits min="0" [formControlName]="y.orientado">
+          </mat-form-field>
+        </td>
+        <td class="center" data-col="N° asistidos">
+          <mat-form-field appearance="outline" class="col-md-6">
+            <mat-label>N°</mat-label>
+            <input matInput type="number" appMax3Digits  min="0" [formControlName]="y.asistio">
+          </mat-form-field>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap mt-3 mb-3">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+
+
+  <div class="col-md-12 flex-grupo" style="margin-top:.5rem;">
+    <label class="cell-label fw-bold mt-4">
+      2.1.7 ¿La Oficina Consular cuenta con un Protocolo/Flujograma en casos de trata de personas?
+    </label>
+  
+    <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+  
+        <mat-checkbox
+        [checked]="isCheckboxChecked('p217Protocolo')"
+        [disabled]="isDisabled('p217Protocolo')"
+        (change)="onCheckboxChange('p217Protocolo', $event)">
+        a. Protocolo <b style="color:#0094ea;">→ Pase a 2.1.8</b>
+      </mat-checkbox>
+  
+      <mat-checkbox
+      [checked]="isCheckboxChecked('p217Flujograma')"
+      [disabled]="isDisabled('p217Flujograma')"
+      (change)="onCheckboxChange('p217Flujograma', $event)">
+      b. Flujograma del proceso a seguir <b style="color:#0094ea;">→ Pase a 2.1.8</b>
+    </mat-checkbox>
+
+      <mat-checkbox
+        [checked]="isCheckboxChecked('p217Ninguna')"
+        [disabled]="isDisabled('p217Ninguna')"
+        (change)="onCheckboxChange('p217Ninguna', $event)">
+        c. No cuenta con Protocolo/Flujograma <b style="color:#0094ea;">→ Pase a 2.1.9</b>
+      </mat-checkbox>
+<br>
+    
+    </div>
+      <div class="text-danger small mt-1" *ngIf="invalidCA">
+           Selecciona al menos una opción.
+        </div>
+  </div>
+
+ 
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label fw-bold mt-4">2.1.8 ¿Este Protocolo ha previsto flujo de atención fuera del horario laboral?</label>
+      <mat-radio-group class="inline-radios" formControlName="p218Protocolo">
+        <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+           <div class="err"
+            *ngIf="hasError('p218Protocolo','required')">
+          {{ getErrorMessage('p218Protocolo') }}
+        </div>
+      </mat-radio-group>
+    </div>
+    <div class="col-md-12">
+      <label fw-bold class="cell-label fw-bold mt-4">2.1.9 ¿Existen líneas de comunicación de emergencia disponibles para las víctimas de trata de personas?</label>
+      <mat-radio-group class="inline-radios" formControlName="p219Emergencia">
+        <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+           <div class="err"
+            *ngIf="hasError('p219Emergencia','required')">
+              {{ getErrorMessage('p219Emergencia') }}
+            </div>
+      </mat-radio-group>
+    </div>
+
+   <div class="col-md-12">
+  <label class="cell-label fw-bold mt-4">
+    2.1.10 ¿Ofrecen servicios de apoyo psicológico a víctimas de trata?
+  </label><br>
+  <mat-radio-group 
+    class="inline-radios" 
+    formControlName="p2110Psicologico"
+    >
+    <mat-radio-button value="S">Sí<b style="color:#0094ea;">→ Pase a 2.1.11</b></mat-radio-button>
+    <mat-radio-button value="N">No</mat-radio-button>    
+  </mat-radio-group>
+  <div class="err"
+            *ngIf="hasError('p2110Psicologico','required')">
+          {{ getErrorMessage('p2110Psicologico') }}
+        </div>
+
+</div>
+
+<div class="col-md-12" style="margin-top:.25rem;">
+  <div class="cell-label fw-bold mt-4">
+    2.1.11 De ser afirmativa la pregunta anterior, indique ¿Cómo se acceden estos servicios?
+  </div>
+
+  <div class="inline-radios"
+       style="flex-wrap:wrap;gap:1rem;"
+       [ngClass]="{'has-error': hasError('p2111Any','requireOne')}">
+
+    <mat-checkbox *ngFor="let c of tpAcceso"
+                  [checked]="isCheckboxChecked(c)"
+                  [disabled]="isDisabled(c)"
+                  (change)="onCheckboxChange(c,$event)">
+      {{ label(c) }}
+    </mat-checkbox>
+  </div>
+
+  <div class="err" *ngIf="f('p2110Psicologico')?.value==='S' && f('p2110Psicologico')?.errors?.['p2111Any']">
+     Selecciona al menos una opción.
+  </div>
+</div>
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label fw-bold mt-4">2.1.12 ¿Coordinan con alguna ONG o institución para que las víctimas puedan acceder a servicios médicos de emergencia?</label>
+      <mat-radio-group class="inline-radios" formControlName="p2112Ong">
+        <mat-radio-button value="S">Sí <b style="color:#0094ea;">→ Pase a 2.1.12.1</b> </mat-radio-button>
+        <mat-radio-button value="N">No<b style="color:#0094ea;">→ Pase a 2.1.13</b> </mat-radio-button>
+        <div class="err"
+            *ngIf="hasError('p2112Ong','required')">
+          {{ getErrorMessage('p2112Ong') }}
+        </div>
+      </mat-radio-group>
+
+      <div class="nota">2.1.12.1. De ser afirmativa la pregunta anterior, indique las tres entidades con más derivaciones:</div>
+      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.5rem;">
+        <mat-form-field appearance="outline"><mat-label>Entidad #1</mat-label><input matInput maxlength="200" appTextOnly formControlName="p21121"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Entidad #2</mat-label><input matInput maxlength="200" appTextOnly formControlName="p21122"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Entidad #3</mat-label><input matInput maxlength="200" appTextOnly formControlName="p21123"></mat-form-field>
+      </div>
+        <mat-error *ngIf="f('p2112Ong')?.hasError('requireOne') && (f('p2112Ong')?.touched || f('p2112Ong')?.dirty)">
+        Ingresa al menos una entidad.
+      </mat-error>
+    </div>
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label fw-bold mt-4">2.1.13 ¿Qué canales de información tienen disponibles para las víctimas de trata de personas?</label><br>
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;"><br>
+        <mat-checkbox *ngFor="let c of tpCanales"
+                      [checked]="isCheckboxChecked(c)"
+                      (change)="onCheckboxChange(c,$event)">
+          {{label(c)}}
+        </mat-checkbox>
+      </div>
+
+      <div class="text-danger small mt-1" *ngIf="invalidCA2113">
+           Selecciona al menos una opción.
+        </div>
+    </div>
+
+
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+  <label fw-bold class="cell-label fw-bold mt-4">
+    2.1.14 ¿Coordina con entidades públicas y/o privadas frente a casos de trata de personas?
+  </label><br>
+
+  <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+    <mat-checkbox *ngFor="let c of tpCoordina"
+                  [checked]="isCheckboxChecked(c)"
+                  [disabled]="f(c)?.disabled"
+                  (change)="onCheckboxChange(c,$event)">
+      {{ label(c) }}
+    </mat-checkbox>
+ 
+      <mat-checkbox
+        [checked]="isCheckboxChecked('p2114Ninguna')"
+        (change)="onCheckboxChangeNinguna14('p2114Ninguna', $event)">
+        No Coordina con Ninguna
+      </mat-checkbox>
+
+        <div class="text-danger small mt-1" *ngIf="invalidCA2114">
+           Selecciona al menos una opción.
+        </div>
+      <mat-form-field class="w-100 mt-2" *ngIf="f('p2114Otros')?.value === 'S'">
+            <mat-label>Detalle (si marcó “Otros”)</mat-label>
+            <textarea matInput rows="2" maxlength="500" formControlName="p2114OtrosDetalle"></textarea>
+            <mat-error *ngIf="isInvalid('p2114OtrosDetalle')">
+              Este campo es obligatorio cuando marca “Otros”.
+            </mat-error>
+          </mat-form-field>
+  </div>
+</div>
+
+
+<div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap mt-3 mb-3">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+    <!-- MATRIZ 2.1.15 (P2115) -->
+    <h6 style="margin-top:1rem;" class="cell-label fw-bold mt-4">2.1.15 Necesidades de la oficina consular para prestar el servicio de manera idónea </h6>
+       
+    <div class="table-responsive tabla-">
+        <div class="text-danger small mt-2" *ngIf="showP2115GroupError">
+    
+    Selecciona al menos una opción.
+  </div>
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Tipo</th>
+          <th class="center">¿Necesidad?</th>
+          <th class="center">¿Gestiones?</th>
+          <th class="center">Suficiente</th>
+          <th>Especifique / Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let r of mxTP.filas">
+          <td class="cell-label" [attr.data-col]="'Tipo'">{{r.label}}</td>
+          <td class="center" data-col="¿Necesidad?">
+            <mat-checkbox [checked]="isCheckboxChecked(r.check)" (change)="onCheckboxChange(r.check,$event)"></mat-checkbox>
+          </td>
+          <td class="center" data-col="¿Gestiones?">
+            <mat-radio-group class="inline-radios" [formControlName]="r.gestion">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+              <mat-error *ngIf="isInvalid(r.gestion)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td class="center" data-col="Suficiente">
+            <mat-radio-group class="inline-radios" [formControlName]="r.suficiente">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+              <mat-error *ngIf="isInvalid(r.suficiente)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td data-col="Especifique">
+            <ng-container *ngIf="!r.especifique; else otro">
+             <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Observaciones</mat-label>
+              <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones" placeholder="Máx. 500 caracteres"></textarea>
+              <mat-hint align="end">
+                {{ charLen(r.observaciones) }}/500
+              </mat-hint>
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Campo requerido
+              </mat-error>
+            </mat-form-field>
+            </ng-container>
+
+            <ng-template #otro>
+              <div class="grid" style="display:grid;gap:.5rem;">
+                <mat-form-field appearance="outline" class="col-md-12">
+                  <mat-label>Detalle (otro)</mat-label>
+                  <input matInput maxlength="500" [formControlName]="r.especifique!">
+
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-md-12">
+                  <mat-label>Observaciones</mat-label>
+                  <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones"></textarea>
+                </mat-form-field>
+              </div>
+            </ng-template>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr class="fila-total">
+          <td colspan="5">
+            <div class="ninguno">
+              <mat-checkbox
+                [checked]="isCheckboxChecked(mxTP.ninguno!)"
+                (change)="onCheckboxChange(mxTP.ninguno!,$event)">
+              </mat-checkbox>
+              <span>Marcar <b>Ninguno</b> si no existe ninguna necesidad</span>
+            </div>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- 2.1.16–2.1.17 -->
+    <div class="col-md-12" style="margin-top:1rem;">
+      <label fw-bold class="cell-label">2.1.16 ¿Recibe el personal consular a cargo de atender casos de trata de personas capacitaciones, cursos, entre otros, para realizar dicho servicio, a fin de garantizar una adecuada atención?</label>
+      <mat-radio-group class="inline-radios" formControlName="p2116PersonalConsul">
+        <mat-radio-button value="S">Sí</mat-radio-button><div class="err" *ngIf="isInvalid('p2116PersonalConsul')"> → Pase a 2.1.17</div>
+        <mat-radio-button value="N">No <b style="color:#0094ea;">→ Pase a 2.1.18</b> </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.1.17 Indicar la(s) institución(es) del estado que brinda(n) las capacitaciones</label>
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let c of tpInstituciones"
+                      [checked]="isCheckboxChecked(c)"
+                      [disabled]="isDisabled(c)"
+                      (change)="onCheckboxChange(c,$event)">
+          {{label(c)}}
+        </mat-checkbox>
+      </div>
+       <div class="err" *ngIf="f('p2116PersonalConsul')?.value==='S' && f('p2116PersonalConsul')?.errors?.['p2116Any']">
+         Selecciona al menos una opción.
+      </div>
+      <mat-form-field appearance="outline" class="col-md-12" style="margin-top:.5rem;">
+        <mat-label>Detalle “Otros”</mat-label>
+        <textarea matInput rows="2" maxlength="500" formControlName="p2117OtrosDetalle"></textarea>
+      </mat-form-field>
+
+    </div>
+  </section>
+  
+
+  <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap mt-3 mb-3">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+     <h2 class="section-title mt-4">
+        <mat-icon>business</mat-icon>
+      Sobre atención a víctimas de violencia de género
+      </h2>
+
+  <!-- ========================================================= -->
+  <!-- ===== 2.1.18–2.1.29 Violencia de género (VG) ============ -->
+  <!-- ========================================================= -->
+  <section class="card">
+<label fw-bold class="cell-label">2.1.18  Violencia de género</label>
+<p><small>¿La Oficina Consular ha orientado o asistido casos de violencia de género?, Diga el N° de Casos según corresponda</small></p>
+    <!-- 2.1.18 Orientado/Asistido por año -->
+       <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Año</th>
+          <th class="center">¿Orientado?</th>
+          <th class="center">¿Asistido?</th>
+          <th class="center">N° casos</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let y of vgOrientado">
+          <td class="cell-label">{{y.label}}</td>
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="y.orienta">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </td>
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="y.asiste">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+          </td>
+          <td class="center">
+            <mat-form-field appearance="outline" class="col-md-6">
+              <mat-label>N°</mat-label>
+              <input matInput appMax3Digits type="number" min="0" [formControlName]="y.num">
+            </mat-form-field>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+    <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap mt-3 mb-3">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+
+
+  <div class="col-md-12 flex-grupo" style="margin-top:.5rem;">
+    <label class="cell-label fw-bold mt-4">
+      2.1.19 ¿La Oficina Consular cuenta con un Protocolo/Flujograma en casos de violencia de género?
+    </label>
+  
+    <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+  
+        <mat-checkbox
+        [checked]="isCheckboxChecked('p2119Oficina')"
+        [disabled]="isDisabled('p2119Oficina')"
+        (change)="onCheckboxChange('p2119Oficina', $event)">
+        a. Protocolo <b style="color:#0094ea;">→ Pase a 2.1.20</b>
+      </mat-checkbox>
+  
+      <mat-checkbox
+      [checked]="isCheckboxChecked('p2119Flojograma')"
+      [disabled]="isDisabled('p2119Flojograma')"
+      (change)="onCheckboxChange('p2119Flojograma', $event)">
+      b. Flujograma del proceso a seguir <b style="color:#0094ea;">→ Pase a 2.1.20</b>
+    </mat-checkbox>
+
+      <mat-checkbox
+        [checked]="isCheckboxChecked('p2119Ninguno')"
+        [disabled]="isDisabled('p2119Ninguno')"
+        (change)="onCheckboxChange('p2119Ninguno', $event)">
+        c. No cuenta con Protocolo/Flujograma <b style="color:#0094ea;">→ Pase a 2.1.21</b>
+      </mat-checkbox>
+
+    </div>
+    
+      <div class="text-danger small mt-1" *ngIf="invalidCA2119">
+           Selecciona al menos una opción.
+        </div>
+  </div>
+
+    <!-- 2.1.19–2.1.24 Radios y canales -->
+    <div class="col-md-12" style="margin-top:1rem;">
+      <label fw-bold class="cell-label"></label>
+      <div class="grid" style="display:grid;gap:12px;">
+       
+        <div>
+          <label fw-bold class="cell-label"> 2.1.20 ¿Este Protocolo ha previsto un flujo de atención fuera del horario laboral?</label><br>
+          <mat-radio-group class="inline-radios" formControlName="p2120Protocolo">
+            <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+             <div class="err" *ngIf="hasError('p2120Protocolo','required')">
+                  {{ getErrorMessage('p2120Protocolo') }}
+                </div>
+          </mat-radio-group>
+        </div>
+        <div>
+          <label fw-bold class="cell-label">2.1.21 ¿Existen líneas de comunicación de emergencia disponibles para las víctimas de violencia de género? </label><br>
+          <mat-radio-group class="inline-radios" formControlName="p2121Violencia">
+            <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+               <div class="err" *ngIf="hasError('p2121Violencia','required')">
+                  {{ getErrorMessage('p2121Violencia') }}
+                </div>
+          </mat-radio-group>
+        </div>
+        <div>
+          <label fw-bold class="cell-label">2.1.22 ¿Ofrecen servicios de apoyo psicológico a víctimas de violencia de género? </label><br>
+          <mat-radio-group class="inline-radios" formControlName="p2122Apoyo">
+            <mat-radio-button value="S">Sí</mat-radio-button> <div class="err" *ngIf="isInvalid('p2122Apoyo')"> → Pase a 2.1.23</div>
+            <mat-radio-button value="N">No <b style="color:#0094ea;">→ Pase a 2.1.24</b></mat-radio-button>
+          </mat-radio-group>
+        </div>
+           <div class="err" *ngIf="hasError('p2122Apoyo','required')">
+                  {{ getErrorMessage('p2122Apoyo') }}
+                </div>
+        <div>
+          <label fw-bold class="cell-label">2.1.23  De ser afirmativa la pregunta anterior, indique ¿Cómo se acceden estos servicios?</label><br>
+          <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+            <mat-checkbox *ngFor="let c of vgAcceso"
+                          [checked]="isCheckboxChecked(c)"
+                          [disabled]="isDisabled(c)"
+                          (change)="onCheckboxChange(c,$event)">
+              {{label(c)}}
+            </mat-checkbox>
+          </div>
+         
+
+        </div>
+           <div class="err" *ngIf="f('p2122Apoyo')?.value==='S' && f('p2122Apoyo')?.errors?.['p2123Any']">
+               Selecciona al menos una opción.
+            </div>
+      </div>
+    </div>
+
+    <!-- 2.1.25 ONG + entidades -->
+    <div class="col-md-12" style="margin-top:1rem;">
+      <label fw-bold class="cell-label">2.1.24 ¿Coordinan con alguna ONG o institución para que las víctimas puedan acceder a servicios médicos de emergencia?</label><br>
+      <mat-radio-group class="inline-radios" formControlName="p2124Ong">
+        <mat-radio-button value="S">Sí <b style="color:#0094ea;">→ Pase a 2.1.25</b></mat-radio-button>
+        <mat-radio-button value="N">No <b style="color:#0094ea;">→ Pase a 2.1.26</b></mat-radio-button>
+              
+      </mat-radio-group>
+        <div class="err" *ngIf="hasError('p2124Ong','required')">
+                  {{ getErrorMessage('p2124Ong') }}
+                </div>
+        <label fw-bold class="cell-label">2.1.25 De ser afirmativa la pregunta anterior, indique las cinco entidades con más derivaciones:
+        De ser afirmativa la pregunta anterior, indique las tres entidades con más derivaciones:
+        </label>
+
+      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.5rem;margin-top:.5rem;">
+        <mat-form-field appearance="outline"><mat-label>Entidad #1</mat-label><input matInput appTextOnly maxlength="200" formControlName="p2125Entidad1"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Entidad #2</mat-label><input matInput appTextOnly maxlength="200" formControlName="p2125Entidad2"></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>Entidad #3</mat-label><input matInput appTextOnly maxlength="200" formControlName="p2125Entidad3"></mat-form-field>
+      </div>
+
+         <mat-error *ngIf="f('p2124Ong')?.hasError('requireOne') && (f('p2124Ong')?.touched || f('p2124Ong')?.dirty)">
+        Ingresa al menos una entidad.
+      </mat-error>
+      
+    </div>
+
+    <!-- 2.1.26 Canales -->
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.1.26 ¿Qué canales de información tienen disponibles para víctimas de violencia de género?
+</label><br>
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let c of vgCanales"
+                      [checked]="isCheckboxChecked(c)"
+                      (change)="onCheckboxChange(c,$event)">
+          {{label(c)}}
+        </mat-checkbox>
+      </div>
+         <div class="text-danger small mt-1" *ngIf="invalidCA2126">
+           Selecciona al menos una opción.
+        </div>
+    </div>
+
+
+    <!-- 2.1.27 Coordinación con entidades -->
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">
+        2.1.27 ¿Coordina con entidades públicas y/o privadas frente a casos de violencia de género?
+      </label><br>
+    
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let c of vgCoordina" [checked]="isCheckboxChecked(c)" [disabled]="f(c)?.disabled"
+          (change)="onCheckboxChange(c, $event)">
+          {{ label(c) }}
+        </mat-checkbox>
+     
+    
+          <mat-checkbox [checked]="isCheckboxChecked('p2127Ninguna')" (change)="onCheckboxChange('p2127Ninguna', $event)">
+            No Coordina con Ninguna
+          </mat-checkbox>
+        </div>
+     <div class="text-danger small mt-1" *ngIf="invalidCA2127">
+           Selecciona al menos una opción.
+        </div>
+  
+       <mat-form-field appearance="outline" class="col-md-12" style="margin-top:.5rem;">
+        <mat-label>Detalle (si marcó “Otros”)</mat-label>
+        <textarea matInput rows="2" maxlength="500" formControlName="p2127OtrosDetallar"></textarea>
+       </mat-form-field>
+
+       
+    </div>
+
+    <!-- 2.1.28 MATRIZ (P2128) -->
+   <label fw-bold class="cell-label" style="margin-top:1rem;">2.1.28. Necesidades de la oficina consular para prestar el servicio de manera idónea</label>
+         
+
+        
+   <div class="table-responsive tabla-">
+  <div class="text-danger small mt-2" *ngIf="showP2128GroupError">
+           Selecciona al menos una opción.
+        </div>
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Tipo</th>
+          <th class="center">¿Necesidad?</th>
+          <th class="center">¿Gestiones?</th>
+          <th class="center">Suficiente</th>
+          <th>Especifique / Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let r of mxVG.filas">
+          <td class="cell-label">{{r.label}}</td>
+          <td class="center"><mat-checkbox [checked]="isCheckboxChecked(r.check)" (change)="onCheckboxChange(r.check,$event)"></mat-checkbox></td>
+
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.gestion">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+             <mat-error *ngIf="isInvalid(r.gestion)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.suficiente">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+             <mat-error *ngIf="isInvalid(r.suficiente)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td>
+            <ng-container *ngIf="!r.especifique; else vgOtro">
+          
+
+                <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Especifique / Comentarios</mat-label>
+                      <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones"
+                        placeholder="Máx. 500 caracteres"></textarea>
+                      <mat-hint align="end">
+                        {{ charLen(r.observaciones) }}/500
+                      </mat-hint>
+                      <mat-error>
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+            </ng-container>
+            <ng-template #vgOtro>
+              <div class="grid" style="display:grid;gap:.5rem;">
+                <mat-form-field appearance="outline" class="col-md-12">
+                  <mat-label>Detalle (otro)</mat-label>
+                  <input matInput maxlength="500" [formControlName]="r.especifique!">
+                </mat-form-field>
+           
+
+
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Especifique / Comentarios</mat-label>
+                      <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones"
+                        placeholder="Máx. 500 caracteres"></textarea>
+                      <mat-hint align="end">
+                        {{ charLen(r.observaciones) }}/500
+                      </mat-hint>
+                      <mat-error>
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+              </div>
+            </ng-template>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr class="fila-total">
+          <td colspan="5">
+            <div class="ninguno">
+              <mat-checkbox
+                [checked]="isCheckboxChecked(mxVG.ninguno!)"
+                (change)="onCheckboxChange(mxVG.ninguno!,$event)">
+              </mat-checkbox>
+              <span>Marcar <b>Ninguno</b> si no existe ninguna necesidad</span>
+            </div>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- 2.1.29 -->
+    <div class="col-md-12" style="margin-top:.75rem;">
+      <label fw-bold class="cell-label">2.1.29 ¿Recibe el personal consular a cargo de esta labor capacitaciones, cursos,
+        entre otros, para realizar dicho servicio, a fin de garantizar una adecuada atención?</label><br>
+      <mat-radio-group class="inline-radios" formControlName="p2129RecibePersonal">
+        <mat-radio-button value="S">Sí</mat-radio-button>
+        <div class="err" *ngIf="isInvalid('p2129RecibePersonal')"> -→ Pase a 2.1.30</div>
+        <mat-radio-button value="N">No <b style="color:#0094ea;">→ Pase a 2.1.31</b></mat-radio-button>    
+      </mat-radio-group>
+      <div class="err" *ngIf="hasError('p2129RecibePersonal','required')">
+        {{ getErrorMessage('p2129RecibePersonal') }}
+      </div>
+    </div>
+
+    <!-- 2.1.30 (instituciones) -->
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.1.30 Indicar la(s) institución(es) del Estado que brinda(n) de las capacitaciones</label><br>
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let c of vgInstituciones"
+                      [checked]="isCheckboxChecked(c)"
+                      [disabled]="isDisabled(c)"
+                      (change)="onCheckboxChange(c,$event)">
+          {{label(c)}}
+        </mat-checkbox>
+      </div>
+            <div class="err" *ngIf="f('p2129RecibePersonal')?.value==='S' && f('p2129RecibePersonal')?.errors?.['p2130Any']">
+               Selecciona al menos una opción.
+            </div>
+      <mat-form-field appearance="outline" class="col-md-12" style="margin-top:.5rem;">
+        <mat-label>Detalle “Otros”</mat-label>
+        <textarea matInput rows="2" maxlength="500" formControlName="p2130OtrosDetalle"></textarea>
+      </mat-form-field>
+ 
+    </div>
+  </section>
+
+<div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap mt-3 mb-3">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+   <h2 class="section-title mt-4">
+        <mat-icon>business</mat-icon>
+      Sobre la atención en casos de deportación y/o expulsión
+      </h2>
+
+
+  <!-- ========================================================= -->
+  <!-- == 2.1.31–2.1.40 Detenciones/Deportaciones/Expulsiones == -->
+  <!-- ========================================================= -->
+  <section class="card">
+  <label fw-bold class="cell-label">2.1.31 ¿Cuántos casos de detenciones, deportaciones y expulsiones han sido atendidos por la Oficina Consular?</label>
+
+    <!-- 2.1.30–2.1.32 Por año -->
+       <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Año</th>
+          <th class="center">N° de atenciones</th>
+          <th class="center">Detenciones</th>
+          <th class="center">Deportación</th>
+          <th class="center">Expulsión</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let r of ddePorAnio">
+          <td class="cell-label">{{r.label}}</td>
+          <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput (keydown)="permitirSoloNumeros($event)"  type="text" min="0" [formControlName]="r.numAnio"></mat-form-field></td>
+          <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput (keydown)="permitirSoloNumeros($event)"  type="text" min="0" [formControlName]="r.detenciones"></mat-form-field></td>
+          <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput (keydown)="permitirSoloNumeros($event)"  type="text" min="0" [formControlName]="r.deportacion"></mat-form-field></td>
+          <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput (keydown)="permitirSoloNumeros($event)"  type="text" min="0" [formControlName]="r.expulsion"></mat-form-field></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+<p><small><b>* En el caso del 2025, se apreciará consignar información respecto al primer semestre</b></small></p>
+
+   
+
+ <div class="col-md-12 flex-grupo" style="margin-top:.5rem;">
+    <label class="cell-label fw-bold mt-4">
+     2.1.32 ¿La Oficina Consular cuenta con un Protocolo/Flujograma en casos de detenciones, deportaciones o expulsiones?
+    </label>
+
+    <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+  
+        <mat-checkbox
+        [checked]="isCheckboxChecked('p2132OfiConsular')"
+        [disabled]="isDisabled('p2132OfiConsular')"
+        (change)="onCheckboxChange('p2132OfiConsular', $event)">
+        a. Protocolo <b style="color:#0094ea;">→ Pase a 2.1.33</b>
+      </mat-checkbox>
+  
+      <mat-checkbox
+      [checked]="isCheckboxChecked('p2132Flujograma')"
+      [disabled]="isDisabled('p2132Flujograma')"
+      (change)="onCheckboxChange('p2132Flujograma', $event)">
+      b. Flujograma del proceso a seguir <b style="color:#0094ea;">→ Pase a 2.1.33</b>
+    </mat-checkbox>
+
+      <mat-checkbox
+        [checked]="isCheckboxChecked('p2132Ninguno')"
+        [disabled]="isDisabled('p2132Ninguno')"
+        (change)="onCheckboxChange('p2132Ninguno', $event)">
+        c. No cuenta con Protocolo/Flujograma <b style="color:#0094ea;">→ Pase a 2.1.34</b>
+      </mat-checkbox>
+
+
+    </div>
+      <div class="text-danger small mt-1" *ngIf="invalidCA2132">
+         Selecciona al menos una opción.
+      </div>
+
+      <!-- <div class="alert-warning-question"
+        *ngIf="f('p2132Any')?.hasError('requireOne') && (showAllErrors || f('p2132Any')?.touched)">
+         Debe seleccionar al menos una opción.
+      </div> -->
+
+  </div>
+
+    <div class="col-md-12" style="margin-top:1rem;">
+      <div class="grid" style="display:grid;gap:12px;">
+   
+      
+        <div>
+          <label fw-bold class="cell-label">2.1.33 ¿Este Protocolo y/o Flujograma ha previsto flujo de atención fuera del horario laboral?</label>
+          <mat-radio-group class="inline-radios" formControlName="p2133Protocolo">
+            <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+              <div class="err" *ngIf="hasError('p2133Protocolo','required')">
+                  {{ getErrorMessage('p2133Protocolo') }}
+          </div>
+          </mat-radio-group>
+        </div>
+        <div>
+          <label fw-bold class="cell-label">2.1.34 ¿Existen líneas de comunicación de emergencia disponibles para los casos de detención, deportación o expulsión?</label>
+          <mat-radio-group class="inline-radios" formControlName="p2134Existen">
+            <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+               <div class="err" *ngIf="hasError('p2134Existen','required')">
+                  {{ getErrorMessage('p2134Existen') }}
+                </div>
+                  <div class="err" *ngIf="isInvalid('p2134Existen')"> → Si la respuesta es afirmativa, Pase a 2.1.35</div>
+
+          </mat-radio-group>
+        </div>
+        <div>
+          <label fw-bold class="cell-label">2.1.35 De ser afirmativa la pregunta anterior, indique ¿Cómo se acceden estos servicios?</label>
+          <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+           <mat-checkbox *ngFor="let c of ddeCanales"
+              [checked]="isCheckboxChecked(c)"
+              [disabled]="f(c)?.disabled"
+              (change)="onCheckboxChange(c,$event)">
+            {{ label(c) }}
+          </mat-checkbox>
+          </div>
+           <div class="err" *ngIf="f('p2134Existen')?.value==='S' && f('p2134Existen')?.errors?.['p2135Any']">
+             Selecciona al menos una opción.
+          </div>
+
+           <div class="error-msg"
+            *ngIf="f('p2134Existen')?.hasError('requireOne') && (f('p2134Existen')?.touched || f('p2134Existen')?.dirty)">
+          Debes seleccionar al menos un canal de acceso si respondes “Sí”.
+        </div>
+        </div>
+        <div>
+          <label fw-bold class="cell-label">2.1.36 ¿Coordina con entidades públicas y/o privadas para que estas personas puedan acceder a servicios médicos de emergencia?</label><br>
+          <mat-radio-group class="inline-radios" formControlName="p2136Coordina">
+            <mat-radio-button value="S">Sí</mat-radio-button> <div class="err" *ngIf="isInvalid('p2136Coordina')"> → Pase a 2.1.37</div>
+            <mat-radio-button value="N">No <b style="color:#0094ea;">→ Pase a 2.1.38</b> </mat-radio-button>           
+          </mat-radio-group>
+        </div>
+               <div class="err" *ngIf="hasError('p2136Coordina','required')">
+                  {{ getErrorMessage('p2136Coordina') }}
+          </div>
+        <div>
+          <label fw-bold class="cell-label">2.1.37 ¿Qué canales de información tienen disponibles para las personas / familiares en caso de detenciones, deportaciones y expulsiones?</label><br>
+          <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+            <mat-checkbox *ngFor="let c of ddeCanales2"
+                          [checked]="isCheckboxChecked(c)"
+                           [disabled]="isDisabled(c)"
+                          (change)="onCheckboxChange(c,$event)">
+              {{label(c)}}
+            </mat-checkbox>
+          </div>
+         
+        </div>
+      </div>
+         <div class="err" *ngIf="f('p2136Coordina')?.value==='S' && f('p2136Coordina')?.errors?.['p2137Any']">
+               Selecciona al menos una opción.
+            </div>
+    </div>
+    <!-- 2.1.40 ¿Con quién coordina? (P2138) -->
+    <div class="col-md-12" style="margin-top:.5rem;">
+  <label fw-bold class="cell-label">
+    2.1.38 ¿Coordina con entidades públicas y/o privadas frente a casos de detenciones, deportaciones y expulsiones?
+  </label><br>
+
+  <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+    <mat-checkbox *ngFor="let c of ddeCoordina"
+                  [checked]="isCheckboxChecked(c)"
+                  [disabled]="f(c)?.disabled"
+                  (change)="onCheckboxChange(c, $event)">
+      {{ label(c) }}
+    </mat-checkbox>
+
+      <mat-checkbox
+        [checked]="isCheckboxChecked('p2138Ninguna')"
+        (change)="onCheckboxChange('p2138Ninguna', $event)">
+        No Coordina con Ninguna
+      </mat-checkbox>
+    
+  </div>
+   <div class="text-danger small mt-1" *ngIf="invalidCA2138">
+           Selecciona al menos una opción.
+    </div>
+  <mat-form-field appearance="outline" class="col-md-12" style="margin-top:.5rem;">
+    <mat-label>Detalle (si marcó “Otros”)</mat-label>
+    <textarea matInput rows="2" maxlength="500" formControlName="p2138OtrosDetalle"></textarea>
+  </mat-form-field>
+</div>
+
+    <!-- MATRIZ (P2139) -->
+    <label fw-bold class="cell-label">2.1.39 Necesidades de la oficina consular para prestar el servicio de manera idónea</label>
+    <div class="text-danger small mt-2" *ngIf="showP2139GroupError">
+    Selecciona al menos una opción.
+  </div>
+     <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Tipo</th>
+          <th class="center">¿Necesidad?</th>
+          <th class="center">¿Gestiones?</th>
+          <th class="center">Suficiente</th>
+          <th>Especifique / Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let r of mxDDE.filas">
+          <td class="cell-label">{{r.label}}</td>
+          <td class="center"><mat-checkbox [checked]="isCheckboxChecked(r.check)" (change)="onCheckboxChange(r.check,$event)"></mat-checkbox></td>
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.gestion">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+             <mat-error *ngIf="isInvalid(r.gestion)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.suficiente">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+            <mat-error *ngIf="isInvalid(r.suficiente)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td>
+            <ng-container *ngIf="!r.especifique; else ddeOtro">
+         
+
+              
+                <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Especifique / Comentarios</mat-label>
+                      <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones"
+                        placeholder="Máx. 500 caracteres"></textarea>
+                      <mat-hint align="end">
+                        {{ charLen(r.observaciones) }}/500
+                      </mat-hint>
+                      <mat-error>
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+            </ng-container>
+            <ng-template #ddeOtro>
+              <div class="grid" style="display:grid;gap:.5rem;">
+                <mat-form-field appearance="outline" class="col-md-12">
+                  <mat-label>Detalle (otro)</mat-label>
+                  <input matInput maxlength="500" [formControlName]="r.especifique!">
+                </mat-form-field>
+           
+
+                   <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Especifique / Comentarios</mat-label>
+                      <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones"
+                        placeholder="Máx. 500 caracteres"></textarea>
+                      <mat-hint align="end">
+                        {{ charLen(r.observaciones) }}/500
+                      </mat-hint>
+                      <mat-error>
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+              </div>
+            </ng-template>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr class="fila-total">
+          <td colspan="5">
+            <div class="ninguno">
+              <mat-checkbox
+                [checked]="isCheckboxChecked(mxDDE.ninguno!)"
+                (change)="onCheckboxChange(mxDDE.ninguno!,$event)">
+              </mat-checkbox>
+              <span>Marcar <b>Ninguno</b> si no existe ninguna necesidad</span>
+            </div>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Capacitaciones (P2140 / P2141) -->
+    <div class="col-md-12" style="margin-top:.75rem;">
+      <label fw-bold class="cell-label">2.1.40 ¿Recibe el personal consular a cargo de atender casos de detenciones, deportaciones y expulsiones capacitaciones, cursos, entre otros, para realizar dicho servicio, a fin de garantizar una adecuada atención?</label>
+      <mat-radio-group class="inline-radios" formControlName="p2140Recibe">
+      <mat-radio-button value="S">Sí</mat-radio-button><div class="err" *ngIf="isInvalid('p2140Recibe')"> → Pase a 2.1.41 :</div>
+
+      <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a 2.2.1</b> </mat-radio-button>
+        <div class="err" *ngIf="hasError('p2140Recibe','required')">
+                  {{ getErrorMessage('p2140Recibe') }}
+                </div>
+
+      </mat-radio-group>
+    </div>
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.1.41. Indicar la(s) institución(es) del estado que brinda(n) de las capacitaciones</label>
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let c of ddeInstituciones"
+                      [checked]="isCheckboxChecked(c)"
+                      [disabled]="isDisabled(c)"
+                      (change)="onCheckboxChange(c,$event)">
+          {{label(c)}}
+        </mat-checkbox>
+      </div>
+         <div class="err" *ngIf="f('p2140Recibe')?.value==='S' && f('p2140Recibe')?.errors?.['p2140Any']">
+             Selecciona al menos una opción.
+          </div>
+      <mat-form-field appearance="outline" class="col-md-12" style="margin-top:.5rem;">
+        <mat-label>Detalle “Otros”</mat-label>
+        <textarea matInput rows="2" maxlength="500" formControlName="p2141OtroDetalle"></textarea>
+      </mat-form-field>
+
+      <!-- <div class="ninguno" style="margin-top:.25rem;">
+        <mat-checkbox [checked]="isCheckboxChecked('p2141Ninguno')" (change)="onCheckboxChange('p2141Ninguno',$event)"></mat-checkbox>
+        <span>No ha recibido ninguna capacitación</span>
+      </div> -->
+    </div>
+  </section>
+
+      <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mb-2">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+  <h2 class="section-title1 mt-4">
+        <mat-icon>account_balance_wallet</mat-icon>
+       2.2 Asistencia humanitaria
+      </h2>
+  <!-- ========================================================= -->
+  <!-- ================== 2.2 Asistencia humanitaria =========== -->
+  <!-- ========================================================= -->
+  <section class="card">
+    <h3></h3>
+
+    <div class="grid" style="display:grid;gap:12px;">
+      <div>
+        <label fw-bold class="cell-label">2.2.1 ¿El órgano de línea consular lleva un registro digitalizado, interoperable y actualizado de todo tipo de ayuda humanitaria?</label>
+        <mat-radio-group class="inline-radios" formControlName="p221Organo">
+          <mat-radio-button value="S">Sí <b style="color:#0094ea;"> → Pase a 2.2.2</b></mat-radio-button>
+          <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a 2.2.1.1</b></mat-radio-button>
+          <div class="err" *ngIf="hasError('p221Organo','required')">
+                  {{ getErrorMessage('p221Organo') }}
+                </div>
+        </mat-radio-group>
+
+
+      </div>
+      <div>
+
+
+
+        <label fw-bold class="cell-label">2.2.1.1. En caso su respuesta sea negativa, especifique:</label>
+        <mat-radio-group class="inline-radios" formControlName="p221Especifique">
+          <mat-radio-button value="A">a. Cuenta con un registro en Excel</mat-radio-button>
+          <mat-radio-button value="B">b. Cuenta con un registro / libro manual</mat-radio-button>
+          <mat-radio-button value="C">c. Estima necesario no contar con un registro</mat-radio-button>
+        </mat-radio-group>
+
+         <div class="err"
+              *ngIf="!isDisabled('p221Especifique') && hasError('p221Especifique','required')">
+            Debe seleccionar una opción.
+          </div>
+
+      </div>
+
+      <div>
+         <label fw-bold class="cell-label">2.2.2 Del presupuesto destinado para el funcionamiento de la Oficina Consular:</label>
+        <mat-form-field appearance="outline" class="col-md-6">       
+          <mat-label>
+             <p><small><b>¿Cuánto es el porcentaje que se utiliza para la atención de casos de asistencia humanitaria?</b></small></p>
+          </mat-label>
+          <input matInput type="number" appMax3Digits formControlName="p222Porcentaje" (keydown)="permitirNumerosHasta100($event)">
+          <span matSuffix>%</span>
+          <mat-error *ngIf="isInvalid('p113PorcNoInsc')">0 a 100</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+  <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mb-2">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+    <!-- 2.2.3–2.2.4 Eventos por año (P223) -->
+    <div class="table-responsive tabla-">
+      <label fw-bold class="cell-label">2.2.3 ¿Cómo se ha dividido el presupuesto asignado para la atención de casos de asistencia humanitaria?
+      </label>
+    
+      <table class="table table-bordered align-middle ">
+        <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Evento</th>
+          <th class="center">2023</th>
+          <th class="center">2024</th>
+          <th class="center">2025</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let ev of ahEventos">
+          <td class="cell-label">{{ev.label}}</td>
+          <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput (keydown)="permitirNumerosHasta100($event)" type="number" min="0" [formControlName]="ev.y23"></mat-form-field>
+          <span matSuffix>%</span>
+          </td>
+          <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput (keydown)="permitirNumerosHasta100($event)" type="number" min="0" [formControlName]="ev.y24"></mat-form-field><span matSuffix>%</span></td>
+          <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput (keydown)="permitirNumerosHasta100($event)" type="number" min="0" [formControlName]="ev.y25"></mat-form-field><span matSuffix>%</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+<p><small><b>* En el caso del 2025, se apreciará consignar información respecto al primer semestre</b></small></p>
+  <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mb-2">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+
+    <!-- 2.2.5–2.2.7 Tipos de ayuda por año (P224,P225,P226) -->
+    <ng-container *ngFor="let bl of ahBloques">
+        <label fw-bold class="cell-label">{{bl.title}}</label>
+         <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">Año</th>
+            <th class="center">N° casos</th>
+            <th class="center">Ayuda material</th>
+            <th class="center">Ayuda económica</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let y of bl.years">
+            <td class="cell-label">{{y.label}}</td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="y.num"></mat-form-field></td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="y.mat"></mat-form-field></td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="y.eco"></mat-form-field></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+<p><small><b>* En el caso del 2025, se apreciará consignar información respecto al primer semestre</b></small></p>
+  <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mb-2">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+    <!-- 2.2.8–2.2.10 Otros indicadores (P227,P228,P229) -->
+    <ng-container *ngFor="let bl of ahIndicadores">
+          <label fw-bold class="cell-label">{{bl.title}}</label>
+         <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">{{bl.row1}}</th>
+            <th class="center">2023</th>
+            <th class="center">2024</th>
+            <th class="center">2025</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let r of bl.rows">
+            <td class="cell-label">{{r.label}}</td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="r.y23"></mat-form-field></td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="r.y24"></mat-form-field></td>
+            <td class="center"><mat-form-field appearance="outline" class="col-md-6"><mat-label>N°</mat-label><input matInput appMax3Digits type="number" min="0" [formControlName]="r.y25"></mat-form-field></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+      <p><small><b>* En el caso del 2025, se apreciará consignar información respecto al primer semestre</b></small></p>
+        <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mb-2">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+    <!-- MATRIZ (P2210) -->
+    <label fw-bold class="cell-label">2.2.10 Necesidades de la oficina consular para prestar el servicio de manera idónea</label>
+     <div class="text-danger small mt-2" *ngIf="showP2210GroupError">
+    <mat-icon class="me-1" style="font-size: 16px; vertical-align: middle;">warning</mat-icon>
+    Selecciona al menos una opción.
+  </div>
+        <div class="table-responsive tabla-">
+  <table class="table table-bordered align-middle ">
+    <thead class="table-primary align-middle" style="font-size:.9rem;">
+        <tr>
+          <th class="col-desc">Tipo</th>
+          <th class="center">¿Necesidad?</th>
+          <th class="center">¿Gestiones?</th>
+          <th class="center">Suficiente</th>
+          <th>Especifique / Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let r of mxAH.filas">
+          <td class="cell-label">{{r.label}}</td>
+          <td class="center"><mat-checkbox [checked]="isCheckboxChecked(r.check)" (change)="onCheckboxChange(r.check,$event)"></mat-checkbox></td>
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.gestion">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+             <mat-error *ngIf="isInvalid(r.gestion)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td class="center">
+            <mat-radio-group class="inline-radios" [formControlName]="r.suficiente">
+              <mat-radio-button value="S">Sí</mat-radio-button><mat-radio-button value="N">No</mat-radio-button>
+            </mat-radio-group>
+           <mat-error *ngIf="isInvalid(r.suficiente)">Seleccione una opción.</mat-error>
+
+          </td>
+          <td>
+            <ng-container *ngIf="!r.especifique; else ahOtro">
+            
+
+               <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Observaciones</mat-label>
+                      <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones"
+                        placeholder="Máx. 500 caracteres"></textarea>
+                      <mat-hint align="end">
+                        {{ charLen(r.observaciones) }}/500
+                      </mat-hint>
+                      <mat-error>
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+            </ng-container>
+            <ng-template #ahOtro>
+              <div class="grid" style="display:grid;gap:.5rem;">
+                <mat-form-field appearance="outline" class="col-md-12">
+                  <mat-label>Detalle (otro)</mat-label>
+                  <input matInput maxlength="500" [formControlName]="r.especifique!">
+                </mat-form-field>
+              
+
+
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Observaciones</mat-label>
+                      <textarea matInput rows="2" maxlength="500" [formControlName]="r.observaciones"
+                        placeholder="Máx. 500 caracteres"></textarea>
+                      <mat-hint align="end">
+                        {{ charLen(r.observaciones) }}/500
+                      </mat-hint>
+                      <mat-error>
+                        <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                        Campo requerido
+                      </mat-error>
+                    </mat-form-field>
+
+                
+              </div>
+            </ng-template>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr class="fila-total">
+          <td colspan="5">
+            <div class="ninguno">
+              <mat-checkbox
+                [checked]="isCheckboxChecked(mxAH.ninguno!)"
+                (change)="onCheckboxChange(mxAH.ninguno!,$event)">
+              </mat-checkbox>
+              <span>Marcar <b>Ninguno</b> si no existe ninguna necesidad</span>
+            </div>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+  <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3 mb-2">
+      <button mat-stroked-button color="primary" type="button" (click)="guardarSeccion2Incompleta()">
+        Guardado Parcial
+      </button>
+    </div>
+    <!-- Capacitaciones (P2211 / P2212) -->
+    <div class="col-md-12" style="margin-top:.75rem;">
+      <label fw-bold class="cell-label">2.2.11 ¿Recibe el personal consular a cargo de atender casos de asistencia humanitaria capacitaciones, cursos, entre otros, para realizar dicho servicio, a fin de garantizar una adecuada atención?</label><br>
+      <mat-radio-group class="inline-radios" formControlName="p2211Recibe">
+        <mat-radio-button value="S">Sí</mat-radio-button> <div class="err" *ngIf="isInvalid('p2211Recibe')"> → Pase a 2.2.12</div>
+        <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a la siguiente Sección</b></mat-radio-button>
+      </mat-radio-group>
+       <div class="err" *ngIf="hasError('p2211Recibe','required')">
+                  {{ getErrorMessage('p2211Recibe') }}
+           </div>
+    </div>
+    <div class="col-md-12" style="margin-top:.5rem;">
+      <label fw-bold class="cell-label">2.2.12 Indicar la(s) institución(es) del estado que brinda(n) de las capacitaciones</label><br>
+      <div class="inline-radios" style="flex-wrap:wrap;gap:1rem;">
+        <mat-checkbox *ngFor="let c of ahInstituciones"
+                      [checked]="isCheckboxChecked(c)"
+                       [disabled]="isDisabled(c)"
+                      (change)="onCheckboxChange(c,$event)">
+          {{label(c)}}
+        </mat-checkbox>
+      </div>
+      <div class="err" *ngIf="f('p2211Recibe')?.value==='S' && f('p2211Recibe')?.errors?.['p2212Any']">
+         Selecciona al menos una opción.
+      </div>
+      <mat-form-field appearance="outline" class="col-md-12" style="margin-top:.5rem;">
+        <mat-label>Detalle “Otros”</mat-label>
+        <textarea matInput rows="2" maxlength="500" formControlName="p2212OtrosDetalle"></textarea>
+      </mat-form-field>
+
+ 
+ 
+    </div>
+  </section>
+
+
+
+
+  <!-- ACCIONES -->
+    <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
+    <button mat-stroked-button type="button" class="gridSaveItem" (click)="guardarSeccion2Incompleta()">
+      Guardado Parcial
+    </button>
+
+
+     <button *ngIf="tieneRolEspecialista()" class="gridSaveItemC" mat-flat-button color="accent" type="button" (click)="validarSeccion()">
+        Validar sección 2
+      </button>
+
+    <button mat-flat-button class="gridSaveItemC" type="submit" >
+      Guardar sección Completa
+    </button>
+  </div>
+</form>
+
+
+

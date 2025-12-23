@@ -1,0 +1,398 @@
+<form [formGroup]="ficha10Form" (ngSubmit)="guardarSeccion10()" class="container-fluid form-seccion10 s1-wrapper">
+
+ 
+    <section class="acciones">
+      <button class="gridSaveItem" mat-stroked-button type="button" (click)="guardarSeccion10Incompleta()">
+        Guardado Parcial
+      </button>
+
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+
+      <button *ngIf="tieneRolEspecialista()" mat-flat-button class="gridSaveItemC" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+
+    </section>
+  <!-- 10.1 -->
+
+
+
+  <div class="card">
+      <label fw-bold class="cell-label q-label fw-bold mt-4">10.1. ¿Realizó actividad itinerante consular durante el <strong>2023</strong>?  </label>
+    <div class="inline-radios mleft">
+      <mat-radio-group formControlName="p101Realizo">
+        <mat-radio-button value="S">Sí</mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+      <div class="err mleft" *ngIf="isInvalid('p101Realizo')">Requerido</div>
+
+    </div>
+    <div class="mleft mt-6 w-lg">
+      <mat-form-field appearance="outline" class="w-lg">
+        <mat-label>De ser afirmativa, indicar cuántas</mat-label>
+        <input matInput type="number" appMax4Digits formControlName="p101Afirmativa" appNumericInput max3digits>
+      </mat-form-field>
+      <div class="err" *ngIf="isInvalid('p101Afirmativa')">Requerido y ≥ 0</div>
+    </div>
+  
+
+  <!-- 10.2 -->
+  <div >
+      <label fw-bold class="cell-label q-label fw-bold mt-4">10.2. ¿Realizó actividad itinerante consular durante el <strong>2024</strong>?  </label>
+    <div class="inline-radios mleft">
+      <mat-radio-group formControlName="p102Realizo">
+        <mat-radio-button value="S">Sí</mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+      <div class="err mleft" *ngIf="isInvalid('p102Realizo')">Requerido</div>
+    </div>
+    <div class="mleft mt-2 w-lg">
+      <mat-form-field appearance="outline" class="w-lg">
+        <mat-label>De ser afirmativa, indicar cuántas</mat-label>
+        <input matInput type="number" appMax4Digits formControlName="p102Afirmativa" appNumericInput max3digits>
+      </mat-form-field>
+      <div class="err" *ngIf="isInvalid('p102Afirmativa')">Requerido y ≥ 0</div>
+    </div>
+  </div>
+
+  <!-- 10.3 -->
+  <div>
+      <label fw-bold class="cell-label q-label fw-bold mt-4">10.3. ¿Realizó actividad itinerante consular durante el <strong>2025</strong>?  </label>
+    <div class="inline-radios mleft">
+      <mat-radio-group formControlName="p103Realizo">
+        <mat-radio-button value="S">Sí</mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+      <div class="err mleft" *ngIf="isInvalid('p103Realizo')">Requerido</div>
+
+    </div>
+    <div class="mleft mt-2 w-lg">
+      <mat-form-field appearance="outline" class="w-lg">
+        <mat-label>De ser afirmativa, indicar cuántas</mat-label>
+        <input matInput type="number" appMax4Digits formControlName="p103Afirmativa" appNumericInput max3digits>
+      </mat-form-field>
+      <div class="err" *ngIf="isInvalid('p103Afirmativa')">Requerido y ≥ 0</div>
+    </div>
+  </div>
+</div>
+  <!-- 10.4 Actividades -->
+
+  <div class="card">
+  <label class="cell-label q-label fw-bold mt-4">
+    10.4. Marcar las actividades que realizan en las actividades de itinerancia
+      <span class="text-danger fw-bold">*</span>
+  </label>
+
+  <div class="row g-2 mleft">
+    <div class="col-12 col-md-6" *ngFor="let k of p104Actividades">
+      <mat-checkbox
+        [checked]="isChecked(k)"
+        [disabled]="isDisabled104(k)"
+        (change)="onCheck(k, $event)">
+        {{ pretty104(k) }}
+      </mat-checkbox>
+
+      <!-- Campo 'Especifique' solo para 'Otro(s)' cuando está marcado -->
+      <ng-container  *ngIf="k === 'p104Otro' && isChecked('p104Otro')">
+        <mat-form-field appearance="outline" class="w-100 mt-2">
+          <mat-label>Especifique</mat-label>
+          <input
+            matInput
+            formControlName="p104OtroDetalle"
+            maxlength="500"
+            (input)="limitarDigitosTextarea($event, 500)" />
+        </mat-form-field>
+        <div class="err" *ngIf="isInvalid('p104OtroDetalle')">Detalle requerido.</div>
+      </ng-container>
+    </div>
+  </div>
+    <!--  MENSAJE DE ERROR SI NO SE MARCA NINGUNA ACTIVIDAD -->
+  <input type="hidden" formControlName="p104Any">
+  <div class="err mt-2" *ngIf="showP104GroupError">
+    <i class="fas fa-exclamation-circle"></i>
+    Debe marcar al menos una actividad de itinerancia
+  </div>
+</div>
+
+  <!-- <div class="card">
+      <label fw-bold class="cell-label q-label fw-bold mt-4">10.4. Marcar las actividades que realizan en las actividades de itinerancia  </label>
+
+    <div class="mleft tabla-">
+      <div class="table-responsive">
+        <table class="tabla compact">
+          <tbody>
+            <tr>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Registro')" [disabled]="isDisabled104('p104Registro')" (change)="onCheck('p104Registro',$event)" >
+                  Registro de nacionales
+                </mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Civil')" [disabled]="isDisabled104('p104Civil')" (change)="onCheck('p104Civil',$event)">
+                  Registro civil
+                </mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Dni')" [disabled]="isDisabled104('p104Dni')" (change)="onCheck('p104Dni',$event)">
+                  DNI
+                </mat-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Pasaporte')" [disabled]="isDisabled104('p104Pasaporte')" (change)="onCheck('p104Pasaporte',$event)">
+                  Pasaportes
+                </mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Legal')" [disabled]="isDisabled104('p104Legal')" (change)="onCheck('p104Legal',$event)">
+                  Legalizaciones
+                </mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Autorizacion')" [disabled]="isDisabled104('p104Autorizacion')" (change)="onCheck('p104Autorizacion',$event)">
+                  Autorización de viaje de menor de edad
+                </mat-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Certificado')" [disabled]="isDisabled104('p104Certificado')" (change)="onCheck('p104Certificado',$event)">
+                  Certificado de supervivencia
+                </mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Penales')" [disabled]="isDisabled104('p104Penales')" (change)="onCheck('p104Penales',$event)">
+                  Antecedentes penales
+                </mat-checkbox>
+              </td>
+              <td>
+                <mat-checkbox [checked]="isChecked('p104Policial')" [disabled]="isDisabled104('p104Policial')" (change)="onCheck('p104Policial',$event)">
+                  Antecedentes policiales
+                </mat-checkbox>
+              </td>
+              
+            </tr>
+            <tr>
+              <td colspan="3">
+                <div class="inline-radios" style="gap:1rem">
+                  <mat-checkbox [checked]="isChecked('p104Otro')" [disabled]="isDisabled104('p104Otro')" (change)="onCheck('p104Otro',$event)">
+                    Otro(s)
+                  </mat-checkbox>
+                  <mat-form-field appearance="outline" class="w-lg">
+                    <mat-label>Especifique</mat-label>
+                    <input matInput formControlName="p104OtroDetalle" maxlength="500"  (input)="limitarDigitosTextarea($event, 500)">
+
+                  </mat-form-field>
+                </div>
+                <div class="err" *ngIf="isInvalid('p104OtroDetalle')">Detalle requerido.</div>
+              </td>
+               <td>
+             
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- 10.5 Personas atendidas -->
+  <div class="card">
+      <label fw-bold class="cell-label q-label fw-bold mt-4">10.5. Número de personas atendidas durante actividades de itinerancia  </label>
+     <div class="table-responsive tabla-">
+    <table class="table table-bordered align-middle">
+      <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="center">Año</th>
+            <th class="center">Personas atendidas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="center"><span class="cell-label q-label">2023</span></td>
+            <td>
+              <mat-form-field appearance="outline" class="w-sm">
+                <input matInput type="number" appMax4Digits formControlName="p105Personas2023" appNumericInput max3digits>
+              </mat-form-field>
+              <div class="err" *ngIf="isInvalid('p105Personas2023')">Valor ≥ 0</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="center"><span class="cell-label q-label">2024</span></td>
+            <td>
+              <mat-form-field appearance="outline" class="w-sm">
+                <input matInput type="number" appMax4Digits formControlName="p105Personas2024" appNumericInput max3digits>
+              </mat-form-field>
+              <div class="err" *ngIf="isInvalid('p105Personas2024')">Valor ≥ 0</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="center"><span class="cell-label q-label">2025</span></td>
+            <td>
+              <mat-form-field appearance="outline" class="w-sm">
+                <input matInput type="number" appMax4Digits formControlName="p105Personas2025" appNumericInput max3digits>
+              </mat-form-field>
+              <div class="err" *ngIf="isInvalid('p105Personas2025')">Valor ≥ 0</div>
+              <div class="nota">* Para 2025, remitir información del primer semestre.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 10.6 Necesidades -->
+  <div class="card">
+      <label fw-bold class="cell-label q-label fw-bold mt-4">10.6. Necesidades de la oficina consular para prestar el servicio de manera idónea </label>
+       <div class="text-danger small mt-2" *ngIf="showP106GroupError">
+      Selecciona al menos una necesidad.
+    </div>
+
+     <div class="table-responsive tabla-">
+    <table class="table table-bordered align-middle">
+      <thead class="table-primary align-middle" style="font-size:.9rem;">
+          <tr>
+            <th class="col-desc">Tipo</th>
+            <th class="center">Seleccionar</th>
+            <th class="center">¿Se han realizado gestiones? (S/N)</th>
+            <th class="center">Suficiente / Insuficiente</th>
+            <th>Especifique, comentarios u observaciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of p106Rows">
+            <td class="cell-label q-label">{{ pretty(r.check) }}</td>
+            <td class="center">
+              <mat-checkbox [checked]="isChecked(r.check)" (change)="onCheck(r.check,$event)"></mat-checkbox>
+            </td>
+            <td class="center">
+              <div class="sn-group">
+                <mat-radio-group [formControlName]="r.gest">
+                  <mat-radio-button value="S">Sí</mat-radio-button>
+                  <mat-radio-button value="N">No</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div class="err" *ngIf="isInvalid(r.gest)">Requerido</div>
+            </td>
+            <td class="center">
+              <div class="sn-group">
+                <mat-radio-group [formControlName]="r.suf">
+                  <mat-radio-button value="S">Suficiente</mat-radio-button>
+                  <mat-radio-button value="N">Insuficiente</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div class="err" *ngIf="isInvalid(r.suf)">Requerido</div>
+            </td>
+            <td>
+             
+                
+                <mat-form-field appearance="outline" class="w-100">
+                  <textarea matInput rows="2" maxlength="500" [formControlName]="r.esp"
+                    placeholder="Máx. 500 caracteres"></textarea>
+                  <mat-hint align="end">
+                    {{ charLen(r.esp) }}/500
+                  </mat-hint>
+                  <mat-error>
+                    <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                    Campo requerido
+                  </mat-error>
+                </mat-form-field>
+              
+              <div *ngIf="r.otroDet">
+                <mat-form-field appearance="outline" class="w-lg">
+                  <mat-label>Detalle “Otro”</mat-label>
+                  <input matInput [formControlName]="r.otroDet"   (input)="limitarDigitosTextarea($event, 500)">
+                </mat-form-field>
+                <div class="err" *ngIf="r.otroDet && isInvalid(r.otroDet)">Requerido</div>
+              </div>
+            </td>
+          </tr>
+          <tr class="fila-total">
+            <td class="cell-label q-label">Ninguno</td>
+            <td colspan="4">
+              <div class="ninguno">
+                <mat-checkbox [checked]="isChecked('p106Ninguno')" (change)="onCheck('p106Ninguno',$event)">
+                  No presenta necesidades
+                </mat-checkbox>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 10.7 / 10.8 Capacitación -->
+  <div class="card">
+      <label fw-bold class="cell-label q-label fw-bold mt-4">10.7. ¿Recibe el personal consular capacitaciones, cursos u otros para este servicio?  </label>
+    <div class="inline-radios mleft">
+      <mat-radio-group formControlName="p107Recibe">
+        <mat-radio-button value="S">Sí <b style="color:#0094ea;"> → Pase a 10.8.</b></mat-radio-button>
+        <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a la siguiente sección</b> </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="err mleft" *ngIf="isInvalid('p107Recibe')">Selecciona una opción</div>
+
+    <mat-divider class="my-3"></mat-divider>
+
+
+
+
+      <div class="mt-3">
+        <div class="cell-label q-label mb-1">
+          10.8 Indicar la(s) institución(es) del Estado que brinda(n) las capacitaciones
+        </div>
+      
+        <div class="row g-2">
+          <!-- Lista de instituciones -->
+          <div class="col-12 col-md-6" *ngFor="let k of p108Instituciones">
+            <mat-checkbox [checked]="isChecked(k)" (change)="onCheck(k, $event)" [disabled]="isDisabled108(k)">
+              {{ pretty108(k) }}
+            </mat-checkbox>
+          </div>
+      
+          <!-- Otro(s) + detalle -->
+          <div class="col-12 col-md-12 d-flex align-items-center gap-2">
+       
+            <mat-form-field appearance="outline" class="w-full" *ngIf="!f('p108OtroDetalle')?.disabled">
+              <mat-label>Especifique</mat-label>
+              <input matInput formControlName="p108OtroDetalle" (input)="limitarDigitosTextarea($event, 500)">
+            </mat-form-field>
+          </div>
+      
+  
+      
+          <!-- Mensajería de error/ayuda -->
+          <div class="col-12">
+            <div class="err"
+              *ngIf="f('p107Recibe')?.hasError('p108Group') && (f('p107Recibe')?.touched || f('p107Recibe')?.dirty)">
+              Selecciona al menos una institución.
+            </div>
+          
+          </div>
+        </div>
+      </div>
+
+
+    
+  </div>
+
+  <!-- Acciones -->
+ <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
+    <button mat-stroked-button type="button" class="gridSaveItem" (click)="guardarSeccion10Incompleta()">
+      Guardado Parcial
+    </button>
+
+    <button mat-stroked-button class="gridSaveItemC" type="button" *ngIf="tieneRolEspecialista()"
+            (click)="validarSeccion()" [disabled]="ficha10Form.invalid">
+      Validar Sección 10
+    </button>
+
+    <button mat-flat-button class="gridSaveItemC" type="submit" >
+      Guardar sección Completa
+    </button>
+  </div>
+</form>

@@ -1,0 +1,570 @@
+<form class="container-fluid s5-wrapper" [formGroup]="ficha5Form" (ngSubmit)="guardarSeccion5()">
+   <section class="acciones">
+    <button class="gridSaveItem" mat-stroked-button  type="button" (click)="guardarSeccion5Incompleta()">
+            Guardado Parcial
+          </button>
+    
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar como Completa
+      </button>
+    
+      <button *ngIf="tieneRolEspecialista()" mat-flat-button class="gridSaveItemC" type="button" (click)="validarSeccion()">
+        Validar sección
+      </button>
+    
+    </section>
+
+<section class="card">
+
+  <h5 class="mt-2 q-label">5.1 Registros civiles</h5>
+  <!-- 5.1.1 -->
+  <div class="q">
+    <label class="q-label">5.1.1 ¿Se requiere cita previa?</label>
+    <mat-radio-group formControlName="p511Requiere" class="inline">
+      <mat-radio-button value="S">Sí <b style="color:#0094ea;"> → Pase a 5.1.2</b></mat-radio-button>
+      <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a 5.1.3</b></mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p511Requiere')">Requerido</div>
+  </div>
+
+  <!-- 5.1.2 -->
+  <div class="q sub mt-3">
+    <label class="q-label">5.1.2 Tiempo promedio para la cita</label>
+    <mat-radio-group formControlName="p512Afirmativa" class="inline">
+      <mat-radio-button value="A">01 día</mat-radio-button>
+      <mat-radio-button value="B">02–04 días</mat-radio-button>
+      <mat-radio-button value="C">05–10 días</mat-radio-button>
+      <mat-radio-button value="D">11–15 días</mat-radio-button>
+      <mat-radio-button value="E">16 días o más</mat-radio-button>
+    </mat-radio-group>
+     <div class="err" *ngIf="isInvalid('p512Afirmativa')">Requerido</div>
+  </div>
+
+  <!-- 5.1.3 -->
+  <div class="q mt-3">
+    <label class="q-label">5.1.3 Registros</label>
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <thead class="table-secondary">
+          <tr>
+            <th>Año</th>
+            <th>Nº de nacimientos inscritos</th>
+            <th>Nº de matrimonios registrados</th>
+            <th>Nº de defunciones registradas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2023</td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Nac2023"></td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Mat2023"></td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Def2023"></td>
+          </tr>
+          <tr>
+            <td>2024</td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Nac2024"></td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Mat2024"></td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Def2024"></td>
+          </tr>
+          <tr>
+            <td>2025</td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Nac2025"></td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Mat2025"></td>
+            <td><input  maxlength="5" (keydown)="permitirSoloNumeros($event)" type="number" min="0" class="form-control" formControlName="p513Def2025"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5.1.4 Matriz -->
+ <div class="q">
+  <label class="q-label">5.1.4 Necesidades de la oficina consular para prestar el servicio de manera idónea</label>
+  <div class="text-danger small mt-2" *ngIf="showP514GroupError">
+    Selecciona al menos una opción.
+  </div>
+  <!-- Cabezera tipo THEAD (solo >1020px) -->
+  <div class="matrix-head thead-colored table-bordered hide-under-1020">
+    <div class="mh-col mh-check">Necesidad</div>
+    <div class="mh-col">Gestiones</div>
+    <div class="mh-col">Suficiencia</div>
+    <div class="mh-col">Especifique / observaciones</div>
+  </div>
+
+  <!-- Filas -->
+  <div class="matrix-row table-bordered table-primary" *ngFor="let r of p514Rows">
+    <!-- Título de la fila en móvil/tablet (<=1020px) -->
+    <div class="row-title show-under-1020">
+      {{ pretty(r.check) }}
+    </div>
+
+    <!-- Col 1: Check -->
+    <div class="cell cell-check col-divider">
+      <mat-checkbox
+        [checked]="isChecked(r.check)"
+        (change)="onCheck(r.check, $event)">
+        {{ pretty(r.check) }}
+      </mat-checkbox>
+    </div>
+
+    <!-- Col 2: Gestiones -->
+    <div class="cell cell-gest col-divider">
+      <span class="cell-label show-under-1020">Gestiones</span>
+      <mat-radio-group [formControlName]="r.gest" class="radio-inline">
+        <mat-radio-button value="S">Sí</mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+         <mat-error *ngIf="isInvalid(r.gest)">Seleccione una opción.</mat-error>
+
+    </div>
+
+    <!-- Col 3: Suficiencia -->
+    <div class="cell cell-suf col-divider">
+      <span class="cell-label show-under-1020">Suficiencia</span>
+      <mat-radio-group [formControlName]="r.suf" class="radio-inline">
+        <mat-radio-button value="S">Suficiente</mat-radio-button>
+        <mat-radio-button value="N">Insuficiente</mat-radio-button>
+      </mat-radio-group>
+        <mat-error *ngIf="isInvalid(r.suf)">Seleccione una opción.</mat-error>
+
+    </div>
+
+    <!-- Col 4: Observaciones -->
+    <div class="cell cell-obs">
+      <span class="cell-label show-under-1020">Especifique / observaciones</span>
+
+
+
+         <mat-form-field appearance="outline" class="w-100">
+              <textarea matInput rows="2" maxlength="500" [formControlName]="r.esp" placeholder="Máx. 500 caracteres"></textarea>
+
+              <mat-hint align="end">
+                {{ charLen(r.esp) }}/500
+              </mat-hint>
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Campo requerido
+              </mat-error>
+            </mat-form-field>
+
+
+
+      <mat-form-field *ngIf="r.otroDet" appearance="outline" class="w-100 dense">
+        <mat-label>Otro (detalle)</mat-label>
+        <input matInput [formControlName]="r.otroDet" maxlength="300" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <mat-checkbox
+      [checked]="isChecked('p514Ninguna')"
+      (change)="onCheck('p514Ninguna', $event)">
+      {{ pretty('p514Ninguna') }}
+    </mat-checkbox>
+  </div>
+</div>
+   <!-- <div class="q">
+    <label class="q-label">5.1.4 Necesidades para prestar el servicio</label>
+
+    <div class="row g-2" *ngFor="let r of p514Rows">
+      <div class="col-12 col-md-3 d-flex align-items-center">
+        <mat-checkbox [checked]="isChecked(r.check)" (change)="onCheck(r.check, $event)">{{ pretty(r.check) }}</mat-checkbox>
+      </div>
+      <div class="col-12 col-md-2">
+        <mat-radio-group [formControlName]="r.gest">
+          <mat-radio-button value="S">Gestiones Sí</mat-radio-button>
+          <mat-radio-button value="N">Gestiones No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="col-12 col-md-2">
+        <mat-radio-group [formControlName]="r.suf">
+          <mat-radio-button value="S">Suficiente</mat-radio-button>
+          <mat-radio-button value="N">Insuficiente</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="col-12 col-md-5">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Especifique / observaciones</mat-label>
+          <input matInput [formControlName]="r.esp" maxlength="500">
+        </mat-form-field>
+        <mat-form-field *ngIf="r.otroDet" appearance="outline" class="w-100">
+          <mat-label>Otro (detalle)</mat-label>
+          <input matInput [formControlName]="r.otroDet" maxlength="300">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <mat-checkbox [checked]="isChecked('p514Ninguna')" (change)="onCheck('p514Ninguna', $event)">Ninguno</mat-checkbox>
+    </div>
+  </div>  -->
+
+  <!-- 5.1.5 -->
+  <div class="q">
+    <label class="q-label">5.1.5 ¿Recibe el personal consular a cargo de atender este servicio capacitaciones, cursos, entre otros, para realizar dicho servicio, a fin de garantizar una adecuada atención?</label>
+    <mat-radio-group formControlName="p515Recibe" class="inline">
+      <mat-radio-button value="S">Sí <b style="color:#0094ea;"> → Pase a 5.1.6</b></mat-radio-button>
+      <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a 5.2.1</b></mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p515Recibe')">Requerido</div>
+
+  </div>
+
+  <div class="q">
+    <label class="q-label">5.1.6  Indicar la(s) institución(es) del estado que brinda(n) de las capacitaciones</label>
+    <div class="row g-2">
+      <div class="col-6 col-md-3" *ngFor="let k of p516Instituciones">
+        <mat-checkbox [disabled]="isDisabled(k)" [checked]="isChecked(k)" (change)="onCheck(k, $event)">{{ pretty(k) }}</mat-checkbox>
+      </div>
+    </div>
+    <div class="row g-2 mt-1">
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Otro (detalle)</mat-label>
+          <input matInput formControlName="p516OtroDetalle" maxlength="500">
+        </mat-form-field>
+      </div>
+ 
+        <div class="err" *ngIf="showP516GroupError">
+        Selecciona al menos una opción.
+  </div>
+
+      
+
+    </div>
+  </div>
+    <mat-divider class="my-3"></mat-divider>
+
+    <div class="gridSave">
+        <button class="gridSaveItem" mat-stroked-button  type="button" (click)="guardarSeccion5Incompleta()">
+            Guardado Parcial
+          </button>
+    </div>
+
+  <mat-divider class="my-3"></mat-divider>
+
+  <h5 class="mt-2 q-label">5.2 Registro de identificación</h5>
+
+  <!-- 5.2.1 -->
+  <div class="q">
+    <label class="q-label">5.2.1 ¿Se requiere cita previa para acudir al consulado a realizar dicho trámite?</label>
+    <mat-radio-group formControlName="p521Requiere" class="inline">
+      <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 5.2.2</b></mat-radio-button>
+      <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a 5.2.3</b></mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p521Requiere')">Requerido</div>
+  </div>
+
+  <!-- 5.2.2 -->
+  <div class="q sub">
+    <label class="q-label">5.2.2 . De ser afirmativa, indicar el tiempo promedio que transcurre entre el pedido de cita y el día de atención:</label>
+    <mat-radio-group formControlName="p522Afirmativa" class="inline">
+      <mat-radio-button value="A">01 día</mat-radio-button>
+      <mat-radio-button value="B">02–04 días</mat-radio-button>
+      <mat-radio-button value="C">05–10 días</mat-radio-button>
+      <mat-radio-button value="D">11–15 días</mat-radio-button>
+      <mat-radio-button value="E">16 días o más</mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p522Afirmativa')">Requerido</div>
+
+  </div>
+
+  <!-- 5.2.3 -->
+  <div class="q">
+    <label class="q-label">5.2.3 ¿Cuenta con acceso a RENIEC?</label>
+    <mat-radio-group formControlName="p523Reniec" class="inline">
+      <mat-radio-button value="S">Sí</mat-radio-button>
+      <mat-radio-button value="N">No</mat-radio-button>
+    </mat-radio-group>
+    <div class="err" *ngIf="isInvalid('p523Reniec')">Requerido</div>
+  </div>
+
+  <!-- 5.2.4 Totales -->
+   <div class="q">
+    <label class="q-label">5.2.4 Totales</label>
+     <div class="table-responsive tabla-">
+    <table class="table table-bordered align-middle">
+      <thead class="table-primary align-middle matrix-head thead-colored table-bordered " style="font-size:.9rem;">
+          <tr>
+            <th>Indicador</th>
+            <th>2023</th>
+            <th>2024</th>
+            <th>2025</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Número de inscripciones en el registro único de identificación de las personas naturales de mayores de edad</td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Mayores2023"  maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Mayores2024" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Mayores2025" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+          </tr>
+          <tr>
+            <td>Número de inscripciones en el registro único de identificación de las personas naturales de menores de edad</td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Menores2023" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Menores2024" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Menores2025" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+          </tr>
+          <tr>
+            <td>Número de pedidos de rectificación y actualización de datos de mayor y menor de edad</td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Datos2023" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Datos2024" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Datos2025" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+          </tr>
+          <tr>
+            <td>Número de pedidos de renovación de DNI de mayor y menor de edad</td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Renovacion2023" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Renovacion2024" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Renovacion2025" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+          </tr>
+          <tr>
+            <td>Número de pedidos de duplicado de DNI de mayor y menor de edad</td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Duplicado2023" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Duplicado2024" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Duplicado2025" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+          </tr>
+          <tr>
+            <td>Número de pedidos de canje de libreta electoral por DNI</td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Canje2023" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Canje2024" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+            <td><input type="number" min="0" class="form-control" formControlName="p524Canje2025" maxlength="4" (keydown)="permitirSoloNumerosMax4($event)"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5.2.5 Certificado -->
+ <div class="q">
+  <label class="q-label">5.2.5 ¿Se emite certificado de concordancia de nombres?</label>
+  <mat-radio-group formControlName="p525Emite" class="inline">
+    <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 5.2.5.1</b></mat-radio-button>
+    <mat-radio-button value="N">No <b style="color:#0094ea;"> → Pase a 5.2.6</b></mat-radio-button>
+  </mat-radio-group>
+      <div class="err" *ngIf="isInvalid('p525Emite')">Requerido</div>
+
+  <div class="row g-2 ">
+    <div class="col-12 col-md-4">
+      <label fw-bold class="cell-label fw-bold ">
+          5.2.5.1 Costo del trámite (S/.)
+        </label>
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput type="text" formControlName="p525CostoSol" appNumericInput placeholder="(Tipo de cambio USD 3.50)">
+        
+        <mat-error *ngIf="f('p525CostoSol')?.errors?.['invalidFormat']">
+          Máximo 2 decimales.
+        </mat-error>
+        <mat-error *ngIf="f('p525CostoSol')?.errors?.['maxDigitsExceeded']">
+          Máximo 10 dígitos en total (entero + decimal).
+        </mat-error>
+        <mat-error *ngIf="f('p525CostoSol')?.hasError('required') && f('p525CostoSol')?.touched">
+          Este campo es requerido.
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-md-4">
+      <!--mat-form-field appearance="outline" class="w-100">
+        <mat-label>Costo (USD)</mat-label>
+        <input matInput type="text" formControlName="p525CostoUsd" appNumericInput placeholder="(Tipo de cambio USD 3.50)">
+        <mat-error *ngIf="f('p525CostoUsd')?.errors?.['invalidFormat']">
+          Máximo 2 decimales.
+        </mat-error>
+        <mat-error *ngIf="f('p525CostoUsd')?.errors?.['maxDigitsExceeded']">
+          Máximo 10 dígitos en total (entero + decimal).
+        </mat-error>
+        <mat-error *ngIf="f('p525CostoUsd')?.hasError('required') && f('p525CostoUsd')?.touched">
+          Este campo es requerido.
+        </mat-error>
+      </mat-form-field-->
+    </div>
+  </div>
+</div>
+
+  <!-- 5.2.6 Matriz -->
+   <div class="q">
+  <label class="q-label">5.2.6 Necesidades de la oficina consular para prestar el servicio de manera idónea</label>
+  <div class="text-danger small mt-2" *ngIf="showP526GroupError">
+    Selecciona al menos una opción
+  </div>
+  <!-- Encabezado tipo THEAD (solo >1020px) -->
+  <div class="matrix-head thead-colored table-bordered hide-under-1020">
+    <div class="mh-col mh-check">Necesidad</div>
+    <div class="mh-col">Gestiones</div>
+    <div class="mh-col">Suficiencia</div>
+    <div class="mh-col">Especifique / observaciones</div>
+  </div>
+
+  <!-- Filas -->
+  <div class="matrix-row table-bordered" *ngFor="let r of p526Rows">
+    <div class="row-title show-under-1020">
+      {{ pretty(r.check) }}
+    </div>
+
+    <!-- Col 1: Check -->
+    <div class="cell cell-check col-divider">
+      <mat-checkbox
+        [checked]="isChecked(r.check)"
+        (change)="onCheck(r.check, $event)">
+        {{ pretty(r.check) }}
+      </mat-checkbox>
+    </div>
+
+    <!-- Col 2: Gestiones -->
+    <div class="cell cell-gest col-divider">
+      <span class="cell-label show-under-1020">Gestiones</span>
+      <mat-radio-group [formControlName]="r.gest" class="radio-inline">
+        <mat-radio-button value="S">Sí</mat-radio-button>
+        <mat-radio-button value="N">No</mat-radio-button>
+      </mat-radio-group>
+              <mat-error *ngIf="isInvalid(r.gest)">Seleccione una opción.</mat-error>
+
+    </div>
+
+    <!-- Col 3: Suficiencia -->
+    <div class="cell cell-suf col-divider">
+      <span class="cell-label show-under-1020">Suficiencia</span>
+      <mat-radio-group [formControlName]="r.suf" class="radio-inline">
+        <mat-radio-button value="S">Suficiente</mat-radio-button>
+        <mat-radio-button value="N">Insuficiente</mat-radio-button>
+      </mat-radio-group>
+        <mat-error *ngIf="isInvalid(r.suf)">Seleccione una opción.</mat-error>
+
+    </div>
+
+    <!-- Col 4: Observaciones -->
+    <div class="cell cell-obs">
+      <span class="cell-label show-under-1020">Especifique / observaciones</span>
+
+  
+        
+         <mat-form-field appearance="outline" class="w-100">
+              <textarea matInput rows="2" maxlength="500" [formControlName]="r.esp" placeholder="Máx. 500 caracteres"></textarea>
+
+              <mat-hint align="end">
+                {{ charLen(r.esp) }}/500
+              </mat-hint>
+              <mat-error>
+                <mat-icon fontIcon="warning" class="text-danger me-1" style="font-size: 15px;"></mat-icon>
+                Campo requerido
+              </mat-error>
+            </mat-form-field>
+
+
+      <mat-form-field *ngIf="r.otroDet" appearance="outline" class="w-100 dense">
+        <mat-label>Otro (detalle)</mat-label>
+        <input matInput [formControlName]="r.otroDet" maxlength="500" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <mat-checkbox
+      [checked]="isChecked('p526Ninguno')"
+      (change)="onCheck('p526Ninguno', $event)">
+      {{ pretty('p526Ninguno') }}
+    </mat-checkbox>
+  </div>
+</div>
+  <!-- <div class="q">
+    <label class="q-label">5.2.6 Necesidades para prestar el servicio</label>
+
+    <div class="row g-2" *ngFor="let r of p526Rows">
+      <div class="col-12 col-md-3 d-flex align-items-center">
+        <mat-checkbox [checked]="isChecked(r.check)" (change)="onCheck(r.check, $event)">{{ pretty(r.check) }}</mat-checkbox>
+      </div>
+      <div class="col-12 col-md-2">
+        <mat-radio-group [formControlName]="r.gest">
+          <mat-radio-button value="S">Gestiones Sí</mat-radio-button>
+          <mat-radio-button value="N">Gestiones No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="col-12 col-md-2">
+        <mat-radio-group [formControlName]="r.suf">
+          <mat-radio-button value="S">Suficiente</mat-radio-button>
+          <mat-radio-button value="N">Insuficiente</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="col-12 col-md-5">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Especifique / observaciones</mat-label>
+          <input matInput [formControlName]="r.esp" maxlength="500">
+        </mat-form-field>
+        <mat-form-field *ngIf="r.otroDet" appearance="outline" class="w-100">
+          <mat-label>Otro (detalle)</mat-label>
+          <input matInput [formControlName]="r.otroDet" maxlength="500">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <mat-checkbox [checked]="isChecked('p526Ninguno')" (change)="onCheck('p526Ninguno', $event)">Ninguno</mat-checkbox>
+    </div>
+  </div> -->
+
+  <!-- 5.2.7 -->
+  <div class="q">
+    <label class="q-label">5.2.7 ¿Recibe capacitaciones el personal?</label>
+    <mat-radio-group formControlName="p527Recibe" class="inline">
+      <mat-radio-button value="S">Sí<b style="color:#0094ea;"> → Pase a 5.2.8</b></mat-radio-button>
+      <mat-radio-button value="N">No<b style="color:#0094ea;"> → Pase a la siguiente sección</b></mat-radio-button>
+    </mat-radio-group>
+  <div class="err" *ngIf="isInvalid('p527Recibe')">Requerido</div>
+
+  </div>
+
+  <!-- 5.2.8 -->
+  <div class="q">
+    <label class="q-label">5.2.8 Instituciones que brindan las capacitaciones</label>
+    <div class="row g-2" >
+      <div class="col-6 col-md-3" [ngClass]="{'has-error': hasError('p528Group','requireOne')}" >
+      <mat-checkbox *ngFor="let k of p528Instituciones" 
+            [disabled]="isDisabled527(k)" 
+            [checked]="isChecked(k)" 
+            (change)="onCheck(k, $event)">
+        {{ pretty(k) }}
+      </mat-checkbox>
+      </div>
+    </div>
+    <div class="row g-2 mt-1">
+      <div class="col-12 col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Otro (detalle)</mat-label>
+          <input matInput formControlName="p528OtroDetalle" maxlength="500">
+        </mat-form-field>
+      </div>
+      <!-- <div class="col-12 col-md-3 d-flex align-items-center">
+        <mat-checkbox  [disabled]="isDisabled527('p528Ninguna')"  [checked]="isChecked('p528Ninguna')" (change)="onCheck('p528Ninguna', $event)">No ha recibido ninguna</mat-checkbox>
+      </div> -->
+
+           <div class="err" *ngIf="showP528GroupError">
+            Selecciona al menos una opción.
+          </div>
+    </div>
+  </div>
+</section>
+  <!-- Acciones -->
+  <div class="d-flex justify-content-between mt-3">
+     
+        <button class="gridSaveItem" mat-stroked-button  type="button" (click)="guardarSeccion5Incompleta()">
+            Guardado Parcial
+          </button>
+ 
+
+
+    <div>
+      <button mat-stroked-button class="gridSaveItemC" type="button"
+              *ngIf="tieneRolEspecialista()"
+              (click)="validarSeccion()"
+              [disabled]="ficha5Form.invalid">
+        Validar Sección 5
+      </button>
+    </div>
+
+    <div>
+      <button mat-flat-button class="gridSaveItemC" type="submit">
+        Guardar completa
+      </button>
+    </div>
+  </div>
+</form>
